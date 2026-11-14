@@ -1987,3 +1987,4 @@ body.light-shell{background:#f4f7fb;color:#192635;}
 /* Non-game pages must color the document canvas too, including iOS safe areas. */
 html.light-shell,body.light-shell{min-height:100%;background:#f4f7fb!important;color-scheme:light}
 body.light-shell:before,body.light-shell:after{display:none!important}
+body.light-shell .app:before,body.light-shell .app:after{display:none!important;background:none!important;animation:none!important}

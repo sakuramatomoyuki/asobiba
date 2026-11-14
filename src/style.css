@@ -1970,3 +1970,16 @@ body.light-shell{background:#f4f7fb;color:#192635;}
 .jinrou-role-heading{color:#d3dae2}.jinrou-role-heading .valid{color:#98d7be}.jinrou-role-heading .invalid,.jinrou-role-warning{color:#ffb2a3}.jinrou-role-grid label{border-color:#8190a955;background:#101824;color:#e2e8ed}.jinrou-role-grid input{border-color:#8190a955;background:#101824;color:#f4f1e9}
 .ww-caught-reveal{position:relative;isolation:isolate;display:grid;justify-items:center;gap:.7rem;margin:auto;padding:clamp(1.5rem,6vw,3.5rem) 1rem;text-align:center;overflow:hidden}.ww-caught-reveal:before{content:"";position:absolute;z-index:-1;width:min(70vw,22rem);aspect-ratio:1;border:1px solid #dfbf7255;border-radius:50%;box-shadow:0 0 0 1.2rem #dfbf7210,0 0 0 2.4rem #dfbf7209,0 0 70px #d8a95322;animation:ww-caught-pulse 2.8s ease-out infinite}.ww-caught-reveal .eyebrow{color:#d9bd7e;letter-spacing:.24em}.ww-caught-reveal h2{margin:.2rem 0;color:#f2d9a6;font-size:clamp(1.6rem,6vw,2.7rem);animation:ww-caught-title .7s both}.ww-caught-reveal p{max-width:34rem;color:#d0d6dd;font-size:clamp(1rem,3vw,1.2rem)}.ww-caught-reveal>strong{margin-top:.5rem;color:#e7cf9c;font-size:.9rem}.ww-caught-seal{position:relative;width:4.4rem;height:4.4rem;margin-bottom:.3rem}.ww-caught-seal i{position:absolute;inset:.4rem;border:1px solid #e0c37f;border-radius:50%;animation:ww-caught-seal 1.9s ease-out infinite}.ww-caught-seal i:nth-child(2){animation-delay:.32s}.ww-caught-seal i:nth-child(3){animation-delay:.64s}@keyframes ww-caught-pulse{0%{transform:scale(.84);opacity:.3}70%{opacity:.7}100%{transform:scale(1.18);opacity:0}}@keyframes ww-caught-title{from{opacity:0;transform:translateY(12px);filter:blur(5px)}to{opacity:1;transform:none;filter:none}}@keyframes ww-caught-seal{from{transform:scale(.38);opacity:.85}to{transform:scale(1.25);opacity:0}}
 @media(prefers-reduced-motion:reduce){.ww-caught-reveal:before,.ww-caught-reveal h2,.ww-caught-seal i{animation:none!important}}
+
+/* Keep Word Wolf ballots as focused as the Werewolf ballot screen. */
+.ww-ballot-screen .ww-vote-card{display:grid;gap:1rem;align-content:center;text-align:center;width:min(100%,38rem);padding:clamp(1.25rem,5vw,3rem)}
+.ww-ballot-screen .ww-vote-card h2{margin:0;color:#f0d9aa;font-size:clamp(2rem,7vw,3.5rem);line-height:1.25}
+.ww-ballot-screen .ww-voter-turn{padding:.9rem 1rem;border:1px solid #d2b77370;border-radius:1rem;background:linear-gradient(145deg,#292330,#151d28);color:#f4f0e7;font-size:clamp(1rem,4vw,1.3rem)}
+.ww-ballot-screen .ww-voter-turn b{color:#f0d49a}
+.ww-ballot-screen .ww-vote-card>p{margin:0;color:#bac5d0;font-size:clamp(1rem,3vw,1.15rem)}
+.ww-ballot-screen .ww-vote-card select{box-sizing:border-box;width:100%;min-height:3.7rem;padding:.75rem 1rem;border:1px solid #8190a955;border-radius:.8rem;background:#101824;color:#f4f1e9;font:inherit;font-size:1.05rem}
+.ww-ballot-screen .ww-vote-card>.primary{min-height:3.5rem;font-size:1.05rem}
+.ww-ballot-confirm-screen{min-height:100%;background:radial-gradient(ellipse at 50% 38%,#3a3040 0%,#1c2130 57%,#101622 100%)}
+.ww-ballot-confirm{width:min(100%,32rem);margin:auto;display:grid;gap:.9rem;text-align:center}
+.ww-ballot-confirm p{margin:0 0 .5rem;color:#f4f0e7;font-size:clamp(1.45rem,5vw,2.2rem);font-weight:800;line-height:1.45}
+.ww-ballot-confirm button{min-height:3.65rem;font-size:1.05rem}

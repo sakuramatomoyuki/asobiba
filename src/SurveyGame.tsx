@@ -3,9 +3,12 @@ import { shouldHandoffToSharedSeat } from './sharedMode';
 
 type Props = { room:any; busy:boolean; act:(action:any)=>void; activeSeat?:any; openSeat:(seat:any)=>void; confirmSeat:()=>void; hideSeat:()=>void };
 
-export function SurveySetup({settings,busy,act}:{settings:any;busy:boolean;act:(action:any)=>void}) {
+export function SurveySetup({settings,busy,onChange}:{settings:any;busy:boolean;onChange:(settings:any)=>void}) {
   const initial=settings?.survey||{source:'sequential',maxQuestions:5};
-  return <section className="survey-setup"><h4>匿名アンケートの設定</h4><label>質問の用意<select value={initial.source} disabled={busy} onChange={event=>act({type:'setSurveySettings',settings:{...initial,source:event.target.value}})}><option value="sequential">参加者が順番に質問を作る</option><option value="host">ホストが質問を用意する</option></select></label><label>質問数<select value={initial.maxQuestions} disabled={busy} onChange={event=>act({type:'setSurveySettings',settings:{...initial,maxQuestions:Number(event.target.value)}})}>{Array.from({length:20},(_,index)=>index+1).map(number=><option key={number} value={number}>{number}問</option>)}</select></label><p>回答者の名前と回答内容は結び付けず、全員の回答後に集計だけを公開します。匿名アンケートではポイントを加算しません。</p></section>;
+  const [draft,setDraft]=React.useState(initial);
+  React.useEffect(()=>setDraft(initial),[settings?.gameType]);
+  const patch=(value:any)=>{const next={...draft,...value};setDraft(next);onChange(next)};
+  return <section className="survey-setup"><h4>匿名アンケートの設定</h4><label>質問の用意<select value={draft.source} disabled={busy} onChange={event=>patch({source:event.target.value})}><option value="sequential">参加者が順番に質問を作る</option><option value="host">ホストが質問を用意する</option></select></label><label>質問数<select value={draft.maxQuestions} disabled={busy} onChange={event=>patch({maxQuestions:Number(event.target.value)})}>{Array.from({length:20},(_,index)=>index+1).map(number=><option key={number} value={number}>{number}問</option>)}</select></label><p>回答者の名前と回答内容は結び付けず、全員の回答後に集計だけを公開します。匿名アンケートではポイントを加算しません。</p></section>;
 }
 
 export function SurveyGame({room,busy,act,activeSeat,openSeat,confirmSeat,hideSeat}:Props) {

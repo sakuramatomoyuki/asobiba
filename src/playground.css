@@ -87,6 +87,16 @@ body.light-shell:before,body.light-shell:after{display:none!important}
 @media(orientation:landscape) and (max-height:520px) and (max-width:900px){.app.room-lobby-shell main{height:calc(100dvh - 52px);padding:4px}.app.room-lobby-shell>header{height:48px;min-height:48px}.lobby-topbar{min-height:48px}.lobby-qr svg{width:38px;height:38px}.lobby-layout{grid-template-columns:minmax(135px,.72fr) minmax(260px,1.35fr) minmax(170px,.8fr);grid-template-rows:minmax(0,1fr)}.lobby-people,.lobby-center,.lobby-settings{grid-row:1;padding:7px}.lobby-settings{grid-column:auto;max-height:none;display:block}.lobby-game-card{height:auto;min-height:115px}.lobby-game-icon{width:27px;height:27px;margin-bottom:2px}.lobby-ready-panel{padding:6px}.lobby-settings-hint{font-size:9px}}
 @media(prefers-reduced-motion:reduce){.home-page *, .create-shell *, .form-shell *, .room-lobby-shell *, .game-setup-overlay *, .game-ogiri .ogiri-screen, .game-survey .survey-screen{animation-duration:.01ms!important;animation-iteration-count:1!important;scroll-behavior:auto!important;transition-duration:.01ms!important}}
 
+/* Keep the pre-game setup neutral and readable across every game theme. */
+.game-setup-sheet{color:#294651!important;background:#f8fbfa!important;border:1px solid #dce7e6!important;box-shadow:0 24px 80px #152e3a38!important}
+.game-setup-sheet>header,.game-setup-sheet>footer{background:#fff!important;color:#294651!important}
+.game-setup-sheet>header h2{color:#294651!important;text-shadow:none!important}
+.game-setup-sheet>header p{color:#71858b!important}
+.game-setup-sheet>footer .secondary{min-height:48px!important;border:1px solid #bacdcc!important;border-radius:12px!important;background:#fff!important;color:#365760!important;box-shadow:0 2px 5px #203d4510!important}
+.game-setup-sheet>footer .primary{min-height:48px!important;border:1px solid #258b83!important;border-radius:12px!important;background:#258b83!important;color:#fff!important;box-shadow:0 5px 14px #258b8330!important}
+.game-setup-sheet>footer button{font-weight:750!important}
+.setup-close{border:1px solid #cbdad9!important;background:#fff!important;color:#46646b!important}
+
 /* Readability pass: clean help screen, unclipped game cards, and a two-column lobby. */
 body.light-shell{background:#f6f9fb!important}
 .app.home-page,.app.create-shell,.app.form-shell,.app.room-lobby-shell,.app.help-shell{background:radial-gradient(ellipse at 12% 0%,#e8f4f0 0,transparent 38%),linear-gradient(180deg,#f8fafb 0%,#f1f6f7 100%)!important;color:#243846!important}

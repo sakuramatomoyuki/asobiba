@@ -4,18 +4,20 @@ import type { OgiriSettings } from './gameCatalog';
 type Props = { room:any; busy:boolean; act:(action:any)=>void; activeSeat?:any; openSeat:(seat:any)=>void; confirmSeat:()=>void; hideSeat:()=>void };
 const options = (settings:any) => settings?.ogiri || {mode:'normal',scoring:'fun',threshold:.5,questionCount:5,inputMode:'either',judgeMode:'all',promptSource:'app',pointsEnabled:true,addRoomPoints:true};
 
-export function OgiriSetup({settings,busy,act}:{settings:any;busy:boolean;act:(action:any)=>void}) {
+export function OgiriSetup({settings,busy,onChange}:{settings:any;busy:boolean;onChange:(settings:any)=>void}) {
   const initial:OgiriSettings=options(settings);
-  const patch=(value:Partial<OgiriSettings>)=>act({type:'setOgiriSettings',settings:{...initial,...value}});
+  const [draft,setDraft]=React.useState<OgiriSettings>(initial);
+  React.useEffect(()=>setDraft(initial),[settings?.gameType]);
+  const patch=(value:Partial<OgiriSettings>)=>{const next={...draft,...value};setDraft(next);onChange(next)};
   return <section className="ogiri-setup"><h4>大喜利の設定</h4><div className="ogiri-setup-grid">
-    <label>進行形式<select value={initial.mode} disabled={busy} onChange={e=>patch({mode:e.target.value as any})}><option value="normal">全員で最後まで</option><option value="survive">合格ライン方式</option><option value="knockout">最下位脱落方式</option></select></label>
-    <label>採点方法<select value={initial.scoring} disabled={busy} onChange={e=>patch({scoring:e.target.value as any})}><option value="fun">面白い／普通</option><option value="ten-point">0〜10点</option></select></label>
-    <label>合格ライン <b>{Math.round(initial.threshold*100)}%</b><input type="range" min="0" max="100" value={Math.round(initial.threshold*100)} disabled={busy||initial.mode==='normal'} onChange={e=>patch({threshold:Number(e.target.value)/100})}/></label>
-    <label>出題数<select value={initial.questionCount} disabled={busy} onChange={e=>patch({questionCount:Number(e.target.value)})}>{Array.from({length:18},(_,i)=>i+3).map(n=><option key={n} value={n}>{n}問</option>)}</select></label>
-    <label>回答方法<select value={initial.inputMode} disabled={busy} onChange={e=>patch({inputMode:e.target.value as any})}><option value="text">文字</option><option value="drawing">お絵描き</option><option value="either">文字・お絵描きから選ぶ</option></select></label>
-    <label>お題<select value={initial.promptSource} disabled={busy} onChange={e=>patch({promptSource:e.target.value as any})}><option value="app">アプリのお題</option><option value="host">ホストが入力</option></select></label>
-    <label>採点する人<select value={initial.judgeMode} disabled={busy} onChange={e=>patch({judgeMode:e.target.value as any})}><option value="all">回答者全員</option><option value="host">ホストだけ</option></select></label>
-  </div><div className="ogiri-points"><label><input type="checkbox" checked={initial.pointsEnabled} disabled={busy} onChange={e=>patch({pointsEnabled:e.target.checked,addRoomPoints:e.target.checked&&settings.pointsEnabled})}/> 試合ポイントを付ける</label><label><input type="checkbox" checked={initial.addRoomPoints&&settings.pointsEnabled} disabled={busy||!initial.pointsEnabled||!settings.pointsEnabled} onChange={e=>patch({addRoomPoints:e.target.checked})}/> ルーム累計にも加算</label></div><p>面白い／普通は面白い票の割合、0〜10点は平均点を基準にします。自分の回答には採点できません。</p></section>;
+    <label>進行形式<select value={draft.mode} disabled={busy} onChange={e=>patch({mode:e.target.value as any})}><option value="normal">全員で最後まで</option><option value="survive">合格ライン方式</option><option value="knockout">最下位脱落方式</option></select></label>
+    <label>採点方法<select value={draft.scoring} disabled={busy} onChange={e=>patch({scoring:e.target.value as any})}><option value="fun">面白い／普通</option><option value="ten-point">0〜10点</option></select></label>
+    <label>合格ライン <b>{Math.round(draft.threshold*100)}%</b><input type="range" min="0" max="100" value={Math.round(draft.threshold*100)} disabled={busy||draft.mode==='normal'} onChange={e=>patch({threshold:Number(e.target.value)/100})}/></label>
+    <label>出題数<select value={draft.questionCount} disabled={busy} onChange={e=>patch({questionCount:Number(e.target.value)})}>{Array.from({length:18},(_,i)=>i+3).map(n=><option key={n} value={n}>{n}問</option>)}</select></label>
+    <label>回答方法<select value={draft.inputMode} disabled={busy} onChange={e=>patch({inputMode:e.target.value as any})}><option value="text">文字</option><option value="drawing">お絵描き</option><option value="either">文字・お絵描きから選ぶ</option></select></label>
+    <label>お題<select value={draft.promptSource} disabled={busy} onChange={e=>patch({promptSource:e.target.value as any})}><option value="app">アプリのお題</option><option value="host">ホストが入力</option></select></label>
+    <label>採点する人<select value={draft.judgeMode} disabled={busy} onChange={e=>patch({judgeMode:e.target.value as any})}><option value="all">回答者全員</option><option value="host">ホストだけ</option></select></label>
+  </div><div className="ogiri-points"><label><input type="checkbox" checked={draft.pointsEnabled} disabled={busy} onChange={e=>patch({pointsEnabled:e.target.checked,addRoomPoints:e.target.checked&&settings.pointsEnabled})}/> 試合ポイントを付ける</label><label><input type="checkbox" checked={draft.addRoomPoints&&settings.pointsEnabled} disabled={busy||!draft.pointsEnabled||!settings.pointsEnabled} onChange={e=>patch({addRoomPoints:e.target.checked})}/> ルーム累計にも加算</label></div><p>面白い／普通は面白い票の割合、0〜10点は平均点を基準にします。自分の回答には採点できません。</p></section>;
 }
 
 export function OgiriGame({room,busy,act,activeSeat,openSeat,confirmSeat,hideSeat}:Props) {

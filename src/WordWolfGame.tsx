@@ -11,19 +11,20 @@ type Props = {
   onSendChat?: (message: string) => void;
 };
 
-export function WordWolfSetup({ settings, busy, act }: { settings: any; busy: boolean; act: (action: any) => void }) {
+export function WordWolfSetup({ settings, busy, onChange }: { settings: any; busy: boolean; onChange: (settings: any) => void }) {
   const initial = settings?.wordWolf || {};
+  const [draft, setDraft] = React.useState(initial);
   const [majority, setMajority] = React.useState(String(initial.topicA || ''));
   const [minority, setMinority] = React.useState(String(initial.topicB || ''));
-  React.useEffect(() => { setMajority(String(initial.topicA || '')); setMinority(String(initial.topicB || '')); }, [initial.topicA, initial.topicB]);
-  const patch = (values: any) => act({ type: 'setWordWolfSettings', settings: { ...initial, ...values } });
+  React.useEffect(() => { setDraft(initial); setMajority(String(initial.topicA || '')); setMinority(String(initial.topicB || '')); }, [settings?.gameType]);
+  const patch = (values: any) => { const next = { ...draft, ...values }; setDraft(next); onChange(next); };
   return <section className="ww-setup"><h4>ワードウルフの設定</h4><div className="ww-setup-grid">
-    <label>議論時間<select value={initial.discussionSeconds || 60} disabled={busy} onChange={e => patch({ discussionSeconds: Number(e.target.value) })}>{Array.from({ length: 10 }, (_, i) => (i + 1) * 30).map(n => <option key={n} value={n}>{n < 60 ? `${n}秒` : `${Math.floor(n / 60)}分${n % 60 ? `${n % 60}秒` : ''}`}</option>)}</select></label>
-    <label>投票時間<select value={initial.voteSeconds || 30} disabled={busy} onChange={e => patch({ voteSeconds: Number(e.target.value) })}>{Array.from({ length: 10 }, (_, i) => (i + 1) * 30).map(n => <option key={n} value={n}>{n < 60 ? `${n}秒` : `${Math.floor(n / 60)}分${n % 60 ? `${n % 60}秒` : ''}`}</option>)}</select></label>
-    <label>少数派の人数<select value={initial.minorityCount ?? 'quarter'} disabled={busy} onChange={e => patch({ minorityCount: e.target.value === 'quarter' ? 'quarter' : Number(e.target.value) })}><option value="quarter">参加人数の4分の1（切り捨て・最低1人）</option>{Array.from({ length: Math.max(1, Math.min(9, settings.playerCount - 1)) }, (_, i) => i + 1).map(n => <option key={n} value={n}>{n}人</option>)}</select></label>
-    <label>お題の用意<select value={initial.wordSource || 'app'} disabled={busy} onChange={e => patch({ wordSource: e.target.value })}><option value="app">アプリからランダム</option><option value="host">ホストが入力</option></select></label>
-  </div>{initial.wordSource === 'host'&&<div className="ww-topic-pair"><label>お題 A<input maxLength={40} value={majority} onChange={e => setMajority(e.target.value.slice(0, 40))} placeholder="例：コーヒー"/></label><label>お題 B<input maxLength={40} value={minority} onChange={e => setMinority(e.target.value.slice(0, 40))} placeholder="例：紅茶"/></label><button className="secondary" disabled={busy||!majority.trim()||!minority.trim()||majority.trim()===minority.trim()} onClick={() => patch({ topicA: majority.trim(), topicB: minority.trim() })}>お題を保存</button></div>}
-  <div className="ww-point-options"><label><input type="checkbox" checked={initial.pointsEnabled!==false} disabled={busy} onChange={e => patch({ pointsEnabled: e.target.checked, addRoomPoints: e.target.checked && !!settings.pointsEnabled })}/>ゲーム内ポイントを有効にする</label><label><input type="checkbox" checked={!!settings.pointsEnabled&&initial.addRoomPoints!==false} disabled={busy||!settings.pointsEnabled||initial.pointsEnabled===false} onChange={e => patch({ addRoomPoints: e.target.checked })}/>ルーム累計に加算する</label></div></section>;
+    <label>議論時間<select value={draft.discussionSeconds || 60} disabled={busy} onChange={e => patch({ discussionSeconds: Number(e.target.value) })}>{Array.from({ length: 10 }, (_, i) => (i + 1) * 30).map(n => <option key={n} value={n}>{n < 60 ? `${n}秒` : `${Math.floor(n / 60)}分${n % 60 ? `${n % 60}秒` : ''}`}</option>)}</select></label>
+    <label>投票時間<select value={draft.voteSeconds || 30} disabled={busy} onChange={e => patch({ voteSeconds: Number(e.target.value) })}>{Array.from({ length: 10 }, (_, i) => (i + 1) * 30).map(n => <option key={n} value={n}>{n < 60 ? `${n}秒` : `${Math.floor(n / 60)}分${n % 60 ? `${n % 60}秒` : ''}`}</option>)}</select></label>
+    <label>少数派の人数<select value={draft.minorityCount ?? 'quarter'} disabled={busy} onChange={e => patch({ minorityCount: e.target.value === 'quarter' ? 'quarter' : Number(e.target.value) })}><option value="quarter">参加人数の4分の1（切り捨て・最低1人）</option>{Array.from({ length: Math.max(1, Math.min(9, settings.playerCount - 1)) }, (_, i) => i + 1).map(n => <option key={n} value={n}>{n}人</option>)}</select></label>
+    <label>お題の用意<select value={draft.wordSource || 'app'} disabled={busy} onChange={e => patch({ wordSource: e.target.value })}><option value="app">アプリからランダム</option><option value="host">ホストが入力</option></select></label>
+  </div>{draft.wordSource === 'host'&&<div className="ww-topic-pair"><label>お題 A<input maxLength={40} value={majority} onChange={e => {const value=e.target.value.slice(0,40);setMajority(value);patch({topicA:value})}} placeholder="例：コーヒー"/></label><label>お題 B<input maxLength={40} value={minority} onChange={e => {const value=e.target.value.slice(0,40);setMinority(value);patch({topicB:value})}} placeholder="例：紅茶"/></label></div>}
+  <div className="ww-point-options"><label><input type="checkbox" checked={draft.pointsEnabled!==false} disabled={busy} onChange={e => patch({ pointsEnabled: e.target.checked, addRoomPoints: e.target.checked && !!settings.pointsEnabled })}/>ゲーム内ポイントを有効にする</label><label><input type="checkbox" checked={!!settings.pointsEnabled&&draft.addRoomPoints!==false} disabled={busy||!settings.pointsEnabled||draft.pointsEnabled===false} onChange={e => patch({ addRoomPoints: e.target.checked })}/>ルーム累計に加算する</label></div></section>;
 }
 
 export function WordWolfGame({ room, busy, act, activeSeat, openSeat, confirmSeat, hideSeat, onSendChat }: Props) {

@@ -56,7 +56,7 @@ export function wordWolfGuessMatches(guess: string, answer: string): boolean {
   const normalizedGuess = normalizeWordWolfGuess(guess);
   const normalizedAnswer = normalizeWordWolfGuess(answer);
   if (!normalizedGuess || !normalizedAnswer) return false;
-  if (normalizedGuess === normalizedAnswer || normalizedGuess.includes(normalizedAnswer) || normalizedAnswer.includes(normalizedGuess)) return true;
+  if (normalizedGuess === normalizedAnswer) return true;
   return WORDWOLF_EQUIVALENT_WORDS.some(group => {
     const normalizedGroup = group.map(normalizeWordWolfGuess);
     return normalizedGroup.includes(normalizedGuess) && normalizedGroup.includes(normalizedAnswer);

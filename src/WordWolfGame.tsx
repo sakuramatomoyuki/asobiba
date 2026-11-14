@@ -44,7 +44,7 @@ export function WordWolfGame({ room, busy, act, activeSeat, openSeat, confirmSea
   const deadline = Number(game.deadline || room.deadline || 0);
   const display = (seconds: number) => `${Math.floor(seconds / 60)}:${String(seconds % 60).padStart(2, '0')}`;
   const timerLabel = room.paused ? '一時停止中' : display(remaining);
-  const phaseName: Record<string,string> = {'wordwolf-word':'お題の確認','wordwolf-discussion':'議論','wordwolf-vote':'投票','wordwolf-guess':'少数派の回答','wordwolf-result':'結果発表'};
+  const phaseName: Record<string,string> = {'wordwolf-word':'お題の確認','wordwolf-discussion':'議論','wordwolf-vote':'投票','wordwolf-caught':'逆転チャンス','wordwolf-guess':'少数派の回答','wordwolf-result':'結果発表'};
   const screenClass = `wordwolf-screen phase-${phase}`;
   const gameHeader = (label = phaseName[phase] || 'ゲーム進行', timer?: string) => <><header className="ww-game-header"><div className="ww-game-brand"><svg viewBox="0 0 48 48" aria-hidden="true"><circle cx="24" cy="24" r="19"/><path d="M31 12a15 15 0 1 0 5 23A17 17 0 0 1 31 12Z"/><path d="m11 36 7-8 5 5 7-10 7 7"/></svg><span><small>第{room.round||1}ラウンド</small><b>ワードウルフ</b></span></div><div className="ww-stage-label"><small>NOW PLAYING</small><b>{label}</b>{timer&&<time className={room.paused ? 'paused' : undefined}>{timer}</time>}</div></header><div className={`ww-phase-track track-${phase}`} aria-hidden="true"><i/></div></>;
 
@@ -84,6 +84,7 @@ export function WordWolfGame({ room, busy, act, activeSeat, openSeat, confirmSea
     const submit = () => { if (!target) return; act({ type: 'wordVote', target }); setConfirmed(false); };
     return <div className={screenClass}>{gameHeader('投票', timerLabel)}<section className="ww-vote-card"><h2>お題が違う人を探そう</h2><p>投票先は、投票が終わるまで公開されません。</p><div className="ww-candidates">{eligible.filter((p: any) => p.uid !== me?.uid).map((p: any) => <button key={p.uid} className={target === p.uid ? 'selected' : ''} onClick={() => choose(p.uid)}>{p.name}</button>)}<button className={target === '__abstain__' ? 'selected' : ''} onClick={() => choose('__abstain__')}>無投票</button></div>{confirmed?<div className="ww-confirm"><b>{target === '__abstain__' ? '無投票' : `${room.players.find((p: any) => p.uid === target)?.name}さん`}に投票しますか？</b><button className="primary wide" disabled={busy} onClick={submit}>はい、投票する</button><button className="secondary wide" onClick={() => setConfirmed(false)}>選び直す</button></div>:<button className="primary wide" disabled={!target} onClick={() => setConfirmed(true)}>投票先を確認</button>}</section></div>;
   }
+  if (phase === 'wordwolf-caught') return <div className={`${screenClass} ww-caught-screen`}>{gameHeader('逆転チャンス', timerLabel)}<section className="ww-caught-reveal"><div className="ww-caught-seal" aria-hidden="true"><i/><i/><i/></div><span className="eyebrow">VOTE REVEAL</span><h2>少数派が見つかりました</h2><p>少数派には逆転のチャンス。多数派のお題を推理してください。</p><strong>{room.paused ? '一時停止中' : '逆転チャンスの準備中…'}</strong></section></div>;
   if (phase === 'wordwolf-guess') {
     const gate = handoff('guess');
     if (gate) return <div className={screenClass}>{gameHeader('少数派の回答', display(remaining))}{gate}</div>;

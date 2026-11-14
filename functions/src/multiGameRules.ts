@@ -33,6 +33,36 @@ export function wordWolfSettingsForViewer<T extends Record<string, any>>(
   return { ...settings, wordWolf: publicWordWolf };
 }
 
+const WORDWOLF_EQUIVALENT_WORDS = [
+  ['夜食', '夜ご飯', '夜ごはん', '晩ご飯', '晩ごはん', '夕飯', '晩飯', '夕食', 'ディナー', '夜の食事'],
+  ['朝食', '朝ご飯', '朝ごはん', '朝飯', 'モーニング'],
+  ['昼食', '昼ご飯', '昼ごはん', '昼飯', 'ランチ'],
+  ['子供', '子ども', 'こども'],
+  ['スマートフォン', 'スマホ', '携帯電話', 'ケータイ'],
+  ['自動車', '車', 'クルマ'],
+  ['自転車', 'チャリ'],
+  ['お金', '金銭', '現金'],
+];
+
+function normalizeWordWolfGuess(value: string): string {
+  return String(value).normalize('NFKC').toLocaleLowerCase('ja-JP')
+    .replace(/^(お題は|答えは|それは)/, '')
+    .replace(/(だと思います|だと思う|です|だよ|かな|でした|と思う)$/, '')
+    .replace(/[\s\p{P}\p{S}「」『』【】（）()]/gu, '');
+}
+
+/** Accepts exact answers and common Japanese paraphrases with the same meaning. */
+export function wordWolfGuessMatches(guess: string, answer: string): boolean {
+  const normalizedGuess = normalizeWordWolfGuess(guess);
+  const normalizedAnswer = normalizeWordWolfGuess(answer);
+  if (!normalizedGuess || !normalizedAnswer) return false;
+  if (normalizedGuess === normalizedAnswer || normalizedGuess.includes(normalizedAnswer) || normalizedAnswer.includes(normalizedGuess)) return true;
+  return WORDWOLF_EQUIVALENT_WORDS.some(group => {
+    const normalizedGroup = group.map(normalizeWordWolfGuess);
+    return normalizedGroup.includes(normalizedGuess) && normalizedGroup.includes(normalizedAnswer);
+  });
+}
+
 export function tallyWordWolfVotes(votes: Record<string, string>, playerIds: string[], minorityIds: string[]) {
   const eligible = new Set(playerIds);
   const counts: Record<string, number> = {};

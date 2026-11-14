@@ -1983,3 +1983,7 @@ body.light-shell{background:#f4f7fb;color:#192635;}
 .ww-ballot-confirm{width:min(100%,32rem);margin:auto;display:grid;gap:.9rem;text-align:center}
 .ww-ballot-confirm p{margin:0 0 .5rem;color:#f4f0e7;font-size:clamp(1.45rem,5vw,2.2rem);font-weight:800;line-height:1.45}
 .ww-ballot-confirm button{min-height:3.65rem;font-size:1.05rem}
+
+/* Non-game pages must color the document canvas too, including iOS safe areas. */
+html.light-shell,body.light-shell{min-height:100%;background:#f4f7fb!important;color-scheme:light}
+body.light-shell:before,body.light-shell:after{display:none!important}

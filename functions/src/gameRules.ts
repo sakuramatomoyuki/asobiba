@@ -2,6 +2,12 @@ export type Ballot = Record<string, string>;
 
 export const ABSTAIN = '__abstain__';
 
+/** Shared-table support is intentionally limited to games with a safe turn-by-turn handoff. */
+export function gameSupportsDeviceMode(gameId: string, method: string): boolean {
+  if (!['individual', 'shared', 'hybrid'].includes(method)) return false;
+  return method === 'individual' || ['jinrou', 'wordwolf', 'ito'].includes(gameId);
+}
+
 /** Realtime Database rejects undefined anywhere inside a transaction payload. */
 export function cleanRealtimeData<T>(value: T): T {
   if (Array.isArray(value)) {

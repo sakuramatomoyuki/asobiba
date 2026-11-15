@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { itoOrderIsCorrect, majorityPoints, normalizePartyAnswer, PARTY_GAME_IDS, samePartyAnswer } from './partyGameRules';
+import { itoOrderIsCorrect, majorityPoints, mergePartyGameSettings, normalizePartyAnswer, PARTY_GAME_IDS, samePartyAnswer } from './partyGameRules';
 
 describe('party game rules', () => {
   it('registers the five additional games', () => {
@@ -18,5 +18,15 @@ describe('party game rules', () => {
     expect(itoOrderIsCorrect(values, ['low', 'middle', 'high'])).toBe(true);
     expect(itoOrderIsCorrect(values, ['low', 'high', 'middle'])).toBe(false);
     expect(itoOrderIsCorrect(values, ['low', 'low', 'high'])).toBe(false);
+  });
+  it('builds a complete, game-specific settings object and drops stale fields', () => {
+    expect(mergePartyGameSettings('hyperbomber', { rounds: 99 }, { turnSeconds: 30 })).toEqual({
+      turnSeconds: 30,
+      pointsEnabled: true,
+      addRoomPoints: true,
+    });
+    expect(mergePartyGameSettings('lateral', null, { quizSource: 'host', title: '問題', solution: '答え' })).toMatchObject({
+      quizSource: 'host', title: '問題', solution: '答え', pointsEnabled: true,
+    });
   });
 });

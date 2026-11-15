@@ -7,6 +7,28 @@ export const PARTY_GAME_DEFAULTS: Record<PartyGameId, Record<string, unknown>> =
   hyperbomber: { turnSeconds: 15, pointsEnabled: true, addRoomPoints: true },
   untilmatch: { matchStreak: 1, maxRounds: 10, pointsEnabled: true, addRoomPoints: true },
 };
+
+export function mergePartyGameSettings(
+  game: PartyGameId,
+  saved?: unknown,
+  draft?: unknown,
+): Record<string, unknown> {
+  const record = (value: unknown): Record<string, unknown> =>
+    value && typeof value === 'object' && !Array.isArray(value)
+      ? value as Record<string, unknown>
+      : {};
+  const allowed: Record<PartyGameId, readonly string[]> = {
+    majority: ['rounds', 'pointsEnabled', 'addRoomPoints'],
+    ito: ['pointsEnabled', 'addRoomPoints'],
+    lateral: ['quizSource', 'title', 'solution', 'pointsEnabled', 'addRoomPoints'],
+    hyperbomber: ['turnSeconds', 'promptSource', 'prompt', 'pointsEnabled', 'addRoomPoints'],
+    untilmatch: ['matchStreak', 'maxRounds', 'pointsEnabled', 'addRoomPoints'],
+  };
+  const pick = (value: unknown) => Object.fromEntries(
+    Object.entries(record(value)).filter(([key]) => allowed[game].includes(key)),
+  );
+  return { ...PARTY_GAME_DEFAULTS[game], ...pick(saved), ...pick(draft) };
+}
 export const MAJORITY_PROMPTS = [
   '休日にするなら、家でのんびり？外へお出かけ？', '朝型と夜型、なれるならどっち？', '旅行は計画派？その場で決める派？',
   '一生食べるなら、米料理？麺料理？', 'もらうなら、自由な時間？自由に使えるお金？', '夏と冬、暮らしやすいのはどっち？',

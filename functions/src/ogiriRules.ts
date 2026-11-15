@@ -23,10 +23,10 @@ export function normalizeOgiriAnswer(inputMode: OgiriInputMode, raw: any): Ogiri
     return text && text.length <= 200 ? { mode:'text', text } : null;
   }
   const dataUrl = String(raw.dataUrl || '');
-  // Answers are written as part of the shared RTDB room transaction. Bound
-  // each image so 20 simultaneous drawings remain comfortably below RTDB's
-  // request-size ceiling and do not make a single answer excessively costly.
-  if (!/^data:image\/(png|webp|jpeg);base64,/.test(dataUrl) || dataUrl.length > 400_000) return null;
+  // Drawings travel inside the atomic room transaction and, at the final
+  // answer, the judge snapshot includes every drawing. Keep the aggregate
+  // comfortably below callable and Realtime Database payload limits.
+  if (!/^data:image\/(png|webp|jpeg);base64,/.test(dataUrl) || dataUrl.length > 150_000) return null;
   return { mode:'drawing', dataUrl };
 }
 

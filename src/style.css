@@ -2147,3 +2147,39 @@ body[data-game-type="survey"] .gm-drawer.fixed-gm.menu-open .game-menu-trigger {
   .app.game-ogiri.in-game>main>.game-screen,.app.game-survey.in-game>main>.game-screen { padding:.25rem; }
   .app.game-ogiri .ogiri-screen,.app.game-survey .survey-screen { min-height:100%;padding:clamp(.75rem,3vw,1rem); }
 }
+
+/* Ogiri: bright quiz-show board, black stage, yellow cards and red accents. */
+.app.game-ogiri.in-game { background:radial-gradient(ellipse at 50% 0%,#fff05b30,transparent 34%),linear-gradient(180deg,#28251c 0%,#111315 43%,#1b1b1b 100%)!important;color:#171717; }
+body[data-game-type="ogiri"] { background:#111315!important; }
+.app.game-ogiri.in-game>main>.game-screen { color:#171717; }
+.app.game-ogiri .ogiri-screen { color:#171717;background:transparent; }
+.app.game-ogiri .ogiri-screen:before { opacity:.9;background:linear-gradient(180deg,#f5dd2720,transparent 22%),linear-gradient(90deg,transparent 0 8%,#fff0000b 8.1% 8.3%,transparent 8.4% 91.6%,#fff0000b 91.7% 91.9%,transparent 92%); }
+.app.game-ogiri .ogiri-screen>header { border-bottom:3px solid #f4dc18;color:#fff;font-size:1.1rem;letter-spacing:.06em;text-shadow:0 2px 0 #000; }
+.app.game-ogiri .ogiri-screen>header small { color:#f4dc18;font-weight:800; }
+.app.game-ogiri .ogiri-card,.app.game-ogiri .ogiri-wait,.app.game-ogiri .ogiri-handoff,.app.game-ogiri .ogiri-judging { border:2px solid #f4dc18;border-radius:.55rem;background:#fff;color:#171717;box-shadow:0 14px 40px #0008,8px 8px 0 #efdc1d; }
+.app.game-ogiri .ogiri-card h2,.app.game-ogiri .ogiri-wait h2,.app.game-ogiri .ogiri-judging h2 { color:#171717;font-weight:900; }
+.app.game-ogiri .ogiri-card>small { color:#c82627;font-weight:900; }
+.app.game-ogiri .ogiri-wait p,.app.game-ogiri .ogiri-card>p,.app.game-ogiri .ogiri-judging>p { color:#555; }
+.app.game-ogiri .ogiri-screen textarea,.app.game-ogiri .ogiri-screen input { border:2px solid #252525;border-radius:.4rem;background:#fff;color:#151515; }
+.app.game-ogiri .ogiri-screen .primary { border:2px solid #171717;border-radius:.45rem;background:#f4df21;color:#171717;font-weight:900;box-shadow:0 4px 0 #b6a40d; }
+.app.game-ogiri .ogiri-screen .secondary,.app.game-ogiri .ogiri-rating button { border:2px solid #222;border-radius:.45rem;background:#fff;color:#171717;font-weight:800; }
+.app.game-ogiri .ogiri-rating button.selected { background:#f4df21;color:#171717;border-color:#171717;box-shadow:0 3px 0 #b6a40d; }
+.app.game-ogiri .ogiri-screen .ogiri-submission { border:1px solid #d7d7d7;border-left:6px solid #f4df21;border-radius:.4rem;background:#fafafa; }
+.app.game-ogiri .ogiri-screen .ogiri-submission>b,.app.game-ogiri .ogiri-screen .ogiri-results li { color:#202020; }
+.app.game-ogiri .ogiri-screen .ogiri-results li { border-bottom:2px solid #eee; }
+.app.game-ogiri .ogiri-screen .ogiri-results li span { color:#bd2829;font-weight:900; }
+.app.game-ogiri .ogiri-drawing canvas { border:2px solid #222;border-radius:.35rem; }
+.app.game-ogiri .ranking-screen { border:2px solid #f4df21;border-radius:.6rem;background:#fff;color:#171717;box-shadow:0 12px 0 #c8b90f; }
+.app.game-ogiri .ranking-screen h2,.app.game-ogiri .ranking-screen .rank-score { color:#171717; }
+.app.game-ogiri .ranking-screen .ranking-row { border:1px solid #e1e1e1;border-left:6px solid #f4df21;border-radius:.45rem;background:#fafafa;color:#171717; }
+.app.game-ogiri .ranking-screen .rank-player small { color:#666; }
+.app.game-ogiri .ranking-screen .rank-medal { background:#f4df21;color:#171717; }
+.app.game-ogiri .ogiri-setup { border:2px solid #e7d21a;border-radius:.6rem;background:#fff;color:#222;box-shadow:0 8px 24px #19191912; }
+.app.game-ogiri .ogiri-setup h4 { color:#171717;font-weight:900; }
+.app.game-ogiri .ogiri-setup-grid label,.app.game-ogiri .ogiri-points,.app.game-ogiri .ogiri-setup>p { color:#454545; }
+.app.game-ogiri .ogiri-setup select { border:1px solid #c9c9c9;background:#fff;color:#222; }
+.app.game-ogiri .game-menu-trigger { border-color:#f4df21;background:#171717;color:#f4df21; }
+body[data-game-type="ogiri"] .gm-drawer.fixed-gm.menu-open { border-color:#e5d21b;background:#fff;color:#222; }
+body[data-game-type="ogiri"] .gm-drawer.fixed-gm.menu-open .game-menu-trigger { background:#fff;color:#171717; }
+body[data-game-type="ogiri"] .environment-controls>.sound-toggle,body[data-game-type="ogiri"] .environment-controls>.bgm-toggle,body[data-game-type="ogiri"] .environment-controls>.effects-toggle { border-color:#ddd;background:#fff;color:#222; }
+@media(prefers-reduced-motion:reduce) { .app.game-ogiri .ogiri-screen,.app.game-ogiri .ogiri-card,.app.game-ogiri .ogiri-results li { animation:none!important;transition:none!important; } }

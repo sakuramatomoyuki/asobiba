@@ -52,9 +52,21 @@ export function OgiriGame({room,busy,act,activeSeat,openSeat,confirmSeat,hideSea
 function useDrawingCanvas(reset:number):[React.RefObject<HTMLCanvasElement>,()=>string] {
   const ref=React.useRef<HTMLCanvasElement>(null);
   React.useEffect(()=>{const canvas=ref.current;if(!canvas)return;const context=canvas.getContext('2d');if(context){context.fillStyle='#fff';context.fillRect(0,0,canvas.width,canvas.height);context.strokeStyle='#171b23';context.lineWidth=5;context.lineCap='round'}},[reset]);
-  // JPEG is much smaller than the original PNG for a white drawing canvas,
-  // reducing the room transaction and download size for every judge.
-  const drawing=()=>ref.current?.toDataURL('image/jpeg',.68)||'';
+  // Keep every drawing small enough that the final answer snapshot (which
+  // includes all drawings) stays comfortably within callable response limits.
+  const drawing=()=>{
+    const source=ref.current;if(!source)return '';
+    let width=Math.min(source.width,560),height=Math.round(source.height*width/source.width);
+    for(let attempt=0;attempt<5;attempt++){
+      const scaled=document.createElement('canvas');scaled.width=width;scaled.height=height;
+      const context=scaled.getContext('2d');if(!context)return '';
+      context.fillStyle='#fff';context.fillRect(0,0,width,height);context.drawImage(source,0,0,width,height);
+      const encoded=scaled.toDataURL('image/jpeg',.48);
+      if(encoded.length<=120_000)return encoded;
+      width=Math.round(width*.78);height=Math.round(height*.78);
+    }
+    return '';
+  };
   return [ref,drawing];
 }
 function OgiriCanvas({canvasRef}:{canvasRef:React.RefObject<HTMLCanvasElement>}) {

@@ -388,3 +388,46 @@ body[data-game-type="ogiri"] .gm-drawer.fixed-gm.menu-open .game-menu-trigger { 
 .app.game-ogiri .game-setup-sheet>footer .primary { background:#f4df21!important;color:#171717!important; }
 .app.game-ogiri .game-setup-sheet>footer .secondary { background:#fff!important;color:#171717!important; }
 .app.game-survey .alert { border:1px solid #d9e5ed!important;border-radius:12px!important;background:#fff!important;color:#405766!important;box-shadow:0 4px 16px #22384b10!important; }
+
+/* Ogiri judging should feel like a live comedy showcase, not a grading form. */
+.app.game-ogiri .ogiri-judging h2 { color:#171717!important; }
+.app.game-ogiri .ogiri-submission>b,
+.app.game-ogiri .ogiri-submission>p,
+.app.game-ogiri .ogiri-submission>small,
+.app.game-ogiri .ogiri-results li b,
+.app.game-ogiri .ranking-screen .rank-player>b,
+.app.game-ogiri .ending h2 { color:#171717!important;font-weight:900!important;text-shadow:none!important; }
+.app.game-ogiri .ogiri-submission>p { font-size:clamp(1.1rem,2.8vw,1.7rem)!important;line-height:1.6!important; }
+.app.game-ogiri .ranking-screen .rank-player>b { font-size:clamp(1rem,2vw,1.35rem)!important; }
+.app.game-ogiri .ranking-screen .ranking-row { border-left:8px solid #f4df21!important; }
+.app.game-ogiri .ogiri-reveal-screen { display:flex;flex-direction:column; }
+.app.game-ogiri .ogiri-reveal-stage { position:relative;isolation:isolate;flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:clamp(14px,3vh,28px);padding:clamp(18px,5vw,54px);overflow:hidden;border:3px solid #f4df21;border-radius:18px;background:#fff;color:#171717;box-shadow:0 8px 0 #b6a40d;animation:ogiri-reveal-pop .45s cubic-bezier(.2,.8,.2,1) both; }
+.app.game-ogiri .ogiri-reveal-lights { position:absolute;z-index:-1;inset:0;background:radial-gradient(ellipse at 50% -10%,#ffe93d55,transparent 55%),linear-gradient(120deg,transparent 40%,#ef232312 50%,transparent 60%);animation:ogiri-sweep 3s ease-in-out infinite; }
+.app.game-ogiri .ogiri-reveal-stage>small { color:#bd2529;font-size:.85rem;font-weight:950;letter-spacing:.12em; }
+.app.game-ogiri .ogiri-reveal-stage>h2 { max-width:900px;margin:0;text-align:center;color:#171717;font-size:clamp(1.45rem,4vw,2.5rem);font-weight:950; }
+.app.game-ogiri .ogiri-reveal-answer { display:grid;place-items:center;width:min(100%,850px);min-height:clamp(130px,25vh,270px);padding:clamp(20px,5vw,48px);border:2px solid #dedede;border-left:10px solid #f4df21;border-radius:14px;background:#fff;color:#171717;box-shadow:0 6px 0 #e5e5e5;text-align:center;animation:ogiri-answer-pop .35s .08s both; }
+.app.game-ogiri .ogiri-reveal-answer p { margin:0;color:#171717!important;font-size:clamp(1.5rem,5vw,3.2rem);font-weight:950;line-height:1.45;overflow-wrap:anywhere; }
+.app.game-ogiri .ogiri-reveal-answer img { display:block;max-width:min(100%,700px);max-height:38vh;object-fit:contain; }
+.app.game-ogiri .ogiri-reveal-vote { display:grid;gap:12px;width:min(100%,700px);text-align:center; }
+.app.game-ogiri .ogiri-reveal-vote>b { color:#171717;font-size:clamp(1.1rem,3vw,1.45rem);font-weight:950; }
+.app.game-ogiri .ogiri-reveal-vote>div:not(.ogiri-rating) { display:flex;gap:12px;justify-content:center; }
+.app.game-ogiri .ogiri-reveal-vote button { min-height:58px;min-width:150px;padding:12px 24px;font-size:1.1rem;font-weight:950; }
+.app.game-ogiri .ogiri-reveal-wait { color:#474747!important;font-weight:750;text-align:center; }
+@keyframes ogiri-reveal-pop { from { opacity:0;transform:translateY(18px) scale(.985) } to { opacity:1;transform:translateY(0) scale(1) } }
+@keyframes ogiri-answer-pop { from { opacity:0;transform:scale(.96) rotate(-.5deg) } to { opacity:1;transform:scale(1) rotate(0) } }
+@keyframes ogiri-sweep { 0%,100% { transform:translateX(-8%);opacity:.35 } 50% { transform:translateX(8%);opacity:.8 } }
+@media(max-width:620px) { .app.game-ogiri .ogiri-reveal-vote>div:not(.ogiri-rating) { flex-direction:column; } .app.game-ogiri .ogiri-reveal-vote button { width:100%; } }
+
+/* Keep answer authors and leaderboard names readable on the bright Ogiri stage. */
+.app.game-ogiri .ogiri-submission>b,
+.app.game-ogiri .ogiri-submission>p,
+.app.game-ogiri .ogiri-results li b,
+.app.game-ogiri .ranking-screen .rank-player>b,
+.app.game-ogiri .ranking-screen .rank-player>small,
+body[data-game-type="ogiri"] .ranking-screen .rank-player>b,
+body[data-game-type="ogiri"] .ranking-screen .rank-player>small { color:#17212b!important;text-shadow:none!important;opacity:1!important; }
+.app.game-ogiri .ogiri-submission>p { color:#30343b!important; }
+.app.game-ogiri .ranking-screen .rank-breakdown span,
+body[data-game-type="ogiri"] .ranking-screen .rank-breakdown span { background:#edf0f2!important;color:#3c4650!important; }
+.app.game-ogiri .ranking-screen .rank-score,
+body[data-game-type="ogiri"] .ranking-screen .rank-score { color:#17212b!important;text-shadow:none!important; }

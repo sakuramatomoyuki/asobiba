@@ -32,6 +32,7 @@ export type OgiriSettings = {
   questionCount: number;
   inputMode: 'text' | 'drawing' | 'either';
   judgeMode: 'host' | 'all';
+  answerFlow: 'buzz' | 'batch';
   promptSource: 'app' | 'host';
   pointsEnabled: boolean;
   addRoomPoints: boolean;
@@ -55,6 +56,7 @@ export const DEFAULT_OGIRI: OgiriSettings = {
   questionCount: 5,
   inputMode: 'either',
   judgeMode: 'all',
+  answerFlow: 'batch',
   promptSource: 'app',
   pointsEnabled: true,
   addRoomPoints: true,

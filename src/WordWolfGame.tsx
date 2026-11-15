@@ -9,6 +9,7 @@ type Props = {
   confirmSeat: () => void;
   hideSeat: () => void;
   onSendChat?: (message: string) => void;
+  canAdvanceShared?: boolean;
 };
 
 export function WordWolfSetup({ settings, busy, onChange }: { settings: any; busy: boolean; onChange: (settings: any) => void }) {
@@ -21,13 +22,14 @@ export function WordWolfSetup({ settings, busy, onChange }: { settings: any; bus
   return <section className="ww-setup"><h4>ワードウルフの設定</h4><div className="ww-setup-grid">
     <label>議論時間<select value={draft.discussionSeconds || 60} disabled={busy} onChange={e => patch({ discussionSeconds: Number(e.target.value) })}>{Array.from({ length: 10 }, (_, i) => (i + 1) * 30).map(n => <option key={n} value={n}>{n < 60 ? `${n}秒` : `${Math.floor(n / 60)}分${n % 60 ? `${n % 60}秒` : ''}`}</option>)}</select></label>
     <label>投票時間<select value={draft.voteSeconds || 30} disabled={busy} onChange={e => patch({ voteSeconds: Number(e.target.value) })}>{Array.from({ length: 10 }, (_, i) => (i + 1) * 30).map(n => <option key={n} value={n}>{n < 60 ? `${n}秒` : `${Math.floor(n / 60)}分${n % 60 ? `${n % 60}秒` : ''}`}</option>)}</select></label>
+    <label>お題確認後の進行<select value={draft.wordProgression || 'auto'} disabled={busy} onChange={e => patch({ wordProgression: e.target.value })}><option value="auto">全員確認後、自動で議論へ</option><option value="manual">全員確認後、ホストが「次へ」</option></select></label>
     <label>少数派の人数<select value={draft.minorityCount ?? 'quarter'} disabled={busy} onChange={e => patch({ minorityCount: e.target.value === 'quarter' ? 'quarter' : Number(e.target.value) })}><option value="quarter">参加人数の4分の1（切り捨て・最低1人）</option>{Array.from({ length: Math.max(1, Math.min(9, settings.playerCount - 1)) }, (_, i) => i + 1).map(n => <option key={n} value={n}>{n}人</option>)}</select></label>
     <label>お題の用意<select value={draft.wordSource || 'app'} disabled={busy} onChange={e => patch({ wordSource: e.target.value })}><option value="app">アプリからランダム</option><option value="host">ホストが入力</option></select></label>
   </div>{draft.wordSource === 'host'&&<div className="ww-topic-pair"><label>お題 A<input maxLength={40} value={majority} onChange={e => {const value=e.target.value.slice(0,40);setMajority(value);patch({topicA:value})}} placeholder="例：コーヒー"/></label><label>お題 B<input maxLength={40} value={minority} onChange={e => {const value=e.target.value.slice(0,40);setMinority(value);patch({topicB:value})}} placeholder="例：紅茶"/></label></div>}
   <div className="ww-point-options"><label><input type="checkbox" checked={draft.pointsEnabled!==false} disabled={busy} onChange={e => patch({ pointsEnabled: e.target.checked, addRoomPoints: e.target.checked && !!settings.pointsEnabled })}/>ゲーム内ポイントを有効にする</label><label><input type="checkbox" checked={!!settings.pointsEnabled&&draft.addRoomPoints!==false} disabled={busy||!settings.pointsEnabled||draft.pointsEnabled===false} onChange={e => patch({ addRoomPoints: e.target.checked })}/>ルーム累計に加算する</label></div></section>;
 }
 
-export function WordWolfGame({ room, busy, act, activeSeat, openSeat, confirmSeat, hideSeat, onSendChat }: Props) {
+export function WordWolfGame({ room, busy, act, activeSeat, openSeat, confirmSeat, hideSeat, onSendChat, canAdvanceShared }: Props) {
   const [target, setTarget] = React.useState('');
   const [confirmed, setConfirmed] = React.useState(false);
   const [guess, setGuess] = React.useState('');
@@ -72,6 +74,7 @@ export function WordWolfGame({ room, busy, act, activeSeat, openSeat, confirmSea
   if (phase === 'wordwolf-word') {
     const gate = handoff('word');
     if (gate) return <div className={screenClass}>{gameHeader('お題の確認')}{gate}</div>;
+    if (game.readyToAdvance) return <div className={screenClass}>{gameHeader('お題の確認')}{room.canManage || canAdvanceShared ? <section className="ww-stage"><h2>全員がお題を確認しました</h2><p>{game.readyCount} / {game.readyTotal}人が確認済みです。準備ができたら議論を始められます。</p><button className="primary wide" disabled={busy || room.paused} onClick={() => act({ type: 'continueWordcheck' })}>次へ（議論へ）</button></section> : waiting('全員がお題を確認しました', 'ホストが次へ進むまでお待ちください。')}</div>;
     if (!secret?.word) return <div className={screenClass}>{gameHeader('お題の確認')}{waiting('自分のお題を確認してください', '確認後、全員がそろうと議論が始まります。')}</div>;
     return <div className={screenClass}>{gameHeader('自分のお題')}<section className="ww-private-card"><span>あなたのお題</span><strong>{secret.word}</strong><p>この言葉は、ほかの人に見せないでください。</p><button className="primary wide" disabled={busy || secret.hasRead} onClick={() => act({ type: 'wordRead' })}>お題を確認した</button></section>{shared&&<button className="secondary wide ww-hide" onClick={hideSeat}>画面を隠す</button>}{!shared&&secret.hasRead&&waiting('ほかの人を待っています…', `${game.readyCount || 0} / ${game.readyTotal || eligible.length}人がお題を確認しました。`)}</div>;
   }

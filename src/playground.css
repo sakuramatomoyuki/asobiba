@@ -272,3 +272,33 @@ body.light-shell{background:#f6f9fb!important}
 .app.home-page .brand,.app.create-shell .brand,.app.form-shell .brand,.app.room-lobby-shell .brand{ text-shadow:none;filter:none;box-shadow:none }
 .app.home-page .moon,.app.create-shell .moon,.app.form-shell .moon,.app.room-lobby-shell .moon{filter:none;text-shadow:none}
 .app.help-shell .help-page .step>b{width:40px;height:40px;min-width:40px;min-height:40px;aspect-ratio:1;flex:none;align-self:start;padding:0;border-radius:50%;display:grid;place-items:center;box-sizing:border-box;background:linear-gradient(145deg,#eff9f6,#dff1eb);border:1px solid #cfe4df;box-shadow:inset 0 1px #fff,0 2px 5px #2b77720c;color:#347e79;font-size:13px;line-height:1}
+
+/* Keep non-medieval games visually consistent in settings and final screens. */
+.app.game-ogiri .game-setup-sheet,
+.app.game-ogiri .game-setup-sheet>header,
+.app.game-ogiri .game-setup-sheet>footer { background:#fff!important;color:#171717!important;border-color:#e3d82b!important; }
+.app.game-ogiri .game-setup-sheet>header h2,
+.app.game-ogiri .game-setup-sheet>header .eyebrow { color:#171717!important;text-shadow:none!important; }
+.app.game-ogiri .game-setup-sheet>footer .primary,
+.app.game-ogiri .ending .primary,
+.app.game-ogiri .ranking-screen button.primary,
+.app.game-ogiri .ogiri-screen button.primary { border:2px solid #171717!important;border-radius:8px!important;background:#f4df21!important;color:#171717!important;box-shadow:0 4px 0 #b6a40d!important;font-weight:900!important; }
+.app.game-ogiri .game-setup-sheet>footer .secondary,
+.app.game-ogiri .game-setup-sheet .setup-close,
+.app.game-ogiri .ending .secondary,
+.app.game-ogiri .ranking-screen button.secondary,
+.app.game-ogiri .ogiri-screen button.secondary { border:1px solid #292929!important;border-radius:8px!important;background:#fff!important;color:#171717!important;box-shadow:none!important; }
+.app.game-survey .game-setup-sheet,
+.app.game-survey .game-setup-sheet>header,
+.app.game-survey .game-setup-sheet>footer { background:#fff!important;color:#294651!important;border-color:#dce5ed!important; }
+.app.game-survey .game-setup-sheet>header h2,
+.app.game-survey .game-setup-sheet>header .eyebrow { color:#315b6b!important;text-shadow:none!important; }
+.app.game-survey .game-setup-sheet>footer .primary,
+.app.game-survey .ending .primary,
+.app.game-survey .ranking-screen button.primary,
+.app.game-survey .survey-screen button.primary { border:1px solid #3b8290!important;border-radius:12px!important;background:#3b8290!important;color:#fff!important;box-shadow:0 5px 14px #397d8f22!important;font-weight:750!important; }
+.app.game-survey .game-setup-sheet>footer .secondary,
+.app.game-survey .game-setup-sheet .setup-close,
+.app.game-survey .ending .secondary,
+.app.game-survey .ranking-screen button.secondary,
+.app.game-survey .survey-screen button.secondary { border:1px solid #d7e1e8!important;border-radius:12px!important;background:#f7fafc!important;color:#405d6a!important;box-shadow:none!important; }

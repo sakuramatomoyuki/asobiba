@@ -26,7 +26,7 @@ export function normalizeOgiriAnswer(inputMode: OgiriInputMode, raw: any): Ogiri
   // Drawings travel inside the atomic room transaction and, at the final
   // answer, the judge snapshot includes every drawing. Keep the aggregate
   // comfortably below callable and Realtime Database payload limits.
-  if (!/^data:image\/(png|webp|jpeg);base64,/.test(dataUrl) || dataUrl.length > 150_000) return null;
+  if (!/^data:image\/(png|webp|jpeg);base64,/.test(dataUrl) || dataUrl.length > 35_000) return null;
   return { mode:'drawing', dataUrl };
 }
 

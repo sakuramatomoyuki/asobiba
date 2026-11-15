@@ -21,7 +21,7 @@ export function WordWolfSetup({ settings, busy, onChange }: { settings: any; bus
   const patch = (values: any) => { const next = { ...draft, ...values }; setDraft(next); onChange(next); };
   return <section className="ww-setup"><h4>ワードウルフの設定</h4><div className="ww-setup-grid">
     <label>議論時間<select value={draft.discussionSeconds || 60} disabled={busy} onChange={e => patch({ discussionSeconds: Number(e.target.value) })}>{Array.from({ length: 10 }, (_, i) => (i + 1) * 30).map(n => <option key={n} value={n}>{n < 60 ? `${n}秒` : `${Math.floor(n / 60)}分${n % 60 ? `${n % 60}秒` : ''}`}</option>)}</select></label>
-    <label>投票時間<select value={draft.voteSeconds || 30} disabled={busy} onChange={e => patch({ voteSeconds: Number(e.target.value) })}>{Array.from({ length: 10 }, (_, i) => (i + 1) * 30).map(n => <option key={n} value={n}>{n < 60 ? `${n}秒` : `${Math.floor(n / 60)}分${n % 60 ? `${n % 60}秒` : ''}`}</option>)}</select></label>
+    <label>投票時間（共有端末では1人あたり）<select value={draft.voteSeconds || 30} disabled={busy} onChange={e => patch({ voteSeconds: Number(e.target.value) })}>{Array.from({ length: 10 }, (_, i) => (i + 1) * 30).map(n => <option key={n} value={n}>{n < 60 ? `${n}秒` : `${Math.floor(n / 60)}分${n % 60 ? `${n % 60}秒` : ''}`}</option>)}</select></label>
     <label>お題確認後の進行<select value={draft.wordProgression || 'auto'} disabled={busy} onChange={e => patch({ wordProgression: e.target.value })}><option value="auto">全員確認後、自動で議論へ</option><option value="manual">全員確認後、ホストが「次へ」</option></select></label>
     <label>少数派の人数<select value={draft.minorityCount ?? 'quarter'} disabled={busy} onChange={e => patch({ minorityCount: e.target.value === 'quarter' ? 'quarter' : Number(e.target.value) })}><option value="quarter">参加人数の4分の1（切り捨て・最低1人）</option>{Array.from({ length: Math.max(1, Math.min(9, settings.playerCount - 1)) }, (_, i) => i + 1).map(n => <option key={n} value={n}>{n}人</option>)}</select></label>
     <label>お題の用意<select value={draft.wordSource || 'app'} disabled={busy} onChange={e => patch({ wordSource: e.target.value })}><option value="app">アプリからランダム</option><option value="host">ホストが入力</option></select></label>
@@ -32,6 +32,7 @@ export function WordWolfSetup({ settings, busy, onChange }: { settings: any; bus
 export function WordWolfGame({ room, busy, act, activeSeat, openSeat, confirmSeat, hideSeat, onSendChat, canAdvanceShared }: Props) {
   const [target, setTarget] = React.useState('');
   const [confirmed, setConfirmed] = React.useState(false);
+  const [pendingVoteFor, setPendingVoteFor] = React.useState('');
   const [guess, setGuess] = React.useState('');
   const [chatDraft, setChatDraft] = React.useState('');
   const [remaining, setRemaining] = React.useState(0);
@@ -51,8 +52,11 @@ export function WordWolfGame({ room, busy, act, activeSeat, openSeat, confirmSea
   const gameHeader = (label = phaseName[phase] || 'ゲーム進行', timer?: string) => <><header className="ww-game-header"><div className="ww-game-brand"><svg viewBox="0 0 48 48" aria-hidden="true"><circle cx="24" cy="24" r="19"/><path d="M31 12a15 15 0 1 0 5 23A17 17 0 0 1 31 12Z"/><path d="m11 36 7-8 5 5 7-10 7 7"/></svg><span><small>第{room.round||1}ラウンド</small><b>ワードウルフ</b></span></div><div className="ww-stage-label"><small>NOW PLAYING</small><b>{label}</b>{timer&&<time className={room.paused ? 'paused' : undefined}>{timer}</time>}</div></header><div className={`ww-phase-track track-${phase}`} aria-hidden="true"><i/></div></>;
 
   React.useEffect(() => {
-    setTarget(''); setConfirmed(false); setGuess(''); setChatDraft('');
-  }, [phase, room.round]);
+    setTarget(''); setConfirmed(false); setPendingVoteFor(''); setGuess(''); setChatDraft('');
+  }, [phase, room.round, activeSeat?.uid, room.sharedTurnUid]);
+  React.useEffect(() => {
+    if (pendingVoteFor && (secret?.hasVoted || (shared && activeSeat?.uid !== pendingVoteFor) || !busy)) setPendingVoteFor('');
+  }, [pendingVoteFor, secret?.hasVoted, shared, activeSeat?.uid, busy]);
   React.useEffect(() => {
     if (!deadline) { setRemaining(0); return; }
     const update = () => setRemaining(Math.max(0, Math.ceil((deadline - Date.now()) / 1000)));
@@ -82,12 +86,13 @@ export function WordWolfGame({ room, busy, act, activeSeat, openSeat, confirmSea
   if (phase === 'wordwolf-vote') {
     const gate = handoff('vote');
     if (gate) return <div className={screenClass}>{gameHeader('投票', timerLabel)}{gate}</div>;
+    if (pendingVoteFor && !secret?.hasVoted && (!shared || activeSeat?.uid === pendingVoteFor)) return <div className={`${screenClass} ww-ballot-confirm-screen`}><section className="ww-ballot-confirm ww-ballot-submitting" role="status"><span className="ww-confirm-seal" aria-hidden="true"/><p>投票を確定しています</p></section></div>;
     if (secret?.hasVoted) return <div className={screenClass}>{gameHeader('投票', timerLabel)}{waiting('投票しました', 'ほかの人の投票を待っています…')}</div>;
     const choose = (value: string) => { setTarget(value); setConfirmed(false); };
-    const submit = () => { if (!target) return; act({ type: 'wordVote', target }); setConfirmed(false); };
+    const submit = () => { if (!target) return; setPendingVoteFor(activeSeat?.uid || me?.uid || 'player'); act({ type: 'wordVote', target }); setConfirmed(false); };
     const targetName = target === '__abstain__' ? '無投票' : `${room.players.find((p: any) => p.uid === target)?.name || '選んだ人'}さん`;
     if (confirmed) return <div className={`${screenClass} ww-ballot-confirm-screen`}><section className="ww-ballot-confirm" role="dialog" aria-modal="true"><p>{targetName}に投票しますか？</p><button className="primary wide" disabled={busy} onClick={submit}>はい、投票する</button><button className="secondary wide" onClick={() => setConfirmed(false)}>いいえ、戻る</button></section></div>;
-    return <div className={`${screenClass} ww-ballot-screen`}>{gameHeader('投票', timerLabel)}<section className="ww-vote-card"><h2>誰に投票しますか？</h2>{shared&&<div className="ww-voter-turn"><b>{activeSeat?.name || me?.name}</b> さんの番です</div>}<p>投票先は他の人には見えません。</p><select aria-label="投票先を選ぶ" value={target} onChange={event => choose(event.target.value)}><option value="">投票先を選ぶ</option>{eligible.filter((p: any) => p.uid !== me?.uid).map((p: any) => <option key={p.uid} value={p.uid}>{p.name}</option>)}<option value="__abstain__">無投票</option></select><button className="primary wide" disabled={!target || busy} onClick={() => setConfirmed(true)}>投票する</button></section></div>;
+    return <div className={`${screenClass} ww-ballot-screen`}>{gameHeader('投票', timerLabel)}<section className="ww-vote-card"><h2>誰に投票しますか？</h2><p>投票先は他の人には見えません。</p><select aria-label="投票先を選ぶ" value={target} onChange={event => choose(event.target.value)}><option value="">投票先を選ぶ</option>{eligible.filter((p: any) => p.uid !== me?.uid).map((p: any) => <option key={p.uid} value={p.uid}>{p.name}</option>)}<option value="__abstain__">無投票</option></select><button className="primary wide" disabled={!target || busy} onClick={() => setConfirmed(true)}>投票する</button></section></div>;
   }
   if (phase === 'wordwolf-caught') return <div className={`${screenClass} ww-caught-screen`}>{gameHeader('逆転チャンス', timerLabel)}<section className="ww-caught-reveal"><div className="ww-caught-seal" aria-hidden="true"><i/><i/><i/></div><span className="eyebrow">VOTE REVEAL</span><h2>少数派が見つかりました</h2><p>少数派には逆転のチャンス。多数派のお題を推理してください。</p><strong>{room.paused ? '一時停止中' : '逆転チャンスの準備中…'}</strong></section></div>;
   if (phase === 'wordwolf-guess') {

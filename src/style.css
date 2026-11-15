@@ -1989,3 +1989,15 @@ html.light-shell,body.light-shell{min-height:100%;background:#f4f7fb!important;c
 body.light-shell:before{display:none!important}
 body.light-shell:after{content:"";display:block!important;position:fixed!important;inset:auto 0 0!important;height:2px!important;z-index:2147483647!important;background:#f4f7fb!important;pointer-events:none!important}
 body.light-shell .app:before,body.light-shell .app:after{display:none!important;background:none!important;animation:none!important}
+
+/* Word Wolf ballot confirmation is a deliberate full-screen transition. */
+.ww-ballot-confirm-screen{display:grid;place-items:center;animation:ww-confirm-scene .38s cubic-bezier(.2,.8,.2,1) both}
+.ww-ballot-confirm-screen .ww-ballot-confirm{position:relative;padding:clamp(1.5rem,7vw,3rem);border:1px solid #dfc47b90;border-radius:1.25rem;background:linear-gradient(145deg,#252330f5,#121b27fa);box-shadow:0 25px 90px #03070cbb,inset 0 1px #fff2;animation:ww-confirm-card .68s cubic-bezier(.17,.84,.2,1) both}
+.ww-ballot-confirm-screen .ww-ballot-confirm p{animation:ww-confirm-copy .55s .08s both}
+.ww-ballot-confirm-screen .ww-ballot-confirm button{animation:ww-confirm-copy .5s .16s both}
+.ww-confirm-seal{display:block;width:3.6rem;height:3.6rem;margin:0 auto .2rem;border:2px solid #e2c57f;border-radius:50%;box-shadow:0 0 0 .5rem #e2c57f16,0 0 32px #e2c57f4d;animation:ww-confirm-seal 1.6s ease-in-out infinite}
+@keyframes ww-confirm-scene{from{opacity:0;filter:brightness(.65)}to{opacity:1;filter:none}}
+@keyframes ww-confirm-card{from{opacity:0;transform:translateY(28px) scale(.9);filter:blur(9px)}65%{transform:translateY(-4px) scale(1.015)}to{opacity:1;transform:none;filter:none}}
+@keyframes ww-confirm-copy{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
+@keyframes ww-confirm-seal{50%{transform:scale(.9);box-shadow:0 0 0 .85rem #e2c57f20,0 0 45px #e2c57f78}}
+@media(prefers-reduced-motion:reduce){.ww-ballot-confirm-screen,.ww-ballot-confirm-screen .ww-ballot-confirm,.ww-ballot-confirm-screen .ww-ballot-confirm p,.ww-ballot-confirm-screen .ww-ballot-confirm button,.ww-confirm-seal{animation:none!important}}

@@ -302,3 +302,89 @@ body.light-shell{background:#f6f9fb!important}
 .app.game-survey .ending .secondary,
 .app.game-survey .ranking-screen button.secondary,
 .app.game-survey .survey-screen button.secondary { border:1px solid #d7e1e8!important;border-radius:12px!important;background:#f7fafc!important;color:#405d6a!important;box-shadow:none!important; }
+
+.app.game-ogiri .ogiri-prompt-screen { display:flex;flex-direction:column; }
+.app.game-ogiri .ogiri-prompt-board { flex:1;min-height:min(62vh,620px);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:clamp(16px,3vh,30px);padding:clamp(24px,6vw,76px);margin:auto 0;border:3px solid #f4df21;border-radius:18px;background:linear-gradient(145deg,#fff,#fffde8);color:#171717;text-align:center;box-shadow:0 14px 0 #d5c516,0 28px 68px #0006;animation:ogiri-board-in .55s cubic-bezier(.2,.85,.2,1) both; }
+.app.game-ogiri .ogiri-prompt-board>small { color:#bb2527;font-size:clamp(12px,2vw,17px);font-weight:950;letter-spacing:.25em;text-transform:uppercase; }
+.app.game-ogiri .ogiri-question-title { max-width:1100px;margin:0;color:#171717;font-size:clamp(30px,6.2vw,76px);font-weight:950;line-height:1.35;letter-spacing:.015em;text-wrap:balance; }
+.app.game-ogiri .ogiri-question-title strong { color:#bd2529;font-size:1.13em;text-decoration:underline;text-decoration-color:#f4df21;text-decoration-thickness:.12em;text-underline-offset:.11em; }
+.app.game-ogiri .ogiri-prompt-countdown { display:inline-flex;align-items:center;justify-content:center;min-height:48px;padding:8px 24px;border-radius:999px;background:#171717;color:#f4df21;font-size:clamp(18px,2.5vw,25px);font-weight:950; }
+.app.game-ogiri .ogiri-prompt-countdown.paused { color:#fff;background:#bd2529; }
+.app.game-ogiri .ogiri-prompt-board>p { margin:0;color:#565656;font-size:clamp(14px,2vw,18px);font-weight:650; }
+.app.game-ogiri .ogiri-drawing-actions { display:flex;gap:10px;justify-content:center;margin-top:10px; }
+.app.game-ogiri .ogiri-drawing-actions button { min-width:126px; }
+.app.game-ogiri .ogiri-drawing-actions button:disabled { opacity:.45;cursor:not-allowed; }
+@keyframes ogiri-board-in { from { opacity:0;transform:translateY(22px) scale(.98); } to { opacity:1;transform:translateY(0) scale(1); } }
+@media(max-width:620px) { .app.game-ogiri .ogiri-prompt-board { min-height:58vh;padding:24px 16px;border-width:2px;box-shadow:0 8px 0 #d5c516,0 20px 45px #0006; } .app.game-ogiri .ogiri-question-title { font-size:clamp(27px,8vw,45px); } .app.game-ogiri .ogiri-drawing-actions button { min-width:0;flex:1; } }
+@media(prefers-reduced-motion:reduce) { .app.game-ogiri .ogiri-prompt-board { animation:none; } }
+
+/* Final Ogiri art direction: studio black, white answer boards, yellow/red accents. */
+.app.game-ogiri.in-game { background:linear-gradient(180deg,#101114 0%,#191a1d 100%)!important;color:#fff!important; }
+.app.game-ogiri .ogiri-screen { background:transparent!important;color:#fff!important; }
+.app.game-ogiri .ogiri-screen>header { color:#fff!important;border-color:#f4df21!important;text-shadow:none!important; }
+.app.game-ogiri .ogiri-screen>header small,.app.game-ogiri .ogiri-screen>header .eyebrow { color:#f4df21!important; }
+.app.game-ogiri .ogiri-card,.app.game-ogiri .ogiri-wait,.app.game-ogiri .ogiri-handoff,.app.game-ogiri .ogiri-judging,.app.game-ogiri .ogiri-submission { background:#fff!important;color:#171717!important;border:2px solid #f4df21!important;border-radius:12px!important;box-shadow:0 8px 0 #b6a40d!important; }
+.app.game-ogiri .ogiri-card h2,.app.game-ogiri .ogiri-wait h2,.app.game-ogiri .ogiri-judging h2,.app.game-ogiri .ogiri-submission>b,.app.game-ogiri .ogiri-results li { color:#171717!important;text-shadow:none!important; }
+.app.game-ogiri .ogiri-card>small,.app.game-ogiri .ogiri-submission>small { color:#bd2529!important; }
+.app.game-ogiri .ogiri-wait p,.app.game-ogiri .ogiri-card>p,.app.game-ogiri .ogiri-judging>p { color:#4b4b4b!important; }
+.app.game-ogiri .ogiri-screen textarea,.app.game-ogiri .ogiri-screen input { background:#fff!important;color:#171717!important;border:2px solid #262626!important;border-radius:8px!important; }
+.app.game-ogiri .ogiri-screen button.primary,.app.game-ogiri .game-setup-sheet>footer .primary,.app.game-ogiri .ranking-screen button.primary { border:2px solid #171717!important;border-radius:8px!important;background:#f4df21!important;color:#171717!important;box-shadow:0 4px 0 #b6a40d!important;font-weight:950!important; }
+.app.game-ogiri .ogiri-screen button.secondary,.app.game-ogiri .ogiri-rating button,.app.game-ogiri .game-setup-sheet>footer .secondary,.app.game-ogiri .game-setup-sheet .setup-close,.app.game-ogiri .ranking-screen button.secondary { border:2px solid #171717!important;border-radius:8px!important;background:#fff!important;color:#171717!important;box-shadow:none!important;font-weight:850!important; }
+.app.game-ogiri .ogiri-rating button.selected { background:#f4df21!important;color:#171717!important;border-color:#171717!important;box-shadow:0 3px 0 #b6a40d!important; }
+.app.game-ogiri .ogiri-screen .ogiri-submission { border:1px solid #d9d9d9!important;border-left:7px solid #f4df21!important;background:#fff!important;box-shadow:0 3px 0 #e3e3e3!important; }
+.app.game-ogiri .ogiri-screen .ogiri-results li { border-bottom:2px solid #e8e8e8!important; }
+.app.game-ogiri .ogiri-screen .ogiri-results li span { color:#bd2529!important;font-weight:950!important; }
+.app.game-ogiri .ogiri-setup,.app.game-ogiri .game-setup-content .ogiri-setup { background:#fff!important;color:#171717!important;border:2px solid #f4df21!important; }
+.app.game-ogiri .ogiri-setup h4,.app.game-ogiri .game-setup-content .ogiri-setup h4 { color:#171717!important; }
+.app.game-ogiri .ogiri-setup-grid label,.app.game-ogiri .ogiri-points,.app.game-ogiri .ogiri-setup>p { color:#414141!important; }
+.app.game-ogiri .ogiri-setup select { background:#fff!important;color:#171717!important;border:1px solid #777!important; }
+.app.game-ogiri .ranking-screen { background:#fff!important;color:#171717!important;border:2px solid #f4df21!important;box-shadow:0 8px 0 #b6a40d!important; }
+.app.game-ogiri .ranking-screen h2,.app.game-ogiri .ranking-screen .rank-score { color:#171717!important; }
+.app.game-ogiri .ranking-screen .ranking-row { background:#fff!important;color:#171717!important;border:1px solid #ddd!important;border-left:7px solid #f4df21!important; }
+.app.game-ogiri .ranking-screen .rank-player small { color:#555!important; }
+
+/* Hard reset inherited village styling on Ogiri screens, including alerts and overlays. */
+body[data-game-type="ogiri"] { background:#111315!important; }
+.app.game-ogiri.in-game { background:#111315!important;color:#171717!important; }
+.app.game-ogiri.in-game>main>.game-screen { background:transparent!important;border:0!important;box-shadow:none!important; }
+.app.game-ogiri .ogiri-screen,
+.app.game-ogiri .ogiri-screen:before { background:none!important;box-shadow:none!important; }
+.app.game-ogiri .ogiri-screen:before { opacity:0!important; }
+.app.game-ogiri .ogiri-screen>header { color:#fff!important;text-shadow:none!important;border-color:#f4df21!important; }
+.app.game-ogiri .ogiri-screen>header small { color:#f4df21!important; }
+.app.game-ogiri .ogiri-card,
+.app.game-ogiri .ogiri-wait,
+.app.game-ogiri .ogiri-handoff,
+.app.game-ogiri .ogiri-judging,
+.app.game-ogiri .ogiri-prompt-board,
+.app.game-ogiri .ogiri-submission { background:#fff!important;color:#171717!important;border:2px solid #f4df21!important;border-radius:12px!important;box-shadow:0 6px 0 #b6a40d!important; }
+.app.game-ogiri .ogiri-card h2,
+.app.game-ogiri .ogiri-wait h2,
+.app.game-ogiri .ogiri-judging h2,
+.app.game-ogiri .ogiri-question-title { color:#171717!important;text-shadow:none!important; }
+.app.game-ogiri .ogiri-screen .primary,
+.app.game-ogiri .ending .primary,
+.app.game-ogiri .ranking-screen .primary,
+.app.game-ogiri .game-setup-sheet .primary { border:2px solid #171717!important;border-radius:8px!important;background:#f4df21!important;color:#171717!important;box-shadow:0 4px 0 #b6a40d!important; }
+.app.game-ogiri .ogiri-screen .secondary,
+.app.game-ogiri .ending .secondary,
+.app.game-ogiri .ranking-screen .secondary,
+.app.game-ogiri .game-setup-sheet .secondary,
+.app.game-ogiri .game-setup-sheet .setup-close { border:2px solid #171717!important;border-radius:8px!important;background:#fff!important;color:#171717!important;box-shadow:none!important; }
+.app.game-ogiri .alert { border:2px solid #bd2529!important;border-radius:10px!important;background:#fff!important;color:#171717!important;box-shadow:0 4px 0 #bd2529!important; }
+.app.game-ogiri .game-menu-trigger,
+body[data-game-type="ogiri"] .gm-drawer.fixed-gm.menu-open .game-menu-trigger { border:2px solid #f4df21!important;border-radius:50%!important;background:#171717!important;color:#f4df21!important;box-shadow:none!important; }
+.app.game-ogiri .ogiri-setup,
+.app.game-ogiri .game-setup-sheet,
+.app.game-ogiri .game-setup-sheet>header,
+.app.game-ogiri .game-setup-sheet>footer,
+.app.game-ogiri .ranking-screen,
+.app.game-ogiri .ending { background:#fff!important;color:#171717!important;border-color:#f4df21!important;box-shadow:0 6px 0 #b6a40d!important; }
+.app.game-ogiri .game-setup-sheet>header h2,
+.app.game-ogiri .game-setup-sheet>header .eyebrow,
+.app.game-ogiri .ogiri-setup h4,
+.app.game-ogiri .ranking-screen h2,
+.app.game-ogiri .ending h2 { color:#171717!important;text-shadow:none!important; }
+.app.game-ogiri .game-setup-sheet>footer .primary { background:#f4df21!important;color:#171717!important; }
+.app.game-ogiri .game-setup-sheet>footer .secondary { background:#fff!important;color:#171717!important; }
+.app.game-survey .alert { border:1px solid #d9e5ed!important;border-radius:12px!important;background:#fff!important;color:#405766!important;box-shadow:0 4px 16px #22384b10!important; }

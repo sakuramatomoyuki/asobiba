@@ -1968,7 +1968,7 @@ body.light-shell{background:#f4f7fb;color:#192635;}
 @media(max-width:480px){.jinrou-role-grid{gap:.35rem}.jinrou-role-grid label{padding:.45rem;font-size:.9rem}.jinrou-rule-options{grid-template-columns:1fr}}
 
 .jinrou-role-heading{color:#d3dae2}.jinrou-role-heading .valid{color:#98d7be}.jinrou-role-heading .invalid,.jinrou-role-warning{color:#ffb2a3}.jinrou-role-grid label{border-color:#8190a955;background:#101824;color:#e2e8ed}.jinrou-role-grid input{border-color:#8190a955;background:#101824;color:#f4f1e9}
-.ww-caught-reveal{position:relative;isolation:isolate;display:grid;justify-items:center;gap:.7rem;margin:auto;padding:clamp(1.5rem,6vw,3.5rem) 1rem;text-align:center;overflow:hidden}.ww-caught-reveal:before{content:"";position:absolute;z-index:-1;width:min(70vw,22rem);aspect-ratio:1;border:1px solid #dfbf7255;border-radius:50%;box-shadow:0 0 0 1.2rem #dfbf7210,0 0 0 2.4rem #dfbf7209,0 0 70px #d8a95322;animation:ww-caught-pulse 2.8s ease-out infinite}.ww-caught-reveal .eyebrow{color:#d9bd7e;letter-spacing:.24em}.ww-caught-reveal h2{margin:.2rem 0;color:#f2d9a6;font-size:clamp(1.6rem,6vw,2.7rem);animation:ww-caught-title .7s both}.ww-caught-reveal p{max-width:34rem;color:#d0d6dd;font-size:clamp(1rem,3vw,1.2rem)}.ww-caught-reveal>strong{margin-top:.5rem;color:#e7cf9c;font-size:.9rem}.ww-caught-seal{position:relative;width:4.4rem;height:4.4rem;margin-bottom:.3rem}.ww-caught-seal i{position:absolute;inset:.4rem;border:1px solid #e0c37f;border-radius:50%;animation:ww-caught-seal 1.9s ease-out infinite}.ww-caught-seal i:nth-child(2){animation-delay:.32s}.ww-caught-seal i:nth-child(3){animation-delay:.64s}@keyframes ww-caught-pulse{0%{transform:scale(.84);opacity:.3}70%{opacity:.7}100%{transform:scale(1.18);opacity:0}}@keyframes ww-caught-title{from{opacity:0;transform:translateY(12px);filter:blur(5px)}to{opacity:1;transform:none;filter:none}}@keyframes ww-caught-seal{from{transform:scale(.38);opacity:.85}to{transform:scale(1.25);opacity:0}}
+.ww-caught-reveal{position:relative;isolation:isolate;display:grid;justify-items:center;gap:.7rem;margin:auto;padding:clamp(1.5rem,6vw,3.5rem) 1rem;text-align:center;overflow:hidden}.ww-caught-reveal:before{content:"";position:absolute;z-index:-1;width:min(70vw,22rem);aspect-ratio:1;border:1px solid #dfbf7255;border-radius:50%;box-shadow:0 0 0 1.2rem #dfbf7210,0 0 0 2.4rem #dfbf7209,0 0 70px #d8a95322;animation:ww-caught-pulse 2.8s ease-out infinite}.ww-caught-reveal .eyebrow{color:#d9bd7e;letter-spacing:.24em}.ww-caught-reveal h2{margin:.2rem 0;color:#f2d9a6;font-size:clamp(1.6rem,6vw,2.7rem);animation:ww-caught-title .7s both}.ww-caught-reveal p{max-width:34rem;color:#d0d6dd;font-size:clamp(1rem,3vw,1.2rem)}.ww-caught-reveal>strong{margin-top:.5rem;color:#e7cf9c;font-size:.9rem}.ww-minority-names{display:flex;flex-wrap:wrap;justify-content:center;gap:.6rem;margin:.1rem 0 .35rem}.ww-minority-names strong{padding:.65rem 1rem;border:1px solid #dfbf7288;border-radius:999px;background:linear-gradient(135deg,#dfbf7220,#151d2b);color:#f2d9a6;box-shadow:0 6px 20px #0003;animation:ww-caught-title .6s both}.ww-caught-seal{position:relative;width:4.4rem;height:4.4rem;margin-bottom:.3rem}.ww-caught-seal i{position:absolute;inset:.4rem;border:1px solid #e0c37f;border-radius:50%;animation:ww-caught-seal 1.9s ease-out infinite}.ww-caught-seal i:nth-child(2){animation-delay:.32s}.ww-caught-seal i:nth-child(3){animation-delay:.64s}@keyframes ww-caught-pulse{0%{transform:scale(.84);opacity:.3}70%{opacity:.7}100%{transform:scale(1.18);opacity:0}}@keyframes ww-caught-title{from{opacity:0;transform:translateY(12px);filter:blur(5px)}to{opacity:1;transform:none;filter:none}}@keyframes ww-caught-seal{from{transform:scale(.38);opacity:.85}to{transform:scale(1.25);opacity:0}}
 @media(prefers-reduced-motion:reduce){.ww-caught-reveal:before,.ww-caught-reveal h2,.ww-caught-seal i{animation:none!important}}
 
 /* Keep Word Wolf ballots as focused as the Werewolf ballot screen. */
@@ -2088,3 +2088,62 @@ body.light-shell .app:before,body.light-shell .app:after{display:none!important;
   .ww-guess-tabs button {min-height:2.85rem;padding:.55rem .4rem;font-size:.9rem}
 }
 @media(prefers-reduced-motion:reduce) {.ww-guess-tabs button {transition:none}}
+
+/* Separate Ogiri and anonymous survey from the Werewolf visual system. */
+body[data-game-type="ogiri"] { background:#15141b!important; }
+body[data-game-type="survey"] { background:#f4f7fb!important; }
+.app.game-ogiri.in-game { background:radial-gradient(ellipse at 50% 0%,#3c2834 0,transparent 46%),linear-gradient(150deg,#1d1a24,#11141d 72%,#211a25)!important;color:#f8f4f0; }
+.app.game-survey.in-game { background:#f3f6fa!important;color:#263746; }
+.app.game-ogiri.in-game>main>.game-screen,.app.game-survey.in-game>main>.game-screen {
+  background:transparent!important;border:0!important;box-shadow:none!important;color:inherit;
+}
+.app.game-ogiri.in-game .ogiri-game-area,.app.game-survey.in-game .survey-game-area { flex:1;min-height:0;overflow:auto;overscroll-behavior:contain; }
+.app.game-ogiri .ogiri-screen { min-height:100%;border:0;border-radius:0;background:radial-gradient(ellipse at 50% 0%,#aa45532b,transparent 38%),linear-gradient(160deg,#211d28,#141720 64%,#1e1823);box-shadow:none;color:#fff8f2; }
+.app.game-ogiri .ogiri-screen:before { opacity:.15;background:linear-gradient(90deg,transparent 0 16%,#e2a15a0b 16.2% 16.5%,transparent 16.7% 83%,#e2a15a0b 83.2% 83.5%,transparent 83.7%),radial-gradient(ellipse at 50% 0%,#fff6df13,transparent 60%); }
+.app.game-ogiri .ogiri-screen>header { border-color:#ffffff20;color:#f2b5a5;letter-spacing:.02em; }
+.app.game-ogiri .ogiri-screen>header small { color:#d4c2c0; }
+.app.game-ogiri .ogiri-card,.app.game-ogiri .ogiri-wait,.app.game-ogiri .ogiri-handoff,.app.game-ogiri .ogiri-judging { border:1px solid #e9a97945;border-radius:1.2rem;background:linear-gradient(145deg,#282631,#1b1b25);box-shadow:0 22px 70px #07080d88,0 0 42px #e4a26b0b; }
+.app.game-ogiri .ogiri-card h2,.app.game-ogiri .ogiri-wait h2,.app.game-ogiri .ogiri-judging h2 { color:#fff1dc; }
+.app.game-ogiri .ogiri-screen .primary { border:0;border-radius:.8rem;background:linear-gradient(110deg,#f3bd79,#e98765);color:#2a1b22;box-shadow:0 8px 28px #ec8f6930; }
+.app.game-ogiri .ogiri-screen .secondary,.app.game-ogiri .ogiri-rating button { background:#282732;color:#fff4e9;border-color:#a9867770; }
+.app.game-ogiri .ogiri-screen .ogiri-rating button.selected { background:#a44956;color:#fff;border-color:#f6b794; }
+.app.game-ogiri .ogiri-screen .ogiri-submission { background:#171923;border-color:#ffffff24; }
+.app.game-ogiri .ogiri-screen .ogiri-submission>b,.app.game-ogiri .ogiri-screen .ogiri-results li { color:#fff4e9; }
+.app.game-ogiri .ogiri-screen .ogiri-results li span { color:#f3c18e; }
+.app.game-ogiri .ogiri-screen textarea,.app.game-ogiri .ogiri-screen input { background:#11151e;border-color:#ffffff30;color:#fff; }
+.app.game-survey.in-game>main>.game-screen { color:#263746; }
+.app.game-survey .survey-screen { min-height:100%;border:0;border-radius:0;background:linear-gradient(155deg,#f8fafc,#edf3f8);box-shadow:none;color:#263746; }
+.app.game-survey .survey-screen>header { border-color:#dce5ed;color:#315b6b; }
+.app.game-survey .survey-card,.app.game-survey .survey-wait,.app.game-survey .survey-handoff { border:1px solid #dfe7ee;border-radius:1rem;background:#fff;box-shadow:0 12px 32px #22384b0d; }
+.app.game-survey .survey-card h2,.app.game-survey .survey-wait h2 { color:#263e50; }
+.app.game-survey .survey-card label,.app.game-survey .survey-wait p,.app.game-survey .survey-card>p { color:#607482; }
+.app.game-survey .survey-screen .primary { border:0;border-radius:.75rem;background:#3b8290;color:#fff;box-shadow:0 7px 18px #397d8f22; }
+.app.game-survey .survey-screen .secondary { background:#f7fafc;color:#405d6a;border-color:#d7e1e8; }
+.app.game-survey .survey-screen textarea,.app.game-survey .survey-screen select { border-color:#d7e1e8;background:#fff;color:#263746; }
+.app.game-survey .survey-screen .survey-options button { background:#f7fafc;color:#405968;border-color:#d9e4eb; }
+.app.game-survey .survey-screen .survey-options button.selected { background:#e5f3f1;color:#226f70;border-color:#78b7b1; }
+.app.game-survey .survey-screen .survey-bars em { background:#5b9db3; }
+.app.game-survey .survey-screen .survey-text-results blockquote { background:#f4f7fa;border-left-color:#7aa8ba;color:#405766; }
+.app.game-ogiri .ranking-screen { border-color:#e5aa7555;background:linear-gradient(155deg,#211d28,#151720 68%,#211a25);color:#fff5ed; }
+.app.game-ogiri .ranking-screen h2,.app.game-ogiri .ranking-screen .rank-score { color:#f3bd91; }
+.app.game-ogiri .ranking-screen .ranking-row { background:#ffffff0a;border-color:#ffffff20; }
+.app.game-ogiri .ranking-screen .rank-player small { color:#d0c6c4; }
+.app.game-survey .ranking-screen,.app.game-survey .ending { border-color:#dce5ed;background:#f7fafc;color:#263746; }
+.app.game-survey .ranking-screen h2,.app.game-survey .ending h2 { color:#263e50; }
+.app.game-ogiri .game-menu-trigger { border-color:#e9a97980;background:#211e29;color:#ffd4a0; }
+.app.game-survey .game-menu-trigger { border-color:#d6e1e8;background:#fff;color:#315b6b; }
+body[data-game-type="ogiri"] .gm-drawer.fixed-gm.menu-open { border-color:#e9a97970;background:#211e29;color:#fff4e9; }
+body[data-game-type="survey"] .gm-drawer.fixed-gm.menu-open { border-color:#dce5ed;background:#fff;color:#263746; }
+body[data-game-type="survey"] .gm-drawer.fixed-gm.menu-open .game-menu-trigger { background:#fff;color:#315b6b; }
+.app.game-ogiri .ogiri-setup,.app.game-ogiri .ogiri-setup h4 { background:#f8f5f2;color:#303946;border-color:#e4d8d0; }
+.app.game-ogiri .ogiri-setup h4 { color:#9b5360; }
+.app.game-ogiri .ogiri-setup-grid label,.app.game-ogiri .ogiri-points,.app.game-ogiri .ogiri-setup>p { color:#52616e; }
+.app.game-survey .survey-setup { background:#fff;color:#334a58;border-color:#dfe7ee; }
+.app.game-survey .survey-setup h4 { color:#315b6b; }
+.app.game-survey .survey-setup label { color:#435d69; }
+.app.game-survey .survey-setup p { color:#71818c; }
+@media(max-width:650px) {
+  .app.room-lobby-shell .header-actions .sound-toggle,.app.room-lobby-shell .header-actions .bgm-toggle,.app.room-lobby-shell .header-actions .effects-toggle { display:inline-flex!important; }
+  .app.game-ogiri.in-game>main>.game-screen,.app.game-survey.in-game>main>.game-screen { padding:.25rem; }
+  .app.game-ogiri .ogiri-screen,.app.game-survey .survey-screen { min-height:100%;padding:clamp(.75rem,3vw,1rem); }
+}

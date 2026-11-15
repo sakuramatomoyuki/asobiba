@@ -2183,3 +2183,14 @@ body[data-game-type="ogiri"] .gm-drawer.fixed-gm.menu-open { border-color:#e5d21
 body[data-game-type="ogiri"] .gm-drawer.fixed-gm.menu-open .game-menu-trigger { background:#fff;color:#171717; }
 body[data-game-type="ogiri"] .environment-controls>.sound-toggle,body[data-game-type="ogiri"] .environment-controls>.bgm-toggle,body[data-game-type="ogiri"] .environment-controls>.effects-toggle { border-color:#ddd;background:#fff;color:#222; }
 @media(prefers-reduced-motion:reduce) { .app.game-ogiri .ogiri-screen,.app.game-ogiri .ogiri-card,.app.game-ogiri .ogiri-results li { animation:none!important;transition:none!important; } }
+
+/* Accessible in-app confirmation for host actions; avoids blocking native browser dialogs. */
+.admin-confirm-scrim{position:fixed;inset:0;z-index:120;display:grid;place-items:center;padding:max(1rem,env(safe-area-inset-top)) 1rem max(1rem,env(safe-area-inset-bottom));background:rgba(7,12,20,.78);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);animation:veil-in .18s ease-out both}
+.admin-confirm-dialog{width:min(100%,34rem);box-sizing:border-box;padding:clamp(1.25rem,4vw,2rem);border:1px solid #d6b46f88;border-radius:1.25rem;background:linear-gradient(150deg,#202a39,#111b29 72%);color:#f2f4f7;box-shadow:0 24px 80px #0009;animation:screen-arrive .22s cubic-bezier(.2,.75,.25,1) both}
+.admin-confirm-dialog h2{margin:.5rem 0;font-size:clamp(1.35rem,5vw,2rem);color:#f1d9a7}
+.admin-confirm-dialog p{margin:.75rem 0 1.25rem;line-height:1.65;color:#d2d8e1}
+.admin-confirm-actions{display:flex;justify-content:flex-end;gap:.75rem;flex-wrap:wrap}
+.admin-confirm-actions button{min-height:3rem;min-width:8rem}
+.admin-confirm-actions .danger{border:1px solid #d77b72;background:linear-gradient(135deg,#9e453f,#742d31);color:#fff}
+@media(max-width:560px){.admin-confirm-actions{display:grid;grid-template-columns:1fr}.admin-confirm-actions button{width:100%}}
+@media(prefers-reduced-motion:reduce){.admin-confirm-scrim,.admin-confirm-dialog{animation:none}}

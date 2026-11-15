@@ -1,5 +1,5 @@
 import { describe, expect, it, vi } from 'vitest';
-import { allVoteParticipantsSubmitted, calculateWerewolfPointAwards, canReadSharedPublicView, canRevealSeatSecret, chooseRandomDistinct, cleanRealtimeData, invalidateNightActionsForDeath, nextSharedNightTurn, nightCompleteIds, nightParticipantIds, recommendedRoles, revoteFallbackPlan, revoteVoters, tallyVotes, teamOf, tiedVoteAction, voteParticipantIds, winningTeam } from '../functions/src/gameRules';
+import { allVoteParticipantsSubmitted, calculateWerewolfPointAwards, canReadSharedPublicView, canRevealSeatSecret, chooseRandomDistinct, sampleRoleCandidates, cleanRealtimeData, invalidateNightActionsForDeath, nextSharedNightTurn, nightCompleteIds, nightParticipantIds, recommendedRoles, revoteFallbackPlan, revoteVoters, tallyVotes, teamOf, tiedVoteAction, voteParticipantIds, winningTeam } from '../functions/src/gameRules';
 
 describe('Realtime Database保存データ', () => {
   it('オブジェクト内のundefinedを除去し、配列内はnullに置き換える', () => {
@@ -159,7 +159,14 @@ describe('合意済みの役職・進行ルール', () => {
       expect(Object.values(roles).reduce((sum, n) => sum + n, 0)).toBe(count);
       expect(roles['人狼']).toBeGreaterThan(0);
     }
-    expect(recommendedRoles(8)).toEqual({市民:3,占い師:1,霊媒師:1,騎士:1,共有者:0,人狼:2,狂人:0,狂言者:0});
+    expect(recommendedRoles(8)).toEqual({市民:3,占い師:1,霊媒師:1,騎士:1,共有者:0,人狼:2,狂人:0,狂言者:0,てるてる:0,怪盗:0});
+  });
+
+  it('参加人数より多い候補から人数分だけ重複なく配る', () => {
+    const candidates = ['市民', '市民', '占い師', '人狼', 'てるてる', '怪盗'];
+    const dealt = sampleRoleCandidates(candidates, 3, length => length - 1);
+    expect(dealt).toHaveLength(3);
+    expect(dealt).toEqual(['市民', '市民', '占い師']);
   });
 
   it('勝敗判定は人狼陣営の非人狼役職を市民人数に含めない', () => {
@@ -172,6 +179,8 @@ describe('合意済みの役職・進行ルール', () => {
     expect(teamOf('人狼')).toBe('人狼陣営');
     expect(teamOf('狂人')).toBe('人狼陣営');
     expect(teamOf('狂言者')).toBe('人狼陣営');
+    expect(teamOf('怪盗')).toBe('村人陣営');
+    expect(teamOf('てるてる')).toBeNull();
   });
 
   it('勝利陣営・生存・占い成功・人狼完封を指定どおり加点する', () => {

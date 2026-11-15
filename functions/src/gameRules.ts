@@ -28,6 +28,8 @@ export function recommendedRoles(playerCount: number): Record<string, number> {
     人狼: wolves,
     狂人: count >= 10 ? 1 : 0,
     狂言者: 0,
+    てるてる: 0,
+    怪盗: 0,
   };
   roles.市民 = count - Object.entries(roles).reduce((sum, [role, n]) => role === '市民' ? sum : sum + n, 0);
   return roles;
@@ -85,6 +87,16 @@ export function revoteFallbackPlan(livingIds: string[], tiedIds: string[], canVo
   return { phase: 'vote' as const, voters: everyone, candidates: livingIds, fallback: true };
 }
 
+/** Randomly deal a fixed number of distinct entries from a larger role candidate pool. */
+export function sampleRoleCandidates<T>(candidates: T[], count: number, randomIndex: (length: number) => number): T[] {
+  const shuffled = [...candidates];
+  for (let i = shuffled.length - 1; i > 0; i--) {
+    const j = randomIndex(i + 1);
+    [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
+  }
+  return shuffled.slice(0, Math.max(0, Math.min(shuffled.length, Math.floor(count))));
+}
+
 export function chooseRandomDistinct<T>(values: T[], randomIndex: (length: number) => number): T | undefined {
   const choices = [...new Set(values)];
   if (!choices.length) return undefined;
@@ -93,7 +105,7 @@ export function chooseRandomDistinct<T>(values: T[], randomIndex: (length: numbe
 
 export function teamOf(role: string | undefined): '村人陣営' | '人狼陣営' | null {
   if (role === '人狼' || role === '狂人' || role === '狂言者') return '人狼陣営';
-  if (['市民', '占い師', '霊媒師', '騎士', '共有者'].includes(role || '')) return '村人陣営';
+  if (['市民', '占い師', '霊媒師', '騎士', '共有者', '怪盗'].includes(role || '')) return '村人陣営';
   return null;
 }
 
@@ -142,7 +154,7 @@ export function calculateWerewolfPointAwards(
 
 export function canRevealSeatSecret(uid: string, device: string | undefined, phase: string, activeSeatUid: string | null): boolean {
   if (device !== 'shared') return true;
-  return ['rolecheck', 'night', 'vote', 'revote', 'wordwolf-word', 'wordwolf-vote', 'wordwolf-guess', 'ogiri-answer', 'ogiri-reveal', 'ogiri-judge'].includes(phase) && activeSeatUid === uid;
+  return ['rolecheck', 'night', 'vote', 'revote', 'wordwolf-word', 'wordwolf-vote', 'wordwolf-guess', 'ogiri-answer', 'ogiri-reveal', 'ogiri-judge', 'majority-answer', 'ito-clue', 'lateral-play', 'bomber-play', 'untilmatch-answer'].includes(phase) && activeSeatUid === uid;
 }
 
 /** Public-only room snapshots are needed by the owner of a shared-device room. */

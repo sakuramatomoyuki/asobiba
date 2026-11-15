@@ -1,4 +1,4 @@
-export const THEME_ROLES = ['市民','占い師','霊媒師','騎士','共有者','人狼','狂人','狂言者'] as const;
+export const THEME_ROLES = ['市民','占い師','霊媒師','騎士','共有者','人狼','狂人','狂言者','てるてる','怪盗'] as const;
 export const THEME_PHASES = ['rolecheck','night','discussion','vote','dawn','victory','ranking'] as const;
 export const PHASE_NAMES: Record<string,string> = {rolecheck:'役職確認',night:'夜の行動',discussion:'話し合い',vote:'投票',dawn:'夜明け',victory:'勝利画面',ranking:'ルーム累計ランキング'};
 export const TEXT_KEYS = [

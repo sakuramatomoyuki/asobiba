@@ -1,6 +1,6 @@
 import React from 'react';
 
-const ROLE_NAMES = ['市民', '占い師', '霊媒師', '騎士', '共有者', '人狼', '狂人', '狂言者'];
+const ROLE_NAMES = ['市民', '占い師', '霊媒師', '騎士', '共有者', '人狼', '狂人', '狂言者', 'てるてる', '怪盗'];
 const TIE_RULES = [
   ['revote', '同票の人だけで再投票'],
   ['random', '同票からランダムに処刑'],
@@ -30,9 +30,10 @@ export function JinrouSetup({ settings, busy, playerCount, onChange }: { setting
       <label>投票結果の進行<select value={draft.voteResultProgression || 'manual'} disabled={busy} onChange={event => patch({ voteResultProgression: event.target.value })}><option value="auto">結果発表後、自動で次へ</option><option value="manual">結果発表後、管理者が次へ</option></select></label>
       <label>同票時の処理<select value={draft.tieRule || 'revote'} disabled={busy} onChange={event => patch({ tieRule: event.target.value })}>{TIE_RULES.map(([value, label]) => <option key={value} value={value}>{label}</option>)}</select></label>
     </div>
-    <div className="jinrou-role-heading"><b>役職の人数</b><span className={total === playerCount ? 'valid' : 'invalid'}>{total} / {playerCount}人</span></div>
-    <div className="jinrou-role-grid">{ROLE_NAMES.map(role => <label key={role}><span>{role}</span><input type="number" inputMode="numeric" min={0} max={20} value={Number(roles[role] || 0)} disabled={busy} onChange={event => setRoleCount(role, Number(event.target.value || 0))} /></label>)}</div>
-    {total !== playerCount && <p className="jinrou-role-warning">役職の合計を参加人数に合わせてください。</p>}
+    <div className="jinrou-role-heading"><b>役職の候補</b><span className={total >= playerCount ? 'valid' : 'invalid'}>{total} / {playerCount}人</span></div>
+    <p className="muted">候補の合計が参加人数より多い場合、候補から参加人数分をランダムに配ります。人狼を候補に入れなければ平和村になります。</p>
+    <div className="jinrou-role-grid">{ROLE_NAMES.map(role => <label key={role}><span>{role}</span><input type="number" inputMode="numeric" min={0} max={20} value={Number(roles[role] || 0)} disabled={busy || (draft.method === 'shared' && role === '共有者')} onChange={event => setRoleCount(role, Number(event.target.value || 0))} /></label>)}</div>
+    {total < playerCount && <p className="jinrou-role-warning">候補をあと {playerCount - total} 人分追加してください。</p>}
     <div className="ww-point-options jinrou-rule-options">
       <label><input type="checkbox" checked={!!draft.firstNightAttack} disabled={busy} onChange={event => patch({ firstNightAttack: event.target.checked })} />初日の夜も襲撃あり</label>
       <label><input type="checkbox" checked={!!draft.special?.open} disabled={busy} onChange={event => patch({ special: { ...(draft.special || {}), open: event.target.checked } })} />オープンルール</label>

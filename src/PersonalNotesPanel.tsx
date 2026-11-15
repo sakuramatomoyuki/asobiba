@@ -1,7 +1,7 @@
 import React from 'react';
 import { clearPersonalNotes, emptyPersonalNote, loadPersonalNotes, savePersonalNotes, updatePersonalNote } from './personalNotes';
 
-const noteRoles = ['市民', '占い師', '霊媒師', '騎士', '共有者', '人狼', '狂人', '狂言者'];
+const noteRoles = ['市民', '占い師', '霊媒師', '騎士', '共有者', '人狼', '狂人', '狂言者', 'てるてる', '怪盗'];
 const notePhases: Record<string, string> = { rolecheck: '役職確認', night: '夜', morning: '朝', discussion: '議論', vote: '投票', revote: '再投票', execution: '処刑結果', ended: '試合終了' };
 
 export function PersonalNotesPanel({ room, activeSeat, chatOpen = false }: { room: any; activeSeat: any; chatOpen?: boolean }) {

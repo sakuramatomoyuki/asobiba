@@ -413,6 +413,14 @@ body[data-game-type="ogiri"] .gm-drawer.fixed-gm.menu-open .game-menu-trigger { 
 .app.game-ogiri .ogiri-reveal-vote>div:not(.ogiri-rating) { display:flex;gap:12px;justify-content:center; }
 .app.game-ogiri .ogiri-reveal-vote button { min-height:58px;min-width:150px;padding:12px 24px;font-size:1.1rem;font-weight:950; }
 .app.game-ogiri .ogiri-reveal-wait { color:#474747!important;font-weight:750;text-align:center; }
+.app.game-ogiri .ogiri-publish-answer { max-width:700px; }
+.app.game-ogiri .ogiri-preloaded-answer { position:relative;display:grid;place-items:center;width:min(100%,850px); }
+.app.game-ogiri .ogiri-preloaded-card { width:100%;pointer-events:none;filter:blur(14px);opacity:.18; }
+.app.game-ogiri .ogiri-preloaded-card .ogiri-reveal-answer { width:100%; }
+.app.game-ogiri .ogiri-preloaded-answer>p { position:absolute;inset:auto 12px;margin:0;padding:18px 22px;border:1px solid #f4df2180;border-radius:12px;background:#171717;color:#fff;font-weight:850;text-align:center;box-shadow:0 10px 30px #0003; }
+.app.game-ogiri .ogiri-result-player { display:grid;grid-template-columns:minmax(0,1fr) auto;align-items:center;gap:4px 12px;width:100%; }
+.app.game-ogiri .ogiri-result-player>b { color:#171717!important;overflow-wrap:anywhere; }
+.app.game-ogiri .ogiri-result-player>small { grid-column:1/-1;color:#52616b!important;font-size:.88rem;font-weight:750; }
 @keyframes ogiri-reveal-pop { from { opacity:0;transform:translateY(18px) scale(.985) } to { opacity:1;transform:translateY(0) scale(1) } }
 @keyframes ogiri-answer-pop { from { opacity:0;transform:scale(.96) rotate(-.5deg) } to { opacity:1;transform:scale(1) rotate(0) } }
 @keyframes ogiri-sweep { 0%,100% { transform:translateX(-8%);opacity:.35 } 50% { transform:translateX(8%);opacity:.8 } }

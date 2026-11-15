@@ -142,7 +142,7 @@ export function calculateWerewolfPointAwards(
 
 export function canRevealSeatSecret(uid: string, device: string | undefined, phase: string, activeSeatUid: string | null): boolean {
   if (device !== 'shared') return true;
-  return ['rolecheck', 'night', 'vote', 'revote', 'wordwolf-word', 'wordwolf-vote', 'wordwolf-guess'].includes(phase) && activeSeatUid === uid;
+  return ['rolecheck', 'night', 'vote', 'revote', 'wordwolf-word', 'wordwolf-vote', 'wordwolf-guess', 'ogiri-answer', 'ogiri-reveal', 'ogiri-judge'].includes(phase) && activeSeatUid === uid;
 }
 
 /** Public-only room snapshots are needed by the owner of a shared-device room. */

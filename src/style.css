@@ -2001,3 +2001,90 @@ body.light-shell .app:before,body.light-shell .app:after{display:none!important;
 @keyframes ww-confirm-copy{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
 @keyframes ww-confirm-seal{50%{transform:scale(.9);box-shadow:0 0 0 .85rem #e2c57f20,0 0 45px #e2c57f78}}
 @media(prefers-reduced-motion:reduce){.ww-ballot-confirm-screen,.ww-ballot-confirm-screen .ww-ballot-confirm,.ww-ballot-confirm-screen .ww-ballot-confirm p,.ww-ballot-confirm-screen .ww-ballot-confirm button,.ww-confirm-seal{animation:none!important}}
+
+/* Game specific surfaces: Ogiri is a bright broadcast stage; Survey is a clean light form. */
+.app.in-game .game-screen:has(.ogiri-game-area) {
+  color:#fff8ed;
+  background:radial-gradient(ellipse at 50% 5%,#863d3d 0,transparent 38%),linear-gradient(145deg,#211925,#11131c 68%,#21151d)!important;
+  border-color:#c9914e55;
+}
+.app.in-game .game-screen>.ogiri-game-area,
+.app.in-game .game-screen>.survey-game-area {
+  width:min(100%,76rem);min-height:0;margin:0 auto;padding:clamp(.75rem,2vw,1.5rem);
+  background:transparent!important;border:0!important;box-shadow:none!important;
+}
+.ogiri-screen {
+  min-height:min(74dvh,820px);justify-content:flex-start;gap:1.1rem;
+  border:1px solid #f1c56b88;border-radius:1rem;
+  background:radial-gradient(ellipse at 50% -8%,#f8bd4d45,transparent 42%),radial-gradient(ellipse at 0% 45%,#a52f4b28,transparent 44%),linear-gradient(155deg,#241a25,#11141d 66%,#20141e);
+  box-shadow:0 18px 60px #07060bb0,inset 0 0 0 5px #ffffff05;color:#fff8ef;
+}
+.ogiri-screen:before {opacity:.13;background:repeating-linear-gradient(90deg,transparent 0 72px,#ffffff08 73px 74px)}
+.ogiri-screen>header {color:#ffd77f;border-bottom-color:#ffffff32}
+.ogiri-screen>header small {color:#f0cfaa}
+.ogiri-card,.ogiri-wait,.ogiri-handoff,.ogiri-judging {
+  border:1px solid #f0c36d77;background:linear-gradient(150deg,#352833f2,#1b1d28f5);
+  box-shadow:0 16px 48px #08091099,0 0 36px #f0a94d12;
+}
+.ogiri-card h2,.ogiri-wait h2,.ogiri-judging h2 {color:#ffe0a0}
+.ogiri-screen .primary {background:linear-gradient(130deg,#efbb58,#ca773e);color:#231925;border:1px solid #ffe3a5;box-shadow:0 8px 24px #e69d4933}
+.ogiri-screen .secondary {background:#29222d;color:#fff2df;border-color:#a7958a}
+.ogiri-screen .ogiri-rating button {background:#29222d;color:#fff2df;border-color:#d4ad7a88}
+.ogiri-screen .ogiri-rating button.selected {background:#8b5a24;color:#fff3d1;border-color:#ffd77f}
+.ogiri-screen .ogiri-submission {background:#171923;border-color:#ffffff2a}
+.ogiri-screen .ogiri-submission>b,.ogiri-screen .ogiri-results li {color:#fff2df}
+.ogiri-screen .ogiri-results li span {color:#ffd77f}
+.app.in-game .game-screen:has(.survey-game-area) {
+  color:#263746;background:linear-gradient(145deg,#f4f8fb,#eaf2f6 58%,#f7fbf9)!important;border-color:#d8e5e9;
+}
+.survey-screen {
+  min-height:min(74dvh,820px);justify-content:flex-start;gap:1rem;overflow:auto;
+  border:1px solid #dce8ec;border-radius:1.1rem;
+  background:linear-gradient(160deg,#ffffff,#f5fafb 70%,#eef7f3);
+  box-shadow:0 16px 45px #243e4b12;color:#263746;
+}
+.survey-screen>header {color:#267c7e;border-bottom-color:#dce8ec}
+.survey-screen>header small {color:#738790}
+.survey-card,.survey-wait,.survey-handoff {
+  border:1px solid #dce8e9;background:#fff;box-shadow:0 10px 30px #2748540b;
+}
+.survey-card h2,.survey-wait h2 {color:#253d4a}
+.survey-card label,.survey-wait p,.survey-card>p {color:#536b75}
+.survey-screen textarea,.survey-screen select {
+  box-sizing:border-box;width:100%;padding:.75rem;border:1px solid #cadbdd;border-radius:.7rem;background:#fff;color:#263746;font:inherit;
+}
+.survey-options button {background:#f8fbfc;color:#304b57;border-color:#d5e4e6;transition:transform .18s,background .18s,border-color .18s}
+.survey-options button:hover {transform:translateY(-2px);background:#eef8f6}
+.survey-options button.selected {background:#e4f5f0;color:#176d68;border-color:#68b5a6;box-shadow:0 0 0 2px #68b5a622}
+.survey-wait>b,.survey-bars b {color:#267c7e}
+.survey-bars>div {color:#334f5c}
+.survey-bars i {background:#e5edef}
+.survey-bars em {background:linear-gradient(90deg,#5eb5aa,#74c68d)}
+.survey-text-results blockquote {background:#f5f9fa;color:#344c57;border-left-color:#62afa5}
+.survey-handoff b {color:#267c7e}
+.survey-screen .primary {background:linear-gradient(130deg,#318f8b,#26777b);color:#fff}
+.survey-screen .secondary {background:#fff;color:#3e5964;border-color:#d5e2e4}
+.ogiri-setup,.survey-setup {border-radius:1rem}
+.ogiri-setup {background:linear-gradient(145deg,#352833,#1b1d28);border-color:#e5b86755;color:#fff0d8}
+.ogiri-setup h4 {color:#ffd77f}.ogiri-setup-grid label,.ogiri-points {color:#f0dfce}.ogiri-setup>p {color:#cbbcaf}
+.survey-setup {background:#f7fbfc;border-color:#dce8e9;color:#334b57}
+.survey-setup h4 {color:#267c7e}.survey-setup label {color:#415d68}.survey-setup p {color:#71848c}
+.survey-setup select,.ogiri-setup select {box-sizing:border-box;width:100%;padding:.6rem;border-radius:.65rem}
+.rolecheck-stage {box-sizing:border-box;width:100%;max-height:calc(100dvh - env(safe-area-inset-top) - env(safe-area-inset-bottom) - 2rem);overflow-y:auto;overscroll-behavior:contain;padding:clamp(.75rem,3vh,2rem) .75rem calc(1.5rem + env(safe-area-inset-bottom));scrollbar-gutter:stable;}
+.rolecheck-continue {position:sticky;bottom:calc(.35rem + env(safe-area-inset-bottom));z-index:2;box-shadow:0 8px 22px #080c15aa}
+.role-ready-wait {padding-bottom:.75rem}
+.ww-guess-tabs {display:flex;gap:.55rem;width:min(100%,46rem);margin:0 auto;}
+.ww-guess-tabs button {position:relative;flex:1;min-height:3rem;padding:.65rem .8rem;border:1px solid #d5bd8066;border-radius:.75rem;background:#ffffff0b;color:#e8e0d1;font:inherit;font-weight:750;cursor:pointer;transition:background .18s,border-color .18s,transform .18s;}
+.ww-guess-tabs button:hover {transform:translateY(-1px)}
+.ww-guess-tabs button.active {border-color:#e6ca84;background:#d7b66b22;color:#f1d99d;box-shadow:inset 0 -2px #e6ca84}
+.ww-chat-notice {display:inline-block;margin-left:.4rem;padding:.12rem .4rem;border-radius:99px;background:#cb554c;color:#fff;font-size:.7rem;vertical-align:middle}
+.ww-guess-screen>.ww-chat {width:min(100%,46rem);max-height:min(58dvh,540px);margin:0 auto;display:flex;flex-direction:column;min-height:0;}
+.ww-guess-screen>.ww-chat .ww-chat-messages {min-height:9rem;max-height:42dvh;overflow:auto;overscroll-behavior:contain;}
+.ww-guess-screen>.ww-stage {width:min(100%,46rem)}
+@media(max-width:650px) {
+  .rolecheck-stage {max-height:calc(100dvh - env(safe-area-inset-top) - env(safe-area-inset-bottom) - 1rem);padding-inline:.25rem}
+  .ogiri-screen,.survey-screen {min-height:calc(100dvh - env(safe-area-inset-top) - env(safe-area-inset-bottom) - 2rem);padding:.85rem;border-radius:.85rem}
+  .ogiri-card,.ogiri-wait,.ogiri-handoff,.survey-card,.survey-wait,.survey-handoff {padding:1rem}
+  .ww-guess-tabs button {min-height:2.85rem;padding:.55rem .4rem;font-size:.9rem}
+}
+@media(prefers-reduced-motion:reduce) {.ww-guess-tabs button {transition:none}}

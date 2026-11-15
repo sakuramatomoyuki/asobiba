@@ -35,6 +35,9 @@ export function WordWolfGame({ room, busy, act, activeSeat, openSeat, confirmSea
   const [pendingVoteFor, setPendingVoteFor] = React.useState('');
   const [guess, setGuess] = React.useState('');
   const [chatDraft, setChatDraft] = React.useState('');
+  const [guessTab, setGuessTab] = React.useState<'guess'|'chat'>('guess');
+  const [chatNotice, setChatNotice] = React.useState(false);
+  const lastChatSeen = React.useRef<string|null>(null);
   const [remaining, setRemaining] = React.useState(0);
   const phase = room.phase;
   const game = room.miniGame || {};
@@ -52,7 +55,7 @@ export function WordWolfGame({ room, busy, act, activeSeat, openSeat, confirmSea
   const gameHeader = (label = phaseName[phase] || 'ゲーム進行', timer?: string) => <><header className="ww-game-header"><div className="ww-game-brand"><svg viewBox="0 0 48 48" aria-hidden="true"><circle cx="24" cy="24" r="19"/><path d="M31 12a15 15 0 1 0 5 23A17 17 0 0 1 31 12Z"/><path d="m11 36 7-8 5 5 7-10 7 7"/></svg><span><small>第{room.round||1}ラウンド</small><b>ワードウルフ</b></span></div><div className="ww-stage-label"><small>NOW PLAYING</small><b>{label}</b>{timer&&<time className={room.paused ? 'paused' : undefined}>{timer}</time>}</div></header><div className={`ww-phase-track track-${phase}`} aria-hidden="true"><i/></div></>;
 
   React.useEffect(() => {
-    setTarget(''); setConfirmed(false); setPendingVoteFor(''); setGuess(''); setChatDraft('');
+    setTarget(''); setConfirmed(false); setPendingVoteFor(''); setGuess(''); setChatDraft(''); setGuessTab('guess'); setChatNotice(false); lastChatSeen.current=null;
   }, [phase, room.round, activeSeat?.uid, room.sharedTurnUid]);
   React.useEffect(() => {
     if (pendingVoteFor && (secret?.hasVoted || (shared && activeSeat?.uid !== pendingVoteFor) || !busy)) setPendingVoteFor('');
@@ -63,6 +66,8 @@ export function WordWolfGame({ room, busy, act, activeSeat, openSeat, confirmSea
     update(); const timer = window.setInterval(update, 250);
     return () => window.clearInterval(timer);
   }, [deadline]);
+  const currentChatLastId=room.secret?.miniGame?.chat?.at(-1)?.id||null;
+  React.useEffect(()=>{if(phase!=='wordwolf-guess')return;if(lastChatSeen.current&&currentChatLastId&&currentChatLastId!==lastChatSeen.current&&guessTab!=='chat')setChatNotice(true);lastChatSeen.current=currentChatLastId},[phase,currentChatLastId,guessTab]);
 
   const waiting = (title: string, detail: string) => <section className="ww-stage"><svg className="ww-sigil" viewBox="0 0 120 120" aria-hidden="true"><circle cx="60" cy="60" r="45"/><circle cx="60" cy="60" r="34"/><path d="M60 26v68M26 60h68M36 36l48 48m0-48L36 84"/><path d="m60 39 6 15 15 6-15 6-6 15-6-15-15-6 15-6z"/></svg><h2>{title}</h2><p>{detail}</p><div className="ww-progress">{game.readyCount ?? game.voteCount ?? game.guessCount ?? 0} / {game.readyTotal ?? game.voteCount ?? game.guessTotal ?? eligible.length}</div></section>;
   const handoff = (kind: 'word' | 'vote' | 'guess') => {
@@ -97,10 +102,14 @@ export function WordWolfGame({ room, busy, act, activeSeat, openSeat, confirmSea
   if (phase === 'wordwolf-caught') return <div className={`${screenClass} ww-caught-screen`}>{gameHeader('逆転チャンス', timerLabel)}<section className="ww-caught-reveal"><div className="ww-caught-seal" aria-hidden="true"><i/><i/><i/></div><span className="eyebrow">VOTE REVEAL</span><h2>少数派が見つかりました</h2><p>少数派には逆転のチャンス。多数派のお題を推理してください。</p><strong>{room.paused ? '一時停止中' : '逆転チャンスの準備中…'}</strong></section></div>;
   if (phase === 'wordwolf-guess') {
     const gate = handoff('guess');
-    if (gate) return <div className={screenClass}>{gameHeader('少数派の回答', display(remaining))}{gate}</div>;
-    if (!secret?.canGuess) return <div className={screenClass}>{gameHeader('少数派の回答', display(remaining))}{waiting('少数派が答えを考えています…', 'お題 Aが当たるか見届けましょう。')}</div>;
-    if (secret?.guess) return <div className={screenClass}>{gameHeader('少数派の回答', display(remaining))}{waiting('回答しました', '少数派全員の回答を待っています…')}{room.settings?.method==='individual'&&<WordWolfChat messages={secret.chat||[]} value={chatDraft} onChange={setChatDraft} onSend={()=>{if(chatDraft.trim()){onSendChat?.(chatDraft.trim());setChatDraft('')}}} busy={busy}/>}</div>;
-    return <div className={screenClass}>{gameHeader('回答', display(remaining))}<section className="ww-private-card"><span>特別な回答時間</span><h2>もう一方のお題を推理してください</h2><input value={guess} onChange={e => setGuess(e.target.value.slice(0, 60))} maxLength={60} placeholder="お題 Aを入力"/><button className="primary wide" disabled={!guess.trim() || busy} onClick={() => act({ type: 'wordGuess', guess: guess.trim() })}>回答する</button></section>{room.settings?.method==='individual'&&<WordWolfChat messages={secret.chat||[]} value={chatDraft} onChange={setChatDraft} onSend={()=>{if(chatDraft.trim()){onSendChat?.(chatDraft.trim());setChatDraft('')}}} busy={busy}/>}</div>;
+    if (gate) return <div className={screenClass}>{gameHeader('少数派の回答', timerLabel)}{gate}</div>;
+    if (!secret?.canGuess) return <div className={screenClass}>{gameHeader('少数派の回答', timerLabel)}{waiting('少数派が答えを考えています…', 'お題を推理しています。')}</div>;
+    const canChat=room.settings?.method==='individual';
+    const messages=secret.chat||[];
+    const tabs=canChat&&<nav className="ww-guess-tabs" role="tablist" aria-label="少数派の画面"><button type="button" role="tab" aria-selected={guessTab==='guess'} className={guessTab==='guess'?'active':''} onClick={()=>setGuessTab('guess')}>逆転回答</button><button type="button" role="tab" aria-selected={guessTab==='chat'} className={guessTab==='chat'?'active':''} onClick={()=>{setGuessTab('chat');setChatNotice(false)}}>少数派の相談{chatNotice&&<span className="ww-chat-notice">新着</span>}</button></nav>;
+    const chatView=canChat&&guessTab==='chat'&&<WordWolfChat messages={messages} value={chatDraft} onChange={setChatDraft} onSend={()=>{if(chatDraft.trim()){onSendChat?.(chatDraft.trim());setChatDraft('')}}} busy={busy}/>;
+    if (secret?.guess) return <div className={screenClass}>{gameHeader('少数派の回答', timerLabel)}{tabs}{chatView||waiting('回答しました', '少数派全員の回答を待っています…')}</div>;
+    return <div className={screenClass}>{gameHeader('回答', timerLabel)}{tabs}{chatView||<section className="ww-private-card"><span>特別な回答時間</span><h2>もう一方のお題を推理してください</h2><input value={guess} onChange={e => setGuess(e.target.value.slice(0, 60))} maxLength={60} placeholder="推理したお題を入力"/><button className="primary wide" disabled={!guess.trim() || busy} onClick={() => act({ type: 'wordGuess', guess: guess.trim() })}>回答する</button></section>}</div>;
   }
   if (phase === 'wordwolf-result') return <div className={`${screenClass} ww-result-screen`}>{gameHeader('結果発表')}<section className="ww-result"><div className="eyebrow">REVEAL</div><h2>{game.caught ? (game.guessCorrect?'少数派の逆推理が的中':'少数派が見つかりました') : '少数派は逃げ切りました'}</h2>{game.caught&&<p>少数派の逆推理：{game.guessCorrect?'正解':'不正解'}</p>}<div className="ww-words"><div><small>多数派のお題</small><b>{game.majorityWord}</b></div><div><small>少数派のお題</small><b>{game.minorityWord}</b></div></div><div className="ww-results-list">{(game.results||[]).map((row: any) => <div key={row.uid}><b>{row.name}</b><span>{row.side} · {row.word}</span><strong>+{row.points} pt</strong>{room.settings.pointsEnabled&&<small>ルーム累計 {row.roomPoints} pt</small>}</div>)}</div>{room.canManage?<><button className="primary wide" disabled={busy} onClick={() => act({ type: room.settings.pointsEnabled?'showRanking':'nextGameSetup' })}>{room.settings.pointsEnabled?'次へ（ルーム累計を見る）':'次のゲームを選ぶ'}</button>{room.settings.pointsEnabled&&<button className="secondary wide" disabled={busy} onClick={() => act({ type: 'nextGameSetup' })}>別のゲームを選ぶ</button>}</>:<p>ホストが次へ進めるまでお待ちください。</p>}</section></div>;
   return null;

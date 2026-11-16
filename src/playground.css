@@ -585,3 +585,15 @@ body[data-game-type="ogiri"] .ranking-screen .rank-score { color:#17212b!importa
 .lateral-quiz-arrow{align-self:center;min-height:48px;border:1px solid #d4e1e6;border-radius:14px;background:#f3f8fb;color:#496fa8;font-size:30px;font-weight:800}
 .lateral-quiz-carousel .lateral-quiz-choice{margin:0}
 @media(max-width:540px){.lateral-quiz-carousel{grid-template-columns:34px minmax(0,1fr) 34px;gap:5px}.lateral-quiz-arrow{min-height:42px;font-size:24px}}
+/* Put the GM's highlight badge in the question header, beside the name and verdict. */
+.lateral-questions article{grid-template-columns:minmax(0,1fr) auto auto;align-items:center}
+.lateral-questions article>span{grid-column:1/-1;grid-row:2}
+.lateral-questions article>em{grid-row:1;grid-column:2}
+.lateral-questions article>strong{grid-row:1;grid-column:3}
+.lateral-gm-actions{grid-column:1/-1}
+.lateral-slide-next{animation:lateral-carousel-next .34s cubic-bezier(.2,.8,.2,1) both}
+.lateral-slide-prev{animation:lateral-carousel-prev .34s cubic-bezier(.2,.8,.2,1) both}
+@keyframes lateral-carousel-next{from{opacity:0;transform:translateX(26px) scale(.985);filter:blur(2px)}to{opacity:1;transform:translateX(0) scale(1);filter:blur(0)}}
+@keyframes lateral-carousel-prev{from{opacity:0;transform:translateX(-26px) scale(.985);filter:blur(2px)}to{opacity:1;transform:translateX(0) scale(1);filter:blur(0)}}
+@media(max-width:640px){.lateral-questions article{grid-template-columns:minmax(0,1fr) auto auto}.lateral-questions article>span{grid-column:1/-1;grid-row:2}.lateral-questions article>em{grid-column:2;grid-row:1}.lateral-questions article>strong{grid-column:3;grid-row:1}}
+@media(prefers-reduced-motion:reduce){.lateral-slide-next,.lateral-slide-prev{animation:none}}

@@ -26,7 +26,7 @@ describe('party game rules', () => {
       addRoomPoints: true,
     });
     expect(mergePartyGameSettings('lateral', null, { quizSource: 'host', title: '問題', solution: '答え', gmMode: 'rotate' })).toEqual({
-      pointsEnabled: true, addRoomPoints: true,
+      rounds: 1, gmMode: 'rotate', pointsEnabled: true, addRoomPoints: true,
     });
   });
 });

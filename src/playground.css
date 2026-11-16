@@ -472,3 +472,17 @@ body[data-game-type="ogiri"] .ranking-screen .rank-score { color:#17212b!importa
 @keyframes ito-row-in{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
 @media(max-width:640px){.ito-sort-item{grid-template-columns:36px 32px minmax(0,1fr) auto;gap:7px;padding:7px}.ito-sort-grip{width:34px;height:40px}.ito-sort-controls{gap:4px}.ito-sort-controls button{width:36px;height:40px}.ito-sort-item b{font-size:14px}}
 @media(prefers-reduced-motion:reduce){.party-ito .ito-number,.ito-sort-item{animation:none!important}}
+
+/* ITO topic and scale are public; only each player's own number stays private. */
+.ito-theme-banner{display:grid;gap:10px;width:min(100%,800px);margin:clamp(18px,4vh,34px) auto 0;padding:clamp(18px,3vw,26px);border:1px solid #b9d9d4;border-radius:20px;background:linear-gradient(135deg,#f4fbf9,#e7f3f1);box-shadow:0 12px 34px #294b5810;text-align:center;animation:party-card-in .42s cubic-bezier(.2,.8,.2,1) both}
+.ito-theme-banner>small{color:#478780;font-size:12px;font-weight:850;letter-spacing:.14em}
+.ito-theme-banner h2{margin:0;color:#244f55;font-size:clamp(22px,4vw,34px);line-height:1.25}
+.ito-theme-range{display:grid;grid-template-columns:minmax(0,1fr) minmax(30px,.4fr) minmax(0,1fr);align-items:center;gap:12px;margin-top:4px}
+.ito-theme-range span{display:grid;gap:4px;color:#526b71;font-size:clamp(13px,2vw,16px);font-weight:750}
+.ito-theme-range span:first-child{text-align:left}.ito-theme-range span:last-child{text-align:right}
+.ito-theme-range b{color:#287b78;font-size:15px;font-variant-numeric:tabular-nums}
+.ito-theme-range i{height:2px;background:linear-gradient(90deg,#bddbd5,#61a69d,#bddbd5)}
+.ito-sort-item{transition:box-shadow .2s,border-color .2s}
+.ito-sort-item:focus-within,.ito-sort-item:hover{transform:none}
+@media(max-width:640px){.ito-theme-banner{margin-top:14px;border-radius:16px}.ito-theme-range{gap:8px}}
+@media(prefers-reduced-motion:reduce){.ito-theme-banner{animation:none!important}}

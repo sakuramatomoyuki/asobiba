@@ -486,3 +486,39 @@ body[data-game-type="ogiri"] .ranking-screen .rank-score { color:#17212b!importa
 .ito-sort-item:focus-within,.ito-sort-item:hover{transform:none}
 @media(max-width:640px){.ito-theme-banner{margin-top:14px;border-radius:16px}.ito-theme-range{gap:8px}}
 @media(prefers-reduced-motion:reduce){.ito-theme-banner{animation:none!important}}
+
+/* Majority Party: lively dilemma show, clearly separated from ITO and werewolf UI. */
+.party-majority .party-game-screen{--party-accent:#d65342;background:radial-gradient(ellipse at 50% 0,#fff4dd 0,#fff 48%,#f8f5ef 100%);color:#273642}
+.party-majority .party-game-header{border-color:#ead8c5}
+.party-majority .party-game-header h1{color:#873c33}
+.party-majority .party-game-header>b{background:#fff0d7;color:#a35735}
+.majority-card{border-color:#ecd8c3;background:linear-gradient(150deg,#fffdf8,#fff7eb);box-shadow:0 18px 44px #68412a12}
+.majority-card>small{display:block;color:#aa6543}
+.majority-card h2{color:#49352c}
+.majority-prompt{margin:22px 0;padding:clamp(20px,4vw,34px);border:1px solid #e6c78e;border-radius:22px;background:linear-gradient(135deg,#fff8e6,#fff 58%,#fff0e8);text-align:center;box-shadow:inset 0 0 0 5px #fff9ef}
+.majority-prompt>small{color:#bf7c3f;font-size:12px;font-weight:900;letter-spacing:.16em}
+.majority-prompt h2{margin:12px auto 0;max-width:48rem;font-size:clamp(22px,4.5vw,40px);line-height:1.55}
+.majority-card>select,.majority-card>textarea{width:100%;min-height:58px;margin:12px 0;padding:14px 16px;border:1px solid #e2d2c3;border-radius:14px;background:#fff;color:#3d454b;font:inherit;font-size:16px}
+.majority-card>textarea{min-height:120px;resize:vertical}
+.majority-card h3{margin:22px 0 10px;color:#875341}
+.majority-questions{display:grid;gap:10px;margin:16px 0}
+.majority-questions article{padding:16px;border:1px solid #eadbcf;border-radius:15px;background:#fff}
+.majority-questions article>b{color:#84513d}
+.majority-questions article p{margin:8px 0;color:#303c43;font-size:17px;line-height:1.55}
+.majority-reply{padding:12px 14px;border-radius:12px;background:#f4f6f3;color:#344c45;line-height:1.6}
+.majority-reply-form,.majority-ask{display:flex;gap:8px;align-items:center}
+.majority-reply-form input,.majority-ask input{flex:1;min-width:0;min-height:48px;padding:10px 13px;border:1px solid #d9dfe0;border-radius:12px;background:white;color:#26383e;font:inherit}
+.majority-reply-form button,.majority-ask button{flex:none}
+.majority-choice{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin:24px 0}
+.majority-choice button{min-height:clamp(90px,17vh,150px);border:2px solid #ead6c3;border-radius:20px;background:#fff;color:#633e32;font-size:clamp(24px,5vw,38px);font-weight:900;box-shadow:0 8px 18px #633e3210;transition:transform .2s,background .2s,border-color .2s,box-shadow .2s}
+.majority-choice button:hover{transform:translateY(-3px)}
+.majority-choice button.selected{border-color:#db8a54;background:linear-gradient(145deg,#fff1da,#ffe3d2);box-shadow:0 0 0 4px #df956330,0 12px 22px #633e3218}
+.majority-tally{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin:22px 0}
+.majority-tally>div{display:grid;grid-template-columns:1fr auto;align-items:center;gap:4px 10px;padding:18px;border:1px solid #ead7c7;border-radius:16px;background:#fff}
+.majority-tally b{color:#79503b;font-size:16px}.majority-tally strong{grid-row:span 2;color:#923e35;font-size:clamp(34px,7vw,52px);font-variant-numeric:tabular-nums}.majority-tally small{color:#748087}
+.majority-majority{padding:14px;border-radius:12px;background:#fff0d6;color:#784b2c;font-weight:850;text-align:center}
+.majority-card .party-result-list article{grid-template-columns:minmax(0,1fr) auto;gap:6px 12px}
+.majority-card .party-result-list article span{grid-column:1;color:#44535a;font-size:15px}
+.majority-card .party-result-list article strong{grid-column:2;grid-row:1 / span 2;text-align:right}
+.majority-card .party-result-list article strong.majority-loss{color:#b5473e}
+@media(max-width:540px){.majority-reply-form,.majority-ask{align-items:stretch;flex-direction:column}.majority-reply-form button,.majority-ask button{width:100%;min-height:48px}.majority-choice{gap:8px}.majority-choice button{min-height:94px;border-radius:16px}}

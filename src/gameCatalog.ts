@@ -13,13 +13,12 @@ export type GameCatalogEntry = {
 export const GAME_CATALOG: readonly GameCatalogEntry[] = [
   { id: 'jinrou', name: '人狼', shortDescription: '村に隠れた人狼を見つけよう。', players: '3〜20人', atmosphere: 'medieval', available: true },
   { id: 'wordwolf', name: 'ワードウルフ', shortDescription: '会話から少数派のお題を見抜こう。', players: '3人以上', atmosphere: 'medieval', available: true },
-  { id: 'ogiri', name: '大喜利', shortDescription: 'お題に答えて、みんなで笑いを採点。', players: '3人以上', atmosphere: 'stage', available: true },
+  { id: 'ogiri', name: '大喜利', shortDescription: 'お題に答えて、みんなで笑いを採点。', players: '2人以上', atmosphere: 'stage', available: true },
   { id: 'survey', name: '匿名アンケート', shortDescription: '匿名の答えを集めて、みんなの傾向を見よう。', players: '3人以上', atmosphere: 'bright', available: true },
   { id: 'majority', name: 'マジョリティパーティー', shortDescription: 'みんなの答えを予想して、多数派を狙おう。', players: '3人以上', atmosphere: 'bright', available: true },
   { id: 'ito', name: 'クモノイト（ito）', shortDescription: '数字を言わずに、感覚をつないで順番に並べよう。', players: '3人以上', atmosphere: 'bright', available: true },
-  { id: 'lateral', name: '水平思考クイズ', shortDescription: 'はい／いいえの質問で、物語の謎を解こう。', players: '3人以上', atmosphere: 'bright', available: true },
-  { id: 'hyperbomber', name: 'ハイパーボンバー', shortDescription: 'お題に素早く回答。詰まる前にパスをつなごう。', players: '3人以上', atmosphere: 'stage', available: true },
-  { id: 'untilmatch', name: '一致するまで終われまてん', shortDescription: '全員の答えがそろうまで、心を合わせよう。', players: '3人以上', atmosphere: 'bright', available: true },
+  { id: 'lateral', name: '水平思考クイズ', shortDescription: 'はい／いいえの質問で、物語の謎を解こう。', players: '2人以上', atmosphere: 'bright', available: true },
+  { id: 'untilmatch', name: '一致するまで終われまてん', shortDescription: '全員の答えがそろうまで、心を合わせよう。', players: '2人以上', atmosphere: 'bright', available: true },
 ] as const;
 
 export type WordWolfSettings = {

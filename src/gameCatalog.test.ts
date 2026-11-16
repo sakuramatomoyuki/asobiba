@@ -10,7 +10,7 @@ import {
 
 describe('multi-game catalog and shared setup rules', () => {
   it('lists each planned game exactly once', () => {
-    expect(GAME_CATALOG.map((game) => game.id)).toEqual(['jinrou', 'wordwolf', 'ogiri', 'survey', 'majority', 'ito', 'lateral', 'hyperbomber', 'untilmatch']);
+    expect(GAME_CATALOG.map((game) => game.id)).toEqual(['jinrou', 'wordwolf', 'ogiri', 'survey', 'majority', 'ito', 'lateral', 'untilmatch']);
   });
 
   it('uses a quarter of players, rounded down, for the suggested minority', () => {

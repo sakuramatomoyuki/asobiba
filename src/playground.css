@@ -574,3 +574,14 @@ body[data-game-type="ogiri"] .ranking-screen .rank-score { color:#17212b!importa
 .lateral-solution-copy{display:grid;grid-template-columns:auto minmax(0,1fr);gap:8px 14px;align-items:start}
 .lateral-solution-copy p{margin:0 0 10px}
 @media(max-width:640px){.ito-result-comparison{gap:8px}.ito-result-column{padding:9px}.ito-result-column ol{grid-template-columns:1fr}.ito-result-column li{padding:7px 6px;font-size:12px}.ito-result-column li strong{font-size:15px}.ito-result-verdict{gap:6px;padding:10px}.lateral-solution-copy{grid-template-columns:1fr;gap:2px}}
+.lateral-quiz-choices{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;margin:14px 0}
+.lateral-quiz-choice{display:grid;align-content:start;gap:8px;padding:16px;border:1px solid #d6e3e8;border-radius:16px;background:#f8fbfd}
+.lateral-quiz-choice>small{color:#496fa8;font-weight:850;letter-spacing:.08em}
+.lateral-quiz-choice h3{margin:0;line-height:1.5;font-size:17px}
+.lateral-quiz-choice p{margin:0;color:#566d78;font-size:14px;line-height:1.55}
+.lateral-quiz-choice .primary{align-self:end}
+@media(max-width:700px){.lateral-quiz-choices{grid-template-columns:1fr}}
+.lateral-quiz-carousel{display:grid;grid-template-columns:44px minmax(0,1fr) 44px;align-items:stretch;gap:10px;margin:14px 0}
+.lateral-quiz-arrow{align-self:center;min-height:48px;border:1px solid #d4e1e6;border-radius:14px;background:#f3f8fb;color:#496fa8;font-size:30px;font-weight:800}
+.lateral-quiz-carousel .lateral-quiz-choice{margin:0}
+@media(max-width:540px){.lateral-quiz-carousel{grid-template-columns:34px minmax(0,1fr) 34px;gap:5px}.lateral-quiz-arrow{min-height:42px;font-size:24px}}

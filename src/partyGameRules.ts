@@ -3,7 +3,7 @@ export const PARTY_GAME_IDS: readonly PartyGameId[] = ['majority','ito','lateral
 export const PARTY_GAME_DEFAULTS: Record<PartyGameId, Record<string, unknown>> = {
   majority: { rounds: 5, pointsEnabled: true, addRoomPoints: true },
   ito: { rounds: 1, pointsEnabled: true, addRoomPoints: true },
-  lateral: { gmMode: 'host', pointsEnabled: true, addRoomPoints: true },
+  lateral: { pointsEnabled: true, addRoomPoints: true },
   hyperbomber: { turnSeconds: 15, pointsEnabled: true, addRoomPoints: true },
   untilmatch: { matchStreak: 1, maxRounds: 10, pointsEnabled: true, addRoomPoints: true },
 };
@@ -20,7 +20,7 @@ export function mergePartyGameSettings(
   const allowed: Record<PartyGameId, readonly string[]> = {
     majority: ['rounds', 'pointsEnabled', 'addRoomPoints'],
     ito: ['pointsEnabled', 'addRoomPoints'],
-    lateral: ['gmMode', 'quizSource', 'title', 'solution', 'pointsEnabled', 'addRoomPoints'],
+    lateral: ['pointsEnabled', 'addRoomPoints'],
     hyperbomber: ['turnSeconds', 'promptSource', 'prompt', 'pointsEnabled', 'addRoomPoints'],
     untilmatch: ['matchStreak', 'maxRounds', 'pointsEnabled', 'addRoomPoints'],
   };

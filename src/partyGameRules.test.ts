@@ -25,8 +25,8 @@ describe('party game rules', () => {
       pointsEnabled: true,
       addRoomPoints: true,
     });
-    expect(mergePartyGameSettings('lateral', null, { quizSource: 'host', title: '問題', solution: '答え' })).toMatchObject({
-      quizSource: 'host', title: '問題', solution: '答え', pointsEnabled: true,
+    expect(mergePartyGameSettings('lateral', null, { quizSource: 'host', title: '問題', solution: '答え', gmMode: 'rotate' })).toEqual({
+      pointsEnabled: true, addRoomPoints: true,
     });
   });
 });

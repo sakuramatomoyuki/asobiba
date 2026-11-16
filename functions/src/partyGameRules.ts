@@ -3,7 +3,7 @@ export const PARTY_GAME_IDS: readonly PartyGameId[] = ['majority','ito','lateral
 export const PARTY_GAME_DEFAULTS: Record<PartyGameId, Record<string, unknown>> = {
   majority: { rounds: 5, pointsEnabled: true, addRoomPoints: true },
   ito: { rounds: 1, pointsEnabled: true, addRoomPoints: true },
-  lateral: { pointsEnabled: true, addRoomPoints: true },
+  lateral: { gmMode: 'host', pointsEnabled: true, addRoomPoints: true },
   hyperbomber: { turnSeconds: 15, pointsEnabled: true, addRoomPoints: true },
   untilmatch: { matchStreak: 1, maxRounds: 10, pointsEnabled: true, addRoomPoints: true },
 };
@@ -20,7 +20,7 @@ export function mergePartyGameSettings(
   const allowed: Record<PartyGameId, readonly string[]> = {
     majority: ['rounds', 'pointsEnabled', 'addRoomPoints'],
     ito: ['pointsEnabled', 'addRoomPoints'],
-    lateral: ['quizSource', 'title', 'solution', 'pointsEnabled', 'addRoomPoints'],
+    lateral: ['gmMode', 'quizSource', 'title', 'solution', 'pointsEnabled', 'addRoomPoints'],
     hyperbomber: ['turnSeconds', 'promptSource', 'prompt', 'pointsEnabled', 'addRoomPoints'],
     untilmatch: ['matchStreak', 'maxRounds', 'pointsEnabled', 'addRoomPoints'],
   };
@@ -81,10 +81,13 @@ export const UNTIL_MATCH_PROMPTS = [
   '無人島に一つ持っていくなら？', '動物園の人気者といえば？', 'コンビニでつい買うものといえば？', '赤い果物といえば？',
   '朝ごはんの定番といえば？', '一番有名な昔話といえば？', '旅行で持っていくものといえば？', '雨の日にしたいことといえば？',
 ];
-export const LATERAL_DEFAULT_QUIZ = {
-  title: 'ある男がレストランで水を頼むと、店員は突然大きな音を立てました。男は「ありがとう」と言って店を出ました。なぜ？',
-  solution: '男はしゃっくりを止めたくて水を頼みました。店員が驚かせたことでしゃっくりが止まり、お礼を言いました。',
-};
+export const LATERAL_DEFAULT_QUIZ = [
+  { title: 'ある男がレストランで水を頼むと、店員は突然大きな音を立てました。男は「ありがとう」と言って店を出ました。なぜ？', solution: '男はしゃっくりを止めたくて水を頼みました。店員が驚かせたことでしゃっくりが止まり、お礼を言いました。' },
+  { title: 'ある人は毎日、ビルの最上階からエレベーターで1階へ降ります。帰りは途中の階で降りて、残りを階段で上ります。雨の日だけ最上階までエレベーターで行けます。なぜ？', solution: 'その人は背が低く、最上階のボタンに届きません。雨の日は傘でボタンを押せます。' },
+  { title: '男は自分の車を押してホテルの前に着いた瞬間、自分が破産したと悟りました。なぜ？', solution: 'ボードゲームのモノポリーを遊んでいて、駒の車をホテルのあるマスへ進めたためです。' },
+  { title: '男は暗い部屋で明かりをつけずに本を読み、何も困りませんでした。なぜ？', solution: 'その本は点字で書かれており、男は目が見えないため指で読んでいました。' },
+  { title: 'ある女性は毎朝、同じ店でコーヒーを買います。ある日、店員が何も言わず空のカップを渡すと、女性は喜んで帰りました。なぜ？', solution: '女性は自分のマイカップを持参しており、店員はそのカップにコーヒーを入れていました。問題文の空のカップはコーヒーを飲み終えた後に返されたものです。' },
+];
 export const BOMBER_PROMPTS = ['「あ」から始まる食べ物','学校にあるもの','旅行に持っていくもの','丸いもの','冬に使うもの','動物園にいる動物','コンビニで買えるもの','海にあるもの','音が出るもの','赤いもの'];
 
 export function normalizePartyAnswer(value: unknown, max = 120): string {

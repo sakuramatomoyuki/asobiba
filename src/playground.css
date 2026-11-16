@@ -541,3 +541,36 @@ body[data-game-type="ogiri"] .ranking-screen .rank-score { color:#17212b!importa
 @keyframes majority-carousel-prev{from{opacity:.2;transform:translateX(-36px) scale(.98)}to{opacity:1;transform:translateX(0) scale(1)}}
 @media(max-width:540px){.majority-carousel{grid-template-columns:42px minmax(0,1fr) 42px;gap:6px}.majority-carousel-arrow{width:42px;height:52px}.majority-carousel-slide{min-height:200px;padding:18px}.majority-carousel-slide strong{font-size:19px}}
 @media(prefers-reduced-motion:reduce){.majority-carousel-slide{animation:none!important}.majority-carousel-arrow,.majority-carousel-dots button{transition:none}}
+
+/* Compact side-by-side ITO result: compare the guessed order with the truth. */
+.ito-result-card{width:100%;max-width:980px;margin-inline:auto}
+.ito-result-verdict{display:flex;align-items:center;gap:12px;flex-wrap:wrap;padding:12px 16px;border-radius:15px;margin-bottom:16px}
+.ito-result-verdict small{font-weight:850;letter-spacing:.12em;text-transform:uppercase}
+.ito-result-verdict h2{margin:0;font-size:clamp(20px,3vw,30px)}
+.ito-result-verdict p{flex-basis:100%;margin:0}
+.ito-result-verdict.success{background:#e9f7ef;color:#236b49;border:1px solid #b9e4ca}
+.ito-result-verdict.failure{background:#fff2ed;color:#96483a;border:1px solid #f0c8ba}
+.ito-result-comparison{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px;margin:12px 0 18px}
+.ito-result-column{min-width:0;padding:14px;border:1px solid #dce7e9;border-radius:16px;background:#f8fbfc}
+.ito-result-column h3{margin:0 0 10px;font-size:clamp(14px,2vw,18px)}
+.ito-result-column ol{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:7px;margin:0;padding:0;list-style:none}
+.ito-result-column li{display:grid;grid-template-columns:26px minmax(0,1fr) auto;align-items:center;gap:6px;min-width:0;padding:8px;border-radius:11px;background:#fff;border:1px solid #e4ebed;font-size:13px}
+.ito-result-column li b{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.ito-result-rank{display:grid;place-items:center;width:24px;height:24px;border-radius:50%;background:#e7f1f2;color:#356e73;font-weight:900}
+.ito-result-column li strong{font-size:17px;color:#287d76}
+.ito-result-column.actual li{border-color:#cde8dd;background:#fafffc}
+.ito-result-column.actual .ito-result-rank{background:#dff3e8;color:#26704b}
+.lateral-prepared-settings{display:grid;gap:10px;padding:16px;border:1px solid #dce6e7;border-radius:16px;background:#f5f9fa}
+.lateral-prepared-settings>small{margin-top:-6px}
+.lateral-prepared-card{margin-top:18px;padding:18px;border:1px solid #dce6e7;border-radius:16px;background:#f7fafb}
+.lateral-prepared-card details{margin:12px 0;color:#375468}
+.lateral-gm-actions{grid-column:1/-1}
+.lateral-questions article.is-good-question{border-color:#d5b653;background:#fffbed}
+.lateral-questions article em{padding:5px 9px;border-radius:999px;background:#fff0bd;color:#82621a;font-style:normal;font-weight:850;white-space:nowrap}
+.lateral-wrong-answers{padding:12px 15px;border-radius:14px;background:#fff4f0;color:#744b43}
+.lateral-wrong-answers p{margin:7px 0;color:#744b43}
+.lateral-private-wait{padding:12px;border-radius:12px;background:#f2f6fb;text-align:center}
+.lateral-solver{padding:13px;border-radius:12px;background:#e9f7ef;color:#236b49;font-size:18px}
+.lateral-solution-copy{display:grid;grid-template-columns:auto minmax(0,1fr);gap:8px 14px;align-items:start}
+.lateral-solution-copy p{margin:0 0 10px}
+@media(max-width:640px){.ito-result-comparison{gap:8px}.ito-result-column{padding:9px}.ito-result-column ol{grid-template-columns:1fr}.ito-result-column li{padding:7px 6px;font-size:12px}.ito-result-column li strong{font-size:15px}.ito-result-verdict{gap:6px;padding:10px}.lateral-solution-copy{grid-template-columns:1fr;gap:2px}}

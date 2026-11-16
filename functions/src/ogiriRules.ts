@@ -1,7 +1,7 @@
 export type OgiriMode = 'normal' | 'survive' | 'knockout';
 export type OgiriScoring = 'fun' | 'ten-point';
 export type OgiriInputMode = 'text' | 'drawing' | 'either';
-export type OgiriSettings = { mode: OgiriMode; scoring: OgiriScoring; threshold: number; questionCount: number; inputMode: OgiriInputMode; judgeMode: 'host' | 'all'; answerFlow: 'buzz' | 'batch'; promptSource: 'app' | 'host'; pointsEnabled: boolean; addRoomPoints: boolean };
+export type OgiriSettings = { mode: OgiriMode; scoring: OgiriScoring; threshold: number; questionCount: number | 'infinite'; inputMode: OgiriInputMode; judgeMode: 'host' | 'all'; answerFlow: 'buzz' | 'batch'; promptSource: 'app' | 'host'; pointsEnabled: boolean; addRoomPoints: boolean };
 
 export function validateOgiriSettings(value: Partial<OgiriSettings>): string | null {
   if (!['normal','survive','knockout'].includes(String(value.mode))) return '大喜利の進行形式を選んでください。';
@@ -10,7 +10,7 @@ export function validateOgiriSettings(value: Partial<OgiriSettings>): string | n
   if (!['host','all'].includes(String(value.judgeMode))) return '採点者を選んでください。';
   if (!['buzz','batch'].includes(String(value.answerFlow))) return '回答の発表方法を選んでください。';
   if (!['app','host'].includes(String(value.promptSource))) return 'お題の用意方法を選んでください。';
-  if (!Number.isInteger(value.questionCount) || Number(value.questionCount) < 3 || Number(value.questionCount) > 20) return '出題数は3〜20問にしてください。';
+  if (value.questionCount !== 'infinite' && (!Number.isInteger(value.questionCount) || Number(value.questionCount) < 1 || Number(value.questionCount) > 30)) return '出題数は1〜30問にしてください。';
   if (typeof value.threshold !== 'number' || value.threshold < 0 || value.threshold > 1) return '合格ラインは0〜100%の範囲で設定してください。';
   return null;
 }

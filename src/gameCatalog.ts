@@ -34,7 +34,7 @@ export type OgiriSettings = {
   mode: 'survive' | 'knockout' | 'normal';
   scoring: 'fun' | 'ten-point';
   threshold: number;
-  questionCount: number;
+  questionCount: number | 'infinite';
   inputMode: 'text' | 'drawing' | 'either';
   judgeMode: 'host' | 'all';
   answerFlow: 'buzz' | 'batch';
@@ -44,7 +44,7 @@ export type OgiriSettings = {
 };
 
 export type SurveyQuestionType = 'single' | 'multiple' | 'text' | 'boolean';
-export type SurveySettings = { source: 'host' | 'sequential'; maxQuestions: number };
+export type SurveySettings = { source: 'host' | 'sequential'; maxQuestions: number | 'infinite' };
 
 export const DEFAULT_WORD_WOLF: WordWolfSettings = {
   discussionSeconds: 60,

@@ -18,6 +18,7 @@ export function RoomScoreboard({ entries, showRoles, game, children }: {
 }) {
   return (
     <section className={`room-scoreboard scoreboard-${game}`} aria-labelledby="room-scoreboard-title">
+      <div className="scoreboard-celebration" aria-hidden="true"><span className="scoreboard-crown">♛</span>{Array.from({ length: 16 }, (_, index) => <i key={index} style={{ '--particle': index } as CSSProperties} />)}</div>
       <h2 id="room-scoreboard-title">ルーム累計ランキング</h2>
       {entries.length === 0 ? (
         <p className="room-scoreboard-empty">まだ順位データがありません。</p>
@@ -36,7 +37,7 @@ export function RoomScoreboard({ entries, showRoles, game, children }: {
               const breakdown = Object.entries(entry.earned ?? {});
               return (
                 <tr key={entry.uid} className={rank === 1 ? 'scoreboard-leading' : undefined} style={{ '--entry-delay': `${index * 85}ms` } as CSSProperties}>
-                  <td className="scoreboard-rank">{rank}<span className="sr-only">位</span></td>
+                  <td className="scoreboard-rank"><span className={`scoreboard-medallion medal-${Math.min(rank, 4)}`}>{rank}</span><span className="sr-only">位</span></td>
                   <th scope="row">
                     <strong className="scoreboard-name">{entry.name}</strong>
                     {showRoles && entry.role && (

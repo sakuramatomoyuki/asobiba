@@ -6,7 +6,7 @@ export function GameDirectory({ onGuide }: { onGuide: (game: GameId | null) => v
       <h2 id="game-catalog-title">遊べるゲーム</h2>
       <ul className="game-directory-list">
         {GAME_CATALOG.map((game) => (
-          <li key={game.id}>
+          <li key={game.id} data-game={game.id}>
             <button
               className="game-directory-entry"
               type="button"
@@ -14,6 +14,7 @@ export function GameDirectory({ onGuide }: { onGuide: (game: GameId | null) => v
               aria-describedby={`directory-${game.id}-description directory-${game.id}-meta`}
               onClick={() => onGuide(game.id)}
             >
+              <span className="directory-art" aria-hidden="true"><span>{game.mark}</span><i /><i /><i /></span>
               <span className="game-directory-title">{game.name}</span>
               <span className="game-directory-description" id={`directory-${game.id}-description`}>{game.shortDescription}</span>
               <span className="game-directory-meta" id={`directory-${game.id}-meta`}>

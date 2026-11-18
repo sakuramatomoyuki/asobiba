@@ -113,7 +113,7 @@ export function GameGuidePanel({ game }: { game?: string | null }) {
           const isOpen = openGuideId === guide.id;
           const panelId = `${prefix}-${guide.id}`;
           return (
-            <article key={guide.id} className="game-rules-entry">
+            <article key={guide.id} className="game-rules-entry" data-game={guide.id}>
               <h3 className="game-rules-title">
                 <button
                   type="button"
@@ -121,7 +121,7 @@ export function GameGuidePanel({ game }: { game?: string | null }) {
                   aria-controls={panelId}
                   onClick={() => setOpenGuideId((current) => current === guide.id ? null : guide.id)}
                 >
-                  <span>{guide.name}</span>
+                  <span className="rules-game-name"><span className="rules-game-mark" aria-hidden="true">{catalogGame?.mark}</span>{guide.name}</span>
                   {catalogGame && <small>{catalogGame.players}</small>}
                   <span className="game-rules-chevron" aria-hidden="true" />
                 </button>

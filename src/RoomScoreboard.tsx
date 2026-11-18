@@ -1,4 +1,4 @@
-import type { ReactNode } from 'react';
+import type { CSSProperties, ReactNode } from 'react';
 import { rankPosition } from './ranking';
 
 type RankingEntry = {
@@ -10,13 +10,14 @@ type RankingEntry = {
   earned?: Record<string, number> | null;
 };
 
-export function RoomScoreboard({ entries, showRoles, children }: {
+export function RoomScoreboard({ entries, showRoles, game, children }: {
   entries: RankingEntry[];
   showRoles: boolean;
+  game: string;
   children: ReactNode;
 }) {
   return (
-    <section className="room-scoreboard" aria-labelledby="room-scoreboard-title">
+    <section className={`room-scoreboard scoreboard-${game}`} aria-labelledby="room-scoreboard-title">
       <h2 id="room-scoreboard-title">ルーム累計ランキング</h2>
       {entries.length === 0 ? (
         <p className="room-scoreboard-empty">まだ順位データがありません。</p>
@@ -34,7 +35,7 @@ export function RoomScoreboard({ entries, showRoles, children }: {
               const rank = rankPosition(entries, index, (item) => Number(item.points) || 0);
               const breakdown = Object.entries(entry.earned ?? {});
               return (
-                <tr key={entry.uid} className={rank === 1 ? 'scoreboard-leading' : undefined}>
+                <tr key={entry.uid} className={rank === 1 ? 'scoreboard-leading' : undefined} style={{ '--entry-delay': `${index * 85}ms` } as CSSProperties}>
                   <td className="scoreboard-rank">{rank}<span className="sr-only">位</span></td>
                   <th scope="row">
                     <strong className="scoreboard-name">{entry.name}</strong>

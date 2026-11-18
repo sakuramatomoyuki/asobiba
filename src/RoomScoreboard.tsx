@@ -30,7 +30,7 @@ export function RoomScoreboard({ entries, showRoles, game, children }: {
   const style = Object.fromEntries(Object.entries(colors).map(([name, value]) => [`--score-${name}`, value])) as CSSProperties;
   return (
     <section className={`room-scoreboard scoreboard-${game}`} aria-labelledby="room-scoreboard-title" style={style}>
-      <div className="scoreboard-celebration" aria-hidden="true"><span className="scoreboard-laurel left" /><span className="scoreboard-crown" /><span className="scoreboard-laurel right" /><span className="scoreboard-stars">✦ ✧ ✦</span>{Array.from({ length: 16 }, (_, index) => <i key={index} style={{ '--particle': index } as CSSProperties} />)}</div>
+      <div className="scoreboard-celebration" aria-hidden="true"><span className="scoreboard-crown" /><span className="scoreboard-stars">✦ ✧ ✦</span>{Array.from({ length: 16 }, (_, index) => <i key={index} style={{ '--particle': index } as CSSProperties} />)}</div>
       <h2 id="room-scoreboard-title">ルーム累計ランキング</h2>
       {entries.length === 0 ? (
         <p className="room-scoreboard-empty">まだ順位データがありません。</p>

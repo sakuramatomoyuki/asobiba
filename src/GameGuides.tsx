@@ -97,15 +97,84 @@ export const GAME_GUIDES: readonly Guide[] = [
 ];
 
 export function GameGuidePanel({ game }: { game?: string | null }) {
-  const selectedGuide = game ? GAME_GUIDES.find((guide) => guide.id === game) : undefined;
+  const selectedGuide = GAME_GUIDES.find((guide) => guide.id === game);
   const guides = selectedGuide ? [selectedGuide] : GAME_GUIDES;
-  const [openGuideId, setOpenGuideId] = React.useState<string>(selectedGuide?.id ?? '');
-  React.useEffect(() => setOpenGuideId(selectedGuide?.id ?? ''), [selectedGuide?.id]);
-  return <section className="game-guide-panel" aria-label="ゲーム別の遊び方">
-    <div className="game-guide-heading"><span className="eyebrow">GUIDE BY GAME</span><h2>{selectedGuide ? 'このゲームの遊び方' : 'ゲーム別の遊び方'}</h2><p>初めての人も、各画面の案内に沿って進めれば大丈夫です。</p><details className="game-guide-basics"><summary>参加方法・ホスト・司会役について</summary><div><p className="game-guide-device-note"><b>参加方法</b> 「各自の端末」は全員が自分のスマートフォンやPCを使います。「共有端末」は1台を順番に使い、「併用」は両方を混ぜます。対応する参加方法はゲームによって異なります。</p><p className="game-guide-host-note"><b>ホストと司会役</b> ホストはルームやゲームの開始・進行を管理します。プレイヤー兼ホストにも、他の人の役職や秘密の回答は表示されません。水平思考クイズの司会役（GM）は、問題選び・質問への返答・解答の判定を担当します。設定によりホスト固定または交代制です。司会役を担当する人だけが、その問題の真相を見ます。観戦者は進行を操作せず、公開情報だけを見ます。</p></div></details></div>
-    <div className="game-guide-list">{guides.map((guide) => {const catalogGame=GAME_CATALOG.find((entry)=>entry.id===guide.id);const isOpen=openGuideId===guide.id;const panelId=`game-guide-panel-${guide.id}`;return <article key={guide.id} className={`game-guide game-guide-${guide.id}${isOpen?' is-open':''}`}>
-      <button className="game-guide-trigger" type="button" aria-expanded={isOpen} aria-controls={panelId} onClick={()=>setOpenGuideId((current)=>current===guide.id?'':guide.id)}><span className="game-guide-mark" aria-hidden="true">{catalogGame?.mark}</span><span className="game-guide-title"><span className="game-guide-mood">{guide.mood}</span><strong>{guide.name}</strong></span><span className="game-guide-summary">{guide.summary}</span><span className="game-guide-players">{catalogGame?.players}<small>{catalogGame?gameDeviceModeHint(catalogGame):''}</small></span><span className="game-guide-chevron" aria-hidden="true">⌄</span></button>
-      <div id={panelId} className="game-guide-accordion" aria-hidden={!isOpen} {...(!isOpen ? { inert: '' } as any : {})}><div className="game-guide-accordion-inner"><div className="game-guide-body"><div className="game-guide-goal"><b>目指すこと</b><p>{guide.aim}</p></div><div className="game-guide-first-move"><b>まずはここから</b><p>{guide.firstMove}</p></div>{guide.twoPlayerNote&&<div className="game-guide-two-player"><b>2人で遊ぶとき</b><p>{guide.twoPlayerNote}</p></div>}{guide.roles&&<details className="game-guide-role-list"><summary>役職の早見表（{guide.roles.length}種類）</summary><div>{guide.roles.map((role)=><article key={role.name}><b>{role.name}</b><p>{role.description}</p></article>)}</div></details>}<div className="game-guide-columns"><section><h3>ゲームの流れ</h3><ol className="game-guide-animated-steps">{guide.steps.map((step,stepIndex) => <li key={step} style={{'--step-delay':`${stepIndex*150}ms`} as React.CSSProperties}>{step}</li>)}</ol></section><section><h3>初めて遊ぶ方へ</h3><ul>{guide.tips.map((tip) => <li key={tip}>{tip}</li>)}</ul></section></div></div></div></div>
-    </article>})}</div>
-  </section>;
+  const [openGuideId, setOpenGuideId] = React.useState<GameId | null>(selectedGuide?.id ?? null);
+  const prefix = React.useId();
+
+  React.useEffect(() => setOpenGuideId(selectedGuide?.id ?? null), [selectedGuide?.id]);
+
+  return (
+    <section className="game-rules" aria-label="ゲーム別の遊び方">
+      {!selectedGuide && <h3 className="game-rules-heading">ゲーム別の遊び方</h3>}
+      <div className="game-rules-list">
+        {guides.map((guide) => {
+          const catalogGame = GAME_CATALOG.find((entry) => entry.id === guide.id);
+          const isOpen = openGuideId === guide.id;
+          const panelId = `${prefix}-${guide.id}`;
+          return (
+            <article key={guide.id} className="game-rules-entry">
+              <h3 className="game-rules-title">
+                <button
+                  type="button"
+                  aria-expanded={isOpen}
+                  aria-controls={panelId}
+                  onClick={() => setOpenGuideId((current) => current === guide.id ? null : guide.id)}
+                >
+                  <span>{guide.name}</span>
+                  {catalogGame && <small>{catalogGame.players}</small>}
+                  <span className="game-rules-chevron" aria-hidden="true" />
+                </button>
+              </h3>
+              <div
+                id={panelId}
+                className="game-rules-panel"
+                aria-hidden={!isOpen}
+                {...(isOpen ? {} : { inert: '' })}
+              >
+                <div className="game-rules-clip">
+                  <div className="game-rules-body">
+                    {catalogGame && <p className="game-rules-device">{gameDeviceModeHint(catalogGame)}</p>}
+                    <p className="game-rules-aim">{guide.summary}</p>
+                    <p className="game-rules-goal">{guide.aim}</p>
+                    <div className="game-rules-columns">
+                      <section>
+                        <h4>ゲームの流れ</h4>
+                        <ol>{guide.steps.map((step) => <li key={step}>{step}</li>)}</ol>
+                      </section>
+                      <section>
+                        <h4>最初の一手</h4>
+                        <p>{guide.firstMove}</p>
+                        {guide.twoPlayerNote && <p><strong>2人で遊ぶとき</strong> {guide.twoPlayerNote}</p>}
+                        <details className="rules-extra">
+                          <summary>補足ルール</summary>
+                          <ul>{guide.tips.map((tip) => <li key={tip}>{tip}</li>)}</ul>
+                        </details>
+                      </section>
+                    </div>
+                    {guide.roles && (
+                      <details className="rules-extra">
+                        <summary>役職の早見表（{guide.roles.length}種類）</summary>
+                        <dl className="game-rules-roles">
+                          {guide.roles.map((role) => (
+                            <div key={role.name}><dt>{role.name}</dt><dd>{role.description}</dd></div>
+                          ))}
+                        </dl>
+                      </details>
+                    )}
+                  </div>
+                </div>
+              </div>
+            </article>
+          );
+        })}
+      </div>
+      <details className="rules-extra game-rules-basics">
+        <summary>参加方法とホスト・司会役について</summary>
+        <p><strong>各自の端末</strong>は1人1台、<strong>共有端末</strong>は1台を順番に使います。両方を組み合わせるのが<strong>併用</strong>です。</p>
+        <p>ホストはルームやゲームの進行を管理します。プレイヤーを兼ねるホストには、ほかの人の役職や秘密の回答は表示されません。</p>
+        <p>水平思考クイズの司会役は、問題選び、質問への返答、解答の判定を担当し、その問題の真相を見られます。観戦者は公開情報だけを見られ、進行の操作はできません。</p>
+      </details>
+    </section>
+  );
 }

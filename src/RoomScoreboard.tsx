@@ -1,4 +1,4 @@
-import type { CSSProperties, ReactNode } from 'react';
+import { useEffect, useRef, type CSSProperties, type ReactNode } from 'react';
 import { rankPosition } from './ranking';
 
 type RankingEntry = {
@@ -26,11 +26,35 @@ export function RoomScoreboard({ entries, showRoles, game, children }: {
   game: string;
   children: ReactNode;
 }) {
+  const scoreboardRef = useRef<HTMLElement>(null);
+  useEffect(() => {
+    const element = scoreboardRef.current;
+    if (!element) return;
+    const updateHeight = () => element.style.setProperty('--score-height', `${element.offsetHeight}px`);
+    updateHeight();
+    const observer = new ResizeObserver(updateHeight);
+    observer.observe(element);
+    return () => observer.disconnect();
+  }, []);
   const colors = SCORE_COLORS[game] ?? SCORE_COLORS.lateral;
   const style = Object.fromEntries(Object.entries(colors).map(([name, value]) => [`--score-${name}`, value])) as CSSProperties;
   return (
-    <section className={`room-scoreboard scoreboard-${game}`} aria-labelledby="room-scoreboard-title" style={style}>
-      <div className="scoreboard-celebration" aria-hidden="true"><span className="scoreboard-crown" /><span className="scoreboard-stars">✦ ✧ ✦</span>{Array.from({ length: 16 }, (_, index) => <i key={index} style={{ '--particle': index } as CSSProperties} />)}</div>
+    <section ref={scoreboardRef} className={`room-scoreboard scoreboard-${game}`} aria-labelledby="room-scoreboard-title" style={style}>
+      <div className="scoreboard-confetti" aria-hidden="true">
+        {Array.from({ length: 80 }, (_, index) => (
+          <i key={index} style={{
+            '--x': `${(index * 37 + 3) % 100}%`,
+            '--delay': `${(index % 20) * 0.09}s`,
+            '--duration': `${3.6 + (index % 7) * 0.22}s`,
+            '--drift': `${((index * 19) % 100) - 50}px`,
+            '--turn': `${180 + (index % 5) * 90}deg`,
+          } as CSSProperties} />
+        ))}
+      </div>
+      <div className="scoreboard-celebration" aria-hidden="true">
+        <span className="scoreboard-crown" style={{ '--crown-image': `url("${import.meta.env.BASE_URL}images/ranking-crown.png")` } as CSSProperties} />
+        <span className="scoreboard-stars">✦ ✧ ✦</span>
+      </div>
       <h2 id="room-scoreboard-title">ルーム累計ランキング</h2>
       {entries.length === 0 ? (
         <p className="room-scoreboard-empty">まだ順位データがありません。</p>

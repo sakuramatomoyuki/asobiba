@@ -1,5 +1,19 @@
 import { describe, expect, it, vi } from 'vitest';
-import { allVoteParticipantsSubmitted, calculateWerewolfPointAwards, canReadSharedPublicView, canRevealSeatSecret, chooseRandomDistinct, sampleRoleCandidates, cleanRealtimeData, gameSupportsDeviceMode, invalidateNightActionsForDeath, nextSharedNightTurn, nightCompleteIds, nightParticipantIds, recommendedRoles, revoteFallbackPlan, revoteVoters, tallyVotes, teamOf, tiedVoteAction, voteParticipantIds, winningTeam } from '../functions/src/gameRules';
+import { allVoteParticipantsSubmitted, calculateWerewolfPointAwards, canReadSharedPublicView, canRevealSeatSecret, chooseRandomDistinct, sampleRoleCandidates, cleanRealtimeData, gameSupportsDeviceMode, minimumPlayersForGame, invalidateNightActionsForDeath, nextSharedNightTurn, nightCompleteIds, nightParticipantIds, recommendedRoles, revoteFallbackPlan, revoteVoters, tallyVotes, teamOf, tiedVoteAction, voteParticipantIds, winningTeam } from '../functions/src/gameRules';
+
+describe('ゲームごとの最低参加人数', () => {
+  it('大喜利・水平思考クイズ・一致するまで終われまてんは2人から遊べる', () => {
+    for (const game of ['ogiri', 'lateral', 'untilmatch']) {
+      expect(minimumPlayersForGame(game)).toBe(2);
+    }
+  });
+
+  it('それ以外のゲームは従来どおり3人から', () => {
+    for (const game of ['jinrou', 'wordwolf', 'survey', 'majority', 'ito']) {
+      expect(minimumPlayersForGame(game)).toBe(3);
+    }
+  });
+});
 
 describe('ゲームごとの端末モード', () => {
   it('共有・併用モードでは人狼、ワードウルフ、ITOだけを許可する', () => {
@@ -7,7 +21,7 @@ describe('ゲームごとの端末モード', () => {
       expect(gameSupportsDeviceMode(game, 'shared')).toBe(true);
       expect(gameSupportsDeviceMode(game, 'hybrid')).toBe(true);
     }
-    for (const game of ['majority', 'lateral', 'hyperbomber', 'untilmatch', 'ogiri', 'survey']) {
+    for (const game of ['majority', 'lateral', 'untilmatch', 'ogiri', 'survey']) {
       expect(gameSupportsDeviceMode(game, 'shared')).toBe(false);
       expect(gameSupportsDeviceMode(game, 'hybrid')).toBe(false);
       expect(gameSupportsDeviceMode(game, 'individual')).toBe(true);

@@ -4,8 +4,12 @@
     ".write": false,
     "roomSignals": {
       "$roomCode": {
-        ".read": "auth != null && data.child('members').child(auth.uid).val() === true",
-        ".write": false
+        ".read": false,
+        ".write": false,
+        "closedAt": {
+          ".read": "auth != null && root.child('roomSignals').child($roomCode).child('members').child(auth.uid).val() === true",
+          ".write": false
+        }
       }
     },
     "rooms": {

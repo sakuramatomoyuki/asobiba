@@ -41,12 +41,15 @@ export function ogiriRoundScores(answerUids: string[], ratings: Record<string, R
   return Object.fromEntries(answerUids.map((answerUid) => {
     const votes = Object.entries(ratings).filter(([judgeUid]) => judgeUid !== answerUid).map(([, scores]) => scores[answerUid]).filter((score) => Number.isFinite(score));
     const average = votes.length ? votes.reduce((sum, score) => sum + score, 0) / votes.length : 0;
-    return [answerUid, { average, votes: votes.length, gamePoints: scoring === 'fun' ? average * 10 : average }];
+    // Keep the displayed percentage separate from the game's score: in the
+    // binary「面白い／普通」mode each 面白い vote earns one point.
+    const gamePoints = scoring === 'fun' ? votes.reduce((sum, score) => sum + score, 0) : average;
+    return [answerUid, { average, votes: votes.length, gamePoints }];
   }));
 }
 
 export function ogiriEliminations(mode: OgiriMode, activeUids: string[], scores: Record<string, {average:number}>, threshold: number, scoring: OgiriScoring): string[] {
-  if (mode === 'normal' || activeUids.length <= 2) return [];
+  if (mode === 'normal' || activeUids.length === 0) return [];
   if (mode === 'survive') {
     const cutoff = scoring === 'fun' ? threshold : threshold * 10;
     return activeUids.filter((uid) => (scores[uid]?.average ?? 0) < cutoff);
@@ -58,4 +61,11 @@ export function ogiriEliminations(mode: OgiriMode, activeUids: string[], scores:
 
 export function ogiriRatingsComplete(targetUids: string[], ratings: Record<string, number> | undefined): boolean {
   return targetUids.every((uid) => Object.prototype.hasOwnProperty.call(ratings || {}, uid));
+}
+
+/** A batch round can start its reveal once every currently active seat has
+ * submitted. Requiring at least one active seat avoids an empty `every()`
+ * silently completing a round after everyone disconnects. */
+export function ogiriBatchAnswersComplete(activeUids: string[], answers: Record<string, unknown> | undefined): boolean {
+  return activeUids.length > 0 && activeUids.every((uid) => Object.prototype.hasOwnProperty.call(answers || {}, uid));
 }

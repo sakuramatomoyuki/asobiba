@@ -1,5 +1,45 @@
 export type SurveyQuestion = { id: string; prompt: string; type: 'single' | 'multiple' | 'text' | 'boolean'; options: string[] };
 export type SurveyAnswer = string | string[];
+type SurveyPlayerState = { uid: string; connected?: boolean; alive?: boolean; hold?: boolean };
+
+/** Finds the next sequential question author, recovering from stale room rosters. */
+export function nextSurveyQuestionAuthor(
+  rawOrder: unknown,
+  rawQuestionIndex: unknown,
+  players: Record<string, SurveyPlayerState>,
+  previousAuthorUid?: unknown,
+): string | null {
+  const order = Array.isArray(rawOrder)
+    ? [...new Set(rawOrder.filter((uid): uid is string => typeof uid === 'string' && Boolean(players[uid])))]
+    : [];
+  const eligible = (uid: string) => Boolean(players[uid]?.connected && players[uid]?.alive && !players[uid]?.hold);
+  const activeRoster = Object.values(players).filter(player => eligible(player.uid)).map(player => player.uid);
+  // Preserve the randomized order created at game start, but include any
+  // currently active player missing from an old or partially written roster.
+  // Without this merge, one valid stored UID could prevent every omitted
+  // participant from ever receiving a question-author turn.
+  const rotation = [...order, ...activeRoster.filter(uid => !order.includes(uid))];
+  const index = Number.isFinite(Number(rawQuestionIndex)) ? Math.trunc(Number(rawQuestionIndex)) : 0;
+  const previousIndex = typeof previousAuthorUid === 'string' ? rotation.indexOf(previousAuthorUid) : -1;
+  const startIndex = previousIndex >= 0 ? previousIndex + 1 : index;
+  const start = ((startIndex % Math.max(1, rotation.length)) + Math.max(1, rotation.length)) % Math.max(1, rotation.length);
+  for (let offset = 0; offset < rotation.length; offset++) {
+    const uid = rotation[(start + offset) % rotation.length];
+    if (eligible(uid)) return uid;
+  }
+  // If every entry in the stored order is inactive, assign the turn from the
+  // live roster instead of leaving the question phase without an author.
+  if (!activeRoster.length) return null;
+  const previousActiveIndex = typeof previousAuthorUid === 'string' ? activeRoster.indexOf(previousAuthorUid) : -1;
+  const activeStart = previousActiveIndex >= 0 ? previousActiveIndex + 1 : index;
+  return activeRoster[((activeStart % activeRoster.length) + activeRoster.length) % activeRoster.length];
+}
+
+/** Sequential questions belong only to the assigned player; manager privileges do not override the turn. */
+export function canSetSurveyQuestion(source: unknown, uid: string, authorUid: string | null, isManager: boolean): boolean {
+  if (source === 'host') return isManager && uid === authorUid;
+  return source === 'sequential' && Boolean(authorUid) && uid === authorUid;
+}
 
 export function validateSurveyQuestion(question: Partial<SurveyQuestion>): string | null {
   const prompt = String(question.prompt || '').trim();
@@ -28,9 +68,20 @@ export function normalizeSurveyAnswer(question: SurveyQuestion, raw: unknown): S
 }
 
 /** Produces anonymous, aggregate-only results. No respondent IDs or names leave this helper. */
-export function anonymousSurveyResults(question: SurveyQuestion, answers: Record<string, SurveyAnswer>) {
+export function anonymousSurveyResults(
+  question: SurveyQuestion,
+  answers: Record<string, SurveyAnswer>,
+  randomIndex: (maxExclusive: number) => number = (maxExclusive) => Math.floor(Math.random() * maxExclusive),
+) {
   const values = Object.values(answers);
-  if (question.type === 'text') return { responseCount: values.length, responses: values.map(String) };
+  if (question.type === 'text') {
+    const responses = values.map(String);
+    for (let index = responses.length - 1; index > 0; index--) {
+      const selected = Math.max(0, Math.min(index, Math.trunc(randomIndex(index + 1))));
+      [responses[index], responses[selected]] = [responses[selected], responses[index]];
+    }
+    return { responseCount: responses.length, responses };
+  }
   const counts = Object.fromEntries(question.type === 'boolean' ? ['はい', 'いいえ'].map((choice) => [choice, 0]) : question.options.map((choice) => [choice, 0]));
   for (const value of values) for (const choice of Array.isArray(value) ? value : [String(value)]) if (choice in counts) counts[choice]++;
   return { responseCount: values.length, counts, percentages: Object.fromEntries(Object.entries(counts).map(([choice, count]) => [choice, values.length ? Math.round((Number(count) / values.length) * 100) : 0])) };
@@ -49,7 +100,11 @@ export function surveyManagerView(game: any) {
   return {
     type: 'survey',
     source: game?.source === 'host' ? 'host' : 'sequential',
-    maxQuestions: Number(game?.maxQuestions) || 0,
+    // Preserve the unbounded setting in manager snapshots; coercing the string
+    // "infinite" to a number silently turned it into 0 questions.
+    maxQuestions: game?.maxQuestions === 'infinite'
+      ? 'infinite'
+      : Math.max(0, Number(game?.maxQuestions) || 0),
     questionIndex: Number(game?.questionIndex) || 0,
     questions: (Array.isArray(game?.questions) ? game.questions : []).map(questionView),
     currentQuestion: questionView(game?.currentQuestion),

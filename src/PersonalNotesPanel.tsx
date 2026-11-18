@@ -48,7 +48,7 @@ export function PersonalNotesPanel({ room, activeSeat, chatOpen = false }: { roo
   if (!enabled) return null;
   const update = (id: string, patch: any) => setNotes((current: any) => updatePersonalNote(current, id, {
     ...patch,
-    phase: `第${room.round || 1}日目 · ${notePhases[room.phase] || room.phase}`,
+    phase: `第${room.round || 1}日目 · ${notePhases[room.phase] || 'ゲーム中'}`,
     time: new Date().toLocaleTimeString('ja-JP', { hour: '2-digit', minute: '2-digit' }),
   }));
   return <>

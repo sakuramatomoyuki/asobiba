@@ -1,12 +1,27 @@
-export type PartyGameId = 'majority'|'ito'|'lateral'|'hyperbomber'|'untilmatch';
-export const PARTY_GAME_IDS: readonly PartyGameId[] = ['majority','ito','lateral','hyperbomber','untilmatch'];
+export type PartyGameId = 'majority'|'ito'|'lateral'|'untilmatch';
+export const PARTY_GAME_IDS: readonly PartyGameId[] = ['majority','ito','lateral','untilmatch'];
 export const PARTY_GAME_DEFAULTS: Record<PartyGameId, Record<string, unknown>> = {
   majority: { rounds: 5, pointsEnabled: true, addRoomPoints: true },
   ito: { rounds: 1, pointsEnabled: true, addRoomPoints: true },
   lateral: { rounds: 1, gmMode: 'host', pointsEnabled: true, addRoomPoints: true },
-  hyperbomber: { turnSeconds: 15, pointsEnabled: true, addRoomPoints: true },
-  untilmatch: { matchStreak: 1, maxRounds: 10, pointsEnabled: true, addRoomPoints: true },
+  untilmatch: { maxRounds: 10, pointsEnabled: true, addRoomPoints: true },
 };
+
+/** Only the room creator (host) makes the final call, even if management was delegated. */
+export function canJudgeUntilMatch(
+  actorUid: string,
+  roomHostUid: string,
+  phase: string,
+  alreadyJudged: boolean,
+): boolean {
+  return actorUid === roomHostUid && phase === 'untilmatch-result' && !alreadyJudged;
+}
+
+/** Keep answers private during collection, then show every response for an impartial review. */
+export function publicUntilMatchResults(phase: string, results: unknown): unknown[] {
+  if (phase !== 'untilmatch-result' && phase !== 'ended') return [];
+  return Array.isArray(results) ? results : [];
+}
 
 export function mergePartyGameSettings(
   game: PartyGameId,
@@ -21,8 +36,7 @@ export function mergePartyGameSettings(
     majority: ['rounds', 'pointsEnabled', 'addRoomPoints'],
     ito: ['rounds', 'pointsEnabled', 'addRoomPoints'],
     lateral: ['rounds', 'gmMode', 'pointsEnabled', 'addRoomPoints'],
-    hyperbomber: ['turnSeconds', 'promptSource', 'prompt', 'pointsEnabled', 'addRoomPoints'],
-    untilmatch: ['matchStreak', 'maxRounds', 'pointsEnabled', 'addRoomPoints'],
+    untilmatch: ['maxRounds', 'pointsEnabled', 'addRoomPoints'],
   };
   const pick = (value: unknown) => Object.fromEntries(
     Object.entries(record(value)).filter(([key]) => allowed[game].includes(key)),
@@ -79,7 +93,9 @@ export const MAJORITY_PROMPTS = [
   'どんな運動も疲れずにできる。しかし、運動をしない日は眠れない。',
   '一生、誕生日を理想の形で祝ってもらえる。しかし、祝う相手は毎年ランダムに決まる。',
   '一つだけ超能力を選べる。しかし、その能力を使うたびに髪型が変わる。',
-  'どんな本でも一瞬で読める。しかし、読んだ内容は一週間で忘れてしまう。'
+  'どんな本でも一瞬で読める。しかし、読んだ内容は一週間で忘れてしまう。',
+  '一生、好きな場所に住める。しかし、引っ越しは二度とできない。',
+  '毎日、欲しいものを一つだけ無料でもらえる。しかし、前日に欲しいものを決めておかなければならない。'
 ];
 export const ITO_THEMES = [
   ['動物の大きさ','小さい','大きい'],['動物の速さ','遅い','速い'],['動物の強さ','弱い','強い'],['水族館の生き物の人気','不人気','大人気'],['家事の大変さ','余裕','超大変'],
@@ -107,6 +123,11 @@ export const UNTIL_MATCH_PROMPTS = [
   '目玉焼きにかけるものといえば？', '白い食べ物といえば？', '遠足のおやつといえば？', '夏に食べたいものといえば？',
   '無人島に一つ持っていくなら？', '動物園の人気者といえば？', 'コンビニでつい買うものといえば？', '赤い果物といえば？',
   '朝ごはんの定番といえば？', '一番有名な昔話といえば？', '旅行で持っていくものといえば？', '雨の日にしたいことといえば？',
+  'お寿司の定番ネタといえば？', '映画館で買うものといえば？', '夏祭りの屋台で食べたいものといえば？', '眠気を覚ます方法といえば？',
+  '家に帰って最初にすることといえば？', 'もらって嬉しい差し入れといえば？', 'カレーに合うものといえば？', '温泉旅行に持っていくものといえば？',
+  '学校の給食で人気のメニューといえば？', '友達と集まった時にする遊びといえば？', '寝る前にすることといえば？',
+  '朝に飲みたいものといえば？', '運動会で盛り上がる種目といえば？', '自分へのごほうびといえば？', '旅行先で食べたいものといえば？',
+  '冬に食べたくなるものといえば？', '休日に出かける場所といえば？', '冷蔵庫にあると嬉しいものといえば？',
 ];
 export const LATERAL_DEFAULT_QUIZ = [
   { title:'大事な書類', prompt:'男は印刷されたばかりの大事な書類を手に取るとすぐに捨てた。いったいなぜ？', solution:'男はコンビニ店員でレシートを手に取りましたが、お客さんにいらないと言われてそのまま捨てました。' },
@@ -170,21 +191,57 @@ export const LATERAL_DEFAULT_QUIZ = [
   { title:'海水浴', prompt:'水着に着替えた女は浜辺に出ると、海に入らず帰った。なぜ？', solution:'写真集の撮影で浜辺の写真だけ撮る予定でした。' },
   { title:'理不尽', prompt:'「後で電話して」と言われた男は電話したのに怒られた。なぜ？', solution:'モーニングコールを頼まれた男が早朝に電話しましたが、友達は頼んだことを忘れて怒りました。' },
 ];
-export const BOMBER_PROMPTS = ['「あ」から始まる食べ物','学校にあるもの','旅行に持っていくもの','丸いもの','冬に使うもの','動物園にいる動物','コンビニで買えるもの','海にあるもの','音が出るもの','赤いもの'];
 
 export function normalizePartyAnswer(value: unknown, max = 120): string {
   return String(value ?? '').normalize('NFKC').trim().replace(/\s+/g, ' ').slice(0, max);
+}
+/** Accept natural Japanese yes/no question endings, including polite forms such as 「関係ありますか」. */
+export function isYesNoQuestion(value: unknown): boolean {
+  const question = normalizePartyAnswer(value, 180);
+  if (!question) return false;
+  const hasQuestionMark = /[?？]$/u.test(question);
+  const withoutTerminalPunctuation = question.replace(/[。.!！?？\s]+$/u, '');
+  // A question mark alone is not enough: 「職業は？」 and 「犯人は誰？」
+  // ask for an open-ended answer. Accept natural yes/no endings, including
+  // the elliptical 「彼は店員？」, while rejecting common Japanese wh-words.
+  // 「いつも」「どうも」「どれも」のように、疑問詞と同じ文字で始まる
+  // 普通の語まで誤って弾かない。疑問詞そのもの（「いつ来ますか」等）は拒否する。
+  if (/(?:(?:誰|だれ|どこ|いつ|なぜ|どう|どちら|どっち|どれ)(?!か|も)|どの|どんな|どれくらい|どれほど|いくつ|いくら|何人|何時|何(?:者|もの|こと|です|なの|が|を|は|に|で|の|でしょう)|なん(?:で|の|です))/u.test(withoutTerminalPunctuation)) return false;
+  if (/(?:は|が|を|に|と|で|へ|の|も|や)$/u.test(withoutTerminalPunctuation)) return false;
+  return /(?:か|なの)$/u.test(withoutTerminalPunctuation) || hasQuestionMark;
 }
 export function samePartyAnswer(a: unknown, b: unknown): boolean {
   const clean = (value: unknown) => normalizePartyAnswer(value, 120).toLocaleLowerCase('ja').replace(/[、。！!？?・「」『』]/g, '');
   return Boolean(clean(a)) && clean(a) === clean(b);
 }
-export function majorityPoints(answers: Record<string, number>, enabled = true): Record<string, number> {
-  if (!enabled) return Object.fromEntries(Object.keys(answers).map(uid => [uid, 0]));
-  const counts = new Map<number, number>();
-  Object.values(answers).forEach(answer => counts.set(answer, (counts.get(answer) || 0) + 1));
-  const max = Math.max(0, ...counts.values());
-  return Object.fromEntries(Object.entries(answers).map(([uid, answer]) => [uid, counts.get(answer) === max ? 1 : 0]));
+export function resolveMajorityRound(
+  votes: Record<string, boolean>,
+  parentUid: string,
+  scores: Record<string, number>,
+  enabled = true,
+): { yes: number; no: number; tie: boolean; majorityVote: boolean; deltas: Record<string, number> } {
+  const validVotes = Object.entries(votes).filter((entry): entry is [string, boolean] => typeof entry[1] === 'boolean');
+  const yes = validVotes.filter(([, vote]) => vote).length;
+  const no = validVotes.length - yes;
+  const tie = yes === no;
+  const majorityVote = tie ? votes[parentUid] === true : yes > no;
+  const deltas = Object.fromEntries(validVotes.map(([uid]) => [uid, 0])) as Record<string, number>;
+  if (!enabled) return { yes, no, tie, majorityVote, deltas };
+
+  for (const [uid, vote] of validVotes) {
+    const balance = Math.max(0, Number(scores[uid]) || 0);
+    if (vote === majorityVote) {
+      deltas[uid] = 1;
+    } else if (uid === parentUid) {
+      deltas[uid] = balance > 0 ? -1 : 0;
+    } else {
+      // A minority player gives the parent one point even when their balance
+      // is zero; their own balance simply cannot fall below zero.
+      deltas[uid] = balance > 0 ? -1 : 0;
+      deltas[parentUid] = (deltas[parentUid] || 0) + 1;
+    }
+  }
+  return { yes, no, tie, majorityVote, deltas };
 }
 export function itoOrderIsCorrect(values: Record<string, number>, order: string[]): boolean {
   if (!order.length || new Set(order).size !== order.length || order.some(uid => !(uid in values))) return false;

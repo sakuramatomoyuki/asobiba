@@ -2,10 +2,21 @@ export type Ballot = Record<string, string>;
 
 export const ABSTAIN = '__abstain__';
 
+/** Canonical minimum player counts shared by the UI and trusted game actions. */
+export function minimumPlayersForGame(gameId: string): number {
+  return ['ogiri', 'lateral', 'untilmatch'].includes(gameId) ? 2 : 3;
+}
+
 /** Shared-table support is intentionally limited to games with a safe turn-by-turn handoff. */
 export function gameSupportsDeviceMode(gameId: string, method: string): boolean {
-  if (!['individual', 'shared', 'hybrid'].includes(method)) return false;
-  return method === 'individual' || ['jinrou', 'wordwolf', 'ito'].includes(gameId);
+  return supportedDeviceModes(gameId).includes(method as 'individual' | 'shared' | 'hybrid');
+}
+
+/** Keep the UI and server error messages consistent about where a game can run. */
+export function supportedDeviceModes(gameId: string): Array<'individual' | 'shared' | 'hybrid'> {
+  return ['individual', 'shared', 'hybrid'].filter((mode) =>
+    mode === 'individual' || ['jinrou', 'wordwolf', 'ito'].includes(gameId),
+  ) as Array<'individual' | 'shared' | 'hybrid'>;
 }
 
 /** Realtime Database rejects undefined anywhere inside a transaction payload. */
@@ -24,7 +35,10 @@ export function cleanRealtimeData<T>(value: T): T {
 
 export function recommendedRoles(playerCount: number): Record<string, number> {
   const count = Math.max(3, Math.min(20, Math.floor(playerCount)));
-  const wolves = Math.ceil(count / 4);
+  // Keep 3–5 player tables approachable, then add a second wolf at six
+  // players so the village does not overwhelm a single wolf after day one.
+  // Larger tables add one wolf per four-player band (7–10, 11–14, ...).
+  const wolves = Math.max(count >= 6 ? 2 : 1, Math.floor((count + 1) / 4));
   const roles: Record<string, number> = {
     市民: 0,
     占い師: 1,
@@ -160,7 +174,7 @@ export function calculateWerewolfPointAwards(
 
 export function canRevealSeatSecret(uid: string, device: string | undefined, phase: string, activeSeatUid: string | null): boolean {
   if (device !== 'shared') return true;
-  return ['rolecheck', 'night', 'vote', 'revote', 'wordwolf-word', 'wordwolf-vote', 'wordwolf-guess', 'ogiri-answer', 'ogiri-reveal', 'ogiri-judge', 'majority-answer', 'ito-number', 'lateral-play', 'bomber-play', 'untilmatch-answer'].includes(phase) && activeSeatUid === uid;
+  return ['rolecheck', 'night', 'vote', 'revote', 'wordwolf-word', 'wordwolf-vote', 'wordwolf-guess', 'ogiri-answer', 'ogiri-reveal', 'ogiri-judge', 'majority-answer', 'ito-number', 'lateral-play', 'untilmatch-answer'].includes(phase) && activeSeatUid === uid;
 }
 
 /** Public-only room snapshots are needed by the owner of a shared-device room. */

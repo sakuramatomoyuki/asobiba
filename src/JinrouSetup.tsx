@@ -1,6 +1,19 @@
 import React from 'react';
+import { recommendedRoles } from '../functions/src/gameRules';
 
 const ROLE_NAMES = ['市民', '占い師', '霊媒師', '騎士', '共有者', '人狼', '狂人', '狂言者', 'てるてる', '怪盗'];
+const ROLE_DESCRIPTIONS: Record<string, string> = {
+  市民: '市民陣営。夜の能力はありません。話し合いと投票で人狼を探します。',
+  占い師: '市民陣営。夜に生存者1人を占い、人狼か人間かを確認します。',
+  霊媒師: '市民陣営。処刑された人が人狼か人間かを翌朝に確認します。',
+  騎士: '市民陣営。夜に自分以外の生存者1人を襲撃から守ります。',
+  共有者: '市民陣営。ほかの共有者が誰か分かり、夜に専用チャットで会話できます。',
+  人狼: '人狼陣営。夜に襲撃先を選び、仲間の人狼を知っています。',
+  狂人: '人狼陣営。特殊能力はありません。人狼が誰かは知りません。',
+  狂言者: '人狼陣営。人狼が誰かを知っていますが、人狼側は狂言者を知りません。',
+  てるてる: '中立。昼の投票で処刑されると、単独勝利します。',
+  怪盗: '初期は市民陣営。夜に1人と役職を交換し、交換後の役職になります。',
+};
 const TIE_RULES = [
   ['revote', '同票の人だけで再投票'],
   ['random', '同票からランダムに処刑'],
@@ -31,7 +44,12 @@ export function JinrouSetup({ settings, busy, playerCount, onChange }: { setting
       <label>同票時の処理<select value={draft.tieRule || 'revote'} disabled={busy} onChange={event => patch({ tieRule: event.target.value })}>{TIE_RULES.map(([value, label]) => <option key={value} value={value}>{label}</option>)}</select></label>
     </div>
     <div className="jinrou-role-heading"><b>役職の候補</b><span className={total >= playerCount ? 'valid' : 'invalid'}>{total} / {playerCount}人</span></div>
-    <p className="muted">候補の合計が参加人数より多い場合、候補から参加人数分をランダムに配ります。人狼を候補に入れなければ平和村になります。</p>
+    <button type="button" className="jinrou-recommended-button" disabled={busy} onClick={() => patch({ roles: recommendedRoles(playerCount) })}>おすすめ編成を適用</button>
+    <p className="muted">おすすめ編成は参加人数と同じ数です。合計を参加人数より多くすると、選んだ役職を候補として参加人数分だけランダムに配ります。候補に入れた役職が配られない場合もあります。人狼を候補に入れなければ平和村になり、全員の役職確認後に市民陣営の勝利が決まります。</p>
+    <details className="jinrou-role-guide">
+      <summary>役職の説明を見る（全10種類）</summary>
+      <div className="jinrou-role-guide-list">{ROLE_NAMES.map(role => <article key={role}><b>{role}</b><p>{ROLE_DESCRIPTIONS[role]}</p></article>)}</div>
+    </details>
     <div className="jinrou-role-grid">{ROLE_NAMES.map(role => <label key={role}><span>{role}</span><input type="number" inputMode="numeric" min={0} max={20} value={Number(roles[role] || 0)} disabled={busy || (draft.method === 'shared' && role === '共有者')} onChange={event => setRoleCount(role, Number(event.target.value || 0))} /></label>)}</div>
     {total < playerCount && <p className="jinrou-role-warning">候補をあと {playerCount - total} 人分追加してください。</p>}
     <div className="ww-point-options jinrou-rule-options">

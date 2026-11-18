@@ -1851,6 +1851,9 @@ body.light-shell{background:#f4f7fb;color:#192635;}
 .lobby-room-code .copy{grid-column:2;grid-row:1 / span 2;margin:0;border-color:#dfe8ed;color:#456271;background:#f7fafb;}
 .lobby-qr{margin-left:auto;padding:5px;border:1px solid #e8edf0;border-radius:11px;background:white;line-height:0;}
 .lobby-qr svg{width:68px;height:68px;}
+.lobby-qr-loading{width:68px;height:68px;border-radius:5px;background:linear-gradient(100deg,#f1f4f5 25%,#e3e9eb 45%,#f1f4f5 65%);background-size:220% 100%;animation:lobby-qr-shimmer 1.2s ease-in-out infinite}
+@keyframes lobby-qr-shimmer{to{background-position-x:-220%}}
+@media(prefers-reduced-motion:reduce){.lobby-qr-loading{animation:none;background:#edf1f2}}
 .lobby-presence{padding:0 18px;border-left:1px solid #e6ecef;display:grid;gap:2px;color:#778791;font-size:12px;}
 .lobby-presence b{font-size:22px;color:#2b3f4e;}
 .lobby-presence small{font-size:13px;color:#91a0a9;}
@@ -1881,6 +1884,7 @@ body.light-shell{background:#f4f7fb;color:#192635;}
 .lobby-game-card.catalog-bright{background:linear-gradient(135deg,#eff8f3,#fafcfb);}
 .lobby-game-icon{width:48px;height:48px;display:grid;place-items:center;border-radius:16px;background:#fff;color:#44898a;box-shadow:0 5px 16px #385c6212;font-size:24px;margin-bottom:8px;}
 .lobby-game-card h3{margin:3px 0;color:#283d4c;font-size:clamp(19px,2vw,25px);}
+.lobby-game-card>.lobby-game-mood{margin:0;color:#387f7d;font-size:10px;font-weight:800;letter-spacing:.04em;}
 .lobby-game-card p{max-width:350px;margin:3px auto;color:#6f818c;font-size:13px;line-height:1.55;}
 .lobby-game-card>small{margin-top:7px;color:#8b9aa2;font-size:11px;}
 .lobby-game-dots{display:flex;justify-content:center;gap:9px;padding:3px 0 8px;}
@@ -1945,6 +1949,16 @@ body.light-shell{background:#f4f7fb;color:#192635;}
 .track-wordwolf-word i{width:20%}.track-wordwolf-discussion i{width:42%}.track-wordwolf-vote i{width:63%}.track-wordwolf-guess i{width:82%}.track-wordwolf-result i{width:100%}
 .wordwolf-screen .ww-private-card,.wordwolf-screen .ww-stage,.wordwolf-screen .ww-vote-card,.wordwolf-screen .ww-result{animation:ww-card-arrive .8s .1s cubic-bezier(.18,.78,.22,1) both}
 .wordwolf-screen .ww-stage{width:min(100%,850px);flex:1;align-content:center;gap:clamp(.65rem,2vh,1rem);padding:clamp(1.4rem,5vw,4rem);border-color:#dcc78d76;background:radial-gradient(ellipse at 50% 0%,#4a4654d9,#1b222ff5 70%);box-shadow:inset 0 1px #ffffff1c,0 25px 80px #03070ca8}
+.ww-conversation-help{width:min(100%,34rem);margin:.25rem auto 0;border:1px solid #d5bd8250;border-radius:1rem;background:#0e17225c;text-align:left}
+.ww-conversation-help>summary{padding:.8rem 1rem;color:#ecd9ac;font-size:.92rem;font-weight:750;cursor:pointer;list-style:none}
+.ww-conversation-help>summary::-webkit-details-marker{display:none}
+.ww-conversation-help>summary::after{float:right;content:"＋";color:#d9c58f;transition:transform .2s ease}
+.ww-conversation-help[open]>summary::after{content:"−"}
+.ww-conversation-help>div{padding:0 1rem .8rem;animation:ww-help-open .22s ease both}
+.ww-conversation-help p{margin:.2rem 0 .5rem;color:#c4cbd4;font-size:.82rem;line-height:1.5}
+.ww-conversation-help ul{display:grid;gap:.35rem;margin:0;padding-left:1.2rem;color:#f0dfb7;font-size:.9rem;line-height:1.5}
+.ww-conversation-help li::marker{color:#d9bd78}
+@keyframes ww-help-open{from{opacity:0;transform:translateY(-4px)}to{opacity:1;transform:translateY(0)}}
 .ww-sigil{width:clamp(4.5rem,12vw,8rem);height:clamp(4.5rem,12vw,8rem);fill:none;stroke:#e0c98f;stroke-width:1.4;stroke-linecap:round;stroke-linejoin:round;filter:drop-shadow(0 0 16px #d8bd7a55);animation:ww-sigil-orbit 8s linear infinite,ww-sigil-pulse 2.4s ease-in-out infinite alternate}
 .wordwolf-screen .ww-private-card,.wordwolf-screen .ww-vote-card,.wordwolf-screen .ww-result{width:min(100%,850px);max-height:100%;overflow-y:auto;border-radius:clamp(1rem,2vw,1.5rem);border-color:#d5bd827a;background:linear-gradient(155deg,#222d3beF,#151d29f5 68%,#191d27f7);box-shadow:inset 0 1px #ffffff1b,0 25px 80px #03070ca8}
 .wordwolf-screen .ww-private-card>strong{animation:ww-word-reveal .75s .25s both}
@@ -1962,12 +1976,14 @@ body.light-shell{background:#f4f7fb;color:#192635;}
 @keyframes ww-timer-glow{to{text-shadow:0 0 42px #e0c47b80;transform:scale(1.035)}}
 @keyframes ww-result-row{from{opacity:0;transform:translateX(-16px)}to{opacity:1;transform:none}}
 @media(max-width:650px){.app.game-wordwolf .game-screen>.game-area.wordwolf-game-area{padding:0}.wordwolf-game-area>.wordwolf-screen{padding:.9rem;gap:.65rem;border-radius:.9rem}.wordwolf-screen .ww-game-header{min-height:3.5rem;padding-bottom:.55rem}.ww-game-brand{gap:.45rem}.ww-game-brand>svg{width:2.55rem;height:2.55rem}.ww-game-brand small,.ww-stage-label>small{font-size:.55rem}.ww-stage-label>b{font-size:.82rem}.ww-stage-label time{font-size:1.12rem}.wordwolf-screen .ww-stage{padding:1.1rem .8rem}.ww-sigil{width:4.6rem;height:4.6rem}.wordwolf-screen .ww-private-card,.wordwolf-screen .ww-vote-card,.wordwolf-screen .ww-result{padding:1rem .85rem}}
-@media(prefers-reduced-motion:reduce){.wordwolf-game-area>.wordwolf-screen,.wordwolf-screen:after,.wordwolf-screen .ww-private-card,.wordwolf-screen .ww-stage,.wordwolf-screen .ww-vote-card,.wordwolf-screen .ww-result,.ww-game-brand>svg,.ww-sigil,.ww-phase-track i,.wordwolf-screen .ww-timer,.ww-result-screen .ww-results-list>div{animation:none!important}}
+@media(prefers-reduced-motion:reduce){.wordwolf-game-area>.wordwolf-screen,.wordwolf-screen:after,.wordwolf-screen .ww-private-card,.wordwolf-screen .ww-stage,.wordwolf-screen .ww-vote-card,.wordwolf-screen .ww-result,.ww-game-brand>svg,.ww-sigil,.ww-phase-track i,.wordwolf-screen .ww-timer,.ww-result-screen .ww-results-list>div,.ww-conversation-help>div,.ww-conversation-help>summary::after{animation:none!important;transition:none!important}}
 
 .jinrou-role-heading{display:flex;align-items:center;justify-content:space-between;gap:.75rem;margin:1rem 0 .55rem;color:#435966}.jinrou-role-heading span{font-size:.82rem;font-weight:800}.jinrou-role-heading .valid{color:#21856f}.jinrou-role-heading .invalid,.jinrou-role-warning{color:#a55345}.jinrou-role-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:.5rem}.jinrou-role-grid label{display:flex;align-items:center;justify-content:space-between;gap:.5rem;min-width:0;padding:.55rem .65rem;border:1px solid #dce4e7;border-radius:.75rem;background:#fff;color:#435966;font-weight:700}.jinrou-role-grid input{width:4.25rem;min-height:2.5rem;padding:.35rem;text-align:center;border:1px solid #d4dee2;border-radius:.6rem;background:#f6f9fa;color:#203442;font:inherit}.jinrou-role-warning{margin:.45rem 0;font-size:.84rem;font-weight:700}.jinrou-rule-options{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:.35rem .8rem;margin-top:1rem}.jinrou-rule-options label{display:flex;align-items:center;gap:.5rem;font-size:.9rem}
+.jinrou-recommended-button{min-height:2.55rem;margin:0 0 .55rem;padding:.45rem .8rem;border:1px solid #d4dee2;border-radius:.65rem;background:#f5f8fa;color:#35505e;font:inherit;font-size:.86rem;font-weight:800;cursor:pointer;transition:background .18s ease,border-color .18s ease,transform .18s ease}.jinrou-recommended-button:hover:not(:disabled){transform:translateY(-1px);border-color:#b79a57;background:#fff9e9}.jinrou-recommended-button:disabled{opacity:.55;cursor:not-allowed}
 @media(max-width:480px){.jinrou-role-grid{gap:.35rem}.jinrou-role-grid label{padding:.45rem;font-size:.9rem}.jinrou-rule-options{grid-template-columns:1fr}}
 
 .jinrou-role-heading{color:#d3dae2}.jinrou-role-heading .valid{color:#98d7be}.jinrou-role-heading .invalid,.jinrou-role-warning{color:#ffb2a3}.jinrou-role-grid label{border-color:#8190a955;background:#101824;color:#e2e8ed}.jinrou-role-grid input{border-color:#8190a955;background:#101824;color:#f4f1e9}
+.jinrou-recommended-button{border-color:#c9a95e88;background:#1c2632;color:#f0d99f}.jinrou-recommended-button:hover:not(:disabled){border-color:#e4c475;background:#26313c}
 .ww-caught-reveal{position:relative;isolation:isolate;display:grid;justify-items:center;gap:.7rem;margin:auto;padding:clamp(1.5rem,6vw,3.5rem) 1rem;text-align:center;overflow:hidden}.ww-caught-reveal:before{content:"";position:absolute;z-index:-1;width:min(70vw,22rem);aspect-ratio:1;border:1px solid #dfbf7255;border-radius:50%;box-shadow:0 0 0 1.2rem #dfbf7210,0 0 0 2.4rem #dfbf7209,0 0 70px #d8a95322;animation:ww-caught-pulse 2.8s ease-out infinite}.ww-caught-reveal .eyebrow{color:#d9bd7e;letter-spacing:.24em}.ww-caught-reveal h2{margin:.2rem 0;color:#f2d9a6;font-size:clamp(1.6rem,6vw,2.7rem);animation:ww-caught-title .7s both}.ww-caught-reveal p{max-width:34rem;color:#d0d6dd;font-size:clamp(1rem,3vw,1.2rem)}.ww-caught-reveal>strong{margin-top:.5rem;color:#e7cf9c;font-size:.9rem}.ww-minority-names{display:flex;flex-wrap:wrap;justify-content:center;gap:.6rem;margin:.1rem 0 .35rem}.ww-minority-names strong{padding:.65rem 1rem;border:1px solid #dfbf7288;border-radius:999px;background:linear-gradient(135deg,#dfbf7220,#151d2b);color:#f2d9a6;box-shadow:0 6px 20px #0003;animation:ww-caught-title .6s both}.ww-caught-seal{position:relative;width:4.4rem;height:4.4rem;margin-bottom:.3rem}.ww-caught-seal i{position:absolute;inset:.4rem;border:1px solid #e0c37f;border-radius:50%;animation:ww-caught-seal 1.9s ease-out infinite}.ww-caught-seal i:nth-child(2){animation-delay:.32s}.ww-caught-seal i:nth-child(3){animation-delay:.64s}@keyframes ww-caught-pulse{0%{transform:scale(.84);opacity:.3}70%{opacity:.7}100%{transform:scale(1.18);opacity:0}}@keyframes ww-caught-title{from{opacity:0;transform:translateY(12px);filter:blur(5px)}to{opacity:1;transform:none;filter:none}}@keyframes ww-caught-seal{from{transform:scale(.38);opacity:.85}to{transform:scale(1.25);opacity:0}}
 @media(prefers-reduced-motion:reduce){.ww-caught-reveal:before,.ww-caught-reveal h2,.ww-caught-seal i{animation:none!important}}
 
@@ -2092,6 +2108,10 @@ body.light-shell .app:before,body.light-shell .app:after{display:none!important;
 /* Separate Ogiri and anonymous survey from the Werewolf visual system. */
 body[data-game-type="ogiri"] { background:#15141b!important; }
 body[data-game-type="survey"] { background:#f4f7fb!important; }
+body[data-game-type="majority"] { background:#fff9f2!important; }
+body[data-game-type="ito"] { background:#f8f7ff!important; }
+body[data-game-type="lateral"] { background:#f5fbfc!important; }
+body[data-game-type="untilmatch"] { background:#f7fcf8!important; }
 .app.game-ogiri.in-game { background:radial-gradient(ellipse at 50% 0%,#3c2834 0,transparent 46%),linear-gradient(150deg,#1d1a24,#11141d 72%,#211a25)!important;color:#f8f4f0; }
 .app.game-survey.in-game { background:#f3f6fa!important;color:#263746; }
 .app.game-ogiri.in-game>main>.game-screen,.app.game-survey.in-game>main>.game-screen {
@@ -2117,7 +2137,7 @@ body[data-game-type="survey"] { background:#f4f7fb!important; }
 .app.game-survey .survey-card,.app.game-survey .survey-wait,.app.game-survey .survey-handoff { border:1px solid #dfe7ee;border-radius:1rem;background:#fff;box-shadow:0 12px 32px #22384b0d; }
 .app.game-survey .survey-card h2,.app.game-survey .survey-wait h2 { color:#263e50; }
 .app.game-survey .survey-card label,.app.game-survey .survey-wait p,.app.game-survey .survey-card>p { color:#607482; }
-.app.game-survey .survey-screen .primary { border:0;border-radius:.75rem;background:#3b8290;color:#fff;box-shadow:0 7px 18px #397d8f22; }
+.app.game-survey .survey-screen .primary { border:0;border-radius:.75rem;background:#347987;color:#fff;box-shadow:0 7px 18px #397d8f22; }
 .app.game-survey .survey-screen .secondary { background:#f7fafc;color:#405d6a;border-color:#d7e1e8; }
 .app.game-survey .survey-screen textarea,.app.game-survey .survey-screen select { border-color:#d7e1e8;background:#fff;color:#263746; }
 .app.game-survey .survey-screen .survey-options button { background:#f7fafc;color:#405968;border-color:#d9e4eb; }
@@ -2192,5 +2212,169 @@ body[data-game-type="ogiri"] .environment-controls>.sound-toggle,body[data-game-
 .admin-confirm-actions{display:flex;justify-content:flex-end;gap:.75rem;flex-wrap:wrap}
 .admin-confirm-actions button{min-height:3rem;min-width:8rem}
 .admin-confirm-actions .danger{border:1px solid #d77b72;background:linear-gradient(135deg,#9e453f,#742d31);color:#fff}
+/* Confirmation dialogs inherit the active game's visual identity. */
+body[data-game-type="ogiri"] .admin-confirm-dialog{border:2px solid #f4df21;border-radius:.6rem;background:#fff;color:#171717;box-shadow:0 12px 0 #c8b90f,0 24px 70px #0008}
+body[data-game-type="ogiri"] .admin-confirm-dialog h2{color:#171717}
+body[data-game-type="ogiri"] .admin-confirm-dialog p{color:#505050}
+body[data-game-type="ogiri"] .admin-confirm-actions .primary{border:2px solid #171717;border-radius:.45rem;background:#f4df21;color:#171717;font-weight:900;box-shadow:0 4px 0 #b6a40d}
+body[data-game-type="ogiri"] .admin-confirm-actions .secondary{border:2px solid #222;border-radius:.45rem;background:#fff;color:#171717;font-weight:800}
+body[data-game-type="survey"] .admin-confirm-dialog{border:1px solid #dce5ed;border-radius:1rem;background:#fff;color:#263746;box-shadow:0 20px 60px #22384b24}
+body[data-game-type="survey"] .admin-confirm-dialog h2{color:#263e50}
+body[data-game-type="survey"] .admin-confirm-dialog p{color:#607482}
+body[data-game-type="survey"] .admin-confirm-actions .primary{border:0;border-radius:.75rem;background:#347987;color:#fff;box-shadow:0 7px 18px #397d8f22}
+body[data-game-type="survey"] .admin-confirm-actions .secondary{border:1px solid #d7e1e8;border-radius:.75rem;background:#f7fafc;color:#405d6a}
 @media(max-width:560px){.admin-confirm-actions{display:grid;grid-template-columns:1fr}.admin-confirm-actions button{width:100%}}
 @media(prefers-reduced-motion:reduce){.admin-confirm-scrim,.admin-confirm-dialog{animation:none}}
+
+/* Ogiri answer reveal and leaderboard use a bright board: keep names readable. */
+.app.game-ogiri .ogiri-reveal-stage {
+  position: relative;
+  isolation: isolate;
+  display: grid;
+  gap: .85rem;
+  width: min(100%, 760px);
+  box-sizing: border-box;
+  margin: auto;
+  padding: clamp(1rem, 4vw, 2rem);
+  border: 2px solid #f4df21;
+  border-radius: .65rem;
+  background: #fff;
+  color: #171717;
+  box-shadow: 0 14px 40px #0008, 8px 8px 0 #efdc1d;
+  text-align: center;
+  animation: ogiri-stage-enter .45s cubic-bezier(.2,.75,.25,1) both;
+}
+.app.game-ogiri .ogiri-reveal-stage > small { color: #a52d2b; font-weight: 900; }
+.app.game-ogiri .ogiri-reveal-stage > h2 { margin: 0; color: #171717; font-size: clamp(1.35rem, 4vw, 2rem); }
+.app.game-ogiri .ogiri-reveal-answer,
+.app.game-ogiri .ogiri-preloaded-card {
+  display: grid;
+  place-items: center;
+  min-height: clamp(8rem, 25vh, 18rem);
+  box-sizing: border-box;
+  padding: clamp(1rem, 4vw, 2rem);
+  border: 1px solid #d8d8d8;
+  border-left: 6px solid #f4df21;
+  border-radius: .55rem;
+  background: #fffefa;
+  color: #171717;
+  box-shadow: 0 5px 0 #e2e2e2;
+  overflow-wrap: anywhere;
+}
+.app.game-ogiri .ogiri-reveal-answer > p { margin: 0; color: #171717; font-size: clamp(1.2rem, 4.5vw, 2rem); font-weight: 850; line-height: 1.45; }
+.app.game-ogiri .ogiri-reveal-answer > img { display: block; max-width: 100%; max-height: 42vh; object-fit: contain; }
+.app.game-ogiri .ogiri-preloaded-answer > p,
+.app.game-ogiri .ogiri-reveal-wait { color: #444; font-weight: 650; }
+.app.game-ogiri .ogiri-reveal-vote > b { display: block; margin: .4rem 0 .75rem; color: #262626; font-size: 1.15rem; }
+.app.game-ogiri .ranking-screen .rank-player > b { color: #171717; }
+.app.game-ogiri .ranking-screen .rank-player > small { color: #555; }
+@media (prefers-reduced-motion: reduce) {
+  .app.game-ogiri .ogiri-reveal-stage { animation: none; }
+}
+
+/* On narrow phones, game cards need room for a readable title and both hints. */
+@media (max-width: 620px) {
+  .home-page .catalog-grid { grid-template-columns: minmax(0, 1fr); gap: .6rem; }
+  .home-page .catalog-card {
+    display: grid;
+    grid-template-columns: 2.25rem minmax(0, 1fr);
+    align-items: start;
+    gap: 0 .7rem;
+    min-height: 0;
+    padding: .85rem .9rem;
+  }
+  .home-page .catalog-mark { grid-column: 1; grid-row: 1; margin: .1rem 0 0; width: 2.15rem; height: 2.15rem; }
+  .home-page .catalog-card > div { grid-column: 2; min-width: 0; gap: .25rem; }
+  .home-page .catalog-card h3 { padding: 0; font-size: .95rem; line-height: 1.35; overflow-wrap: anywhere; }
+  .home-page .catalog-card p { font-size: .75rem; line-height: 1.45; overflow-wrap: anywhere; }
+  .home-page .catalog-card small { margin-top: .1rem; font-size: .68rem; line-height: 1.35; }
+  .home-page .catalog-status { position: static; grid-column: 2; justify-self: start; margin: .4rem 0 0; font-size: .68rem; }
+}
+
+
+/* Respect the device-level motion preference consistently across every game.
+   Phase changes and control states remain immediate; only decorative motion is removed. */
+@media (prefers-reduced-motion: reduce) {
+  html:focus-within { scroll-behavior: auto !important; }
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+/* Survey question authoring: make the two paths and the selected prompt obvious. */
+.app.game-survey .survey-question-source {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: .65rem;
+  margin: 1rem 0;
+  padding: .35rem;
+  border: 1px solid #dce6eb;
+  border-radius: .9rem;
+  background: #f3f7f9;
+}
+.app.game-survey .survey-question-source button {
+  min-height: 2.9rem;
+  border: 1px solid transparent;
+  border-radius: .65rem;
+  background: transparent;
+  color: #526875;
+  font: inherit;
+  font-weight: 750;
+  cursor: pointer;
+  transition: background-color .18s ease, color .18s ease, box-shadow .18s ease, transform .18s ease;
+}
+.app.game-survey .survey-question-source button:hover { transform: translateY(-1px); }
+.app.game-survey .survey-question-source button:focus-visible,
+.app.game-survey .survey-question-actions button:focus-visible { outline: 3px solid #78b7b1; outline-offset: 2px; }
+.app.game-survey .survey-question-source button.selected {
+  border-color: #b9d9d5;
+  background: #fff;
+  color: #216f70;
+  box-shadow: 0 2px 8px #294d5814;
+}
+.app.game-survey .survey-prompt-candidate {
+  display: grid;
+  gap: .65rem;
+  margin: 1rem 0;
+  padding: clamp(1rem, 3vw, 1.4rem);
+  border: 1px solid #cfe1e5;
+  border-radius: 1rem;
+  background: linear-gradient(145deg, #f8fcfd, #eef6f7);
+  text-align: left;
+  animation: survey-candidate-in .24s ease-out both;
+}
+.app.game-survey .survey-prompt-candidate > small { color: #53858c; font-size: .75rem; font-weight: 800; letter-spacing: .08em; }
+.app.game-survey .survey-prompt-candidate h3 { margin: 0; color: #263e50; font-size: clamp(1.2rem, 4vw, 1.65rem); line-height: 1.45; overflow-wrap: anywhere; }
+.app.game-survey .survey-prompt-candidate > p { margin: 0; color: #607482; line-height: 1.55; }
+.app.game-survey .survey-prompt-candidate .survey-candidate-options { padding: .7rem .8rem; border-radius: .65rem; background: #fff; color: #415d68; font-size: .92rem; }
+.app.game-survey .survey-question-actions { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: .7rem; margin-top: .35rem; }
+.app.game-survey .survey-question-actions button { min-height: 3rem; padding: .7rem .85rem; font: inherit; font-weight: 750; cursor: pointer; }
+@keyframes survey-candidate-in { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: translateY(0); } }
+@media (max-width: 520px) {
+  .app.game-survey .survey-question-actions { grid-template-columns: 1fr; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .app.game-survey .survey-prompt-candidate { animation: none; }
+  .app.game-survey .survey-question-source button { transition: none; }
+}
+
+/* Long Wordwolf phases need their own scroll region inside the fixed game shell. */
+.app.game-wordwolf .game-screen>.game-area.wordwolf-game-area {
+  overflow-x:hidden;
+  overflow-y:auto;
+  overscroll-behavior:contain;
+  scrollbar-gutter:stable;
+}
+.wordwolf-game-area>.wordwolf-screen {
+  height:auto;
+  min-height:100%;
+  max-height:none;
+  overflow:visible;
+}
+/* Keep phase changes available to assistive technology without changing the visual layout. */
+.sr-only{position:absolute!important;width:1px!important;height:1px!important;padding:0!important;margin:-1px!important;overflow:hidden!important;clip:rect(0,0,0,0)!important;white-space:nowrap!important;border:0!important}

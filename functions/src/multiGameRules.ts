@@ -72,7 +72,9 @@ export function tallyWordWolfVotes(votes: Record<string, string>, playerIds: str
   }
   const maximum = Math.max(0, ...Object.values(counts));
   const leaders = Object.keys(counts).filter((uid) => maximum > 0 && counts[uid] === maximum);
-  return { counts, leaders, caught: leaders.some((uid) => minorityIds.includes(uid)) };
+  // A tie only catches the minority when every top-voted player is minority.
+  // If even one majority player shares the lead, the minority has escaped.
+  return { counts, leaders, caught: leaders.length > 0 && leaders.every((uid) => minorityIds.includes(uid)) };
 }
 
 export function wordWolfScores(
@@ -98,8 +100,9 @@ export function wordWolfWinner(caught: boolean, guessCorrect: boolean): '少数�
 export function canStartReplay(
   players: Array<{ uid: string; connected: boolean }>,
   approvals: Record<string, boolean>,
+  minimumPlayers = 3,
 ): boolean {
-  return players.length >= 3 && players.every((player) => player.connected && approvals[player.uid] === true);
+  return players.length >= minimumPlayers && players.every((player) => player.connected && approvals[player.uid] === true);
 }
 
 /** Adds per-game point entries without discarding the room's earlier history. */

@@ -28,10 +28,10 @@ describe('Word Wolf server rules', () => {
     expect(wordWolfSettingsForViewer(settings, true, 'wordwolf-vote').wordWolf).toEqual({ discussionSeconds: 60 });
   });
 
-  it('detects all tied leaders and counts the minority as caught if any leader is minority', () => {
+  it('detects all tied leaders but does not catch the minority when a majority player shares the lead', () => {
     const tie = tallyWordWolfVotes({ a: 'b', b: 'a', c: 'a', d: 'b' }, ['a', 'b', 'c', 'd'], ['b']);
     expect(tie.leaders.sort()).toEqual(['a', 'b']);
-    expect(tie.caught).toBe(true);
+    expect(tie.caught).toBe(false);
   });
 
   it('ignores abstentions, invalid targets, self-votes, and nonparticipants', () => {

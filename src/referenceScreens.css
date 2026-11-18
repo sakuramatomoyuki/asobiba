@@ -273,3 +273,51 @@
 @media (prefers-reduced-motion: reduce) {
   .game-directory-arrow, .game-rules-panel, .game-rules-chevron { transition: none; }
 }
+
+/* Warm paper, ink, and restrained game accents. */
+.game-directory { --reference-rule:#d9ddd6; }
+.game-directory-list { gap:14px; border:0; }
+.game-directory-list > li { border:1px solid #d9ded8; border-radius:12px; background:#fcfdf9; overflow:hidden; }
+.game-directory-entry { padding:22px 40px 20px 22px; border-top:4px solid #487168; transition:background .2s,transform .2s; }
+.game-directory-list > li:nth-child(4n+2) .game-directory-entry { border-top-color:#916055; }
+.game-directory-list > li:nth-child(4n+3) .game-directory-entry { border-top-color:#ab8733; }
+.game-directory-list > li:nth-child(4n+4) .game-directory-entry { border-top-color:#577e91; }
+.game-directory-entry:hover { background:#f2f5ee; }
+.game-directory-title { font-size:clamp(18px,2.2vw,23px); letter-spacing:-.03em; }
+.game-directory-description { margin:4px 0 12px; max-width:42ch; }
+.game-directory-meta { width:100%; border-top:1px solid #e2e6de; padding-top:12px; }
+.game-directory-arrow { top:22px; right:17px; }
+.app.help-shell .help-reference { border:0; border-radius:12px; background:#fffefa; box-shadow:0 8px 32px #263a3610; }
+.game-rules-list { border-top:2px solid #304c43; }
+.game-rules-entry { padding-inline:14px; }
+.game-rules-entry:has([aria-expanded="true"]) { background:#f1f5ed; }
+.game-rules-title button { min-height:72px; }
+.game-rules-title button > span:first-child { font-size:clamp(17px,2vw,21px); }
+.game-rules-body { padding-bottom:26px; }
+.game-rules-columns { margin-top:20px; }
+.game-rules-columns > section:first-child { border-left:3px solid #789282; padding-left:16px; }
+.game-rules-columns h4 { font-size:15px; margin-bottom:12px; }
+.game-rules-body ol { padding-left:1.5em; }
+.game-rules-body ol > li { padding:3px 0 9px 5px; }
+.game-rules-body ol > li::marker { font-size:17px; }
+.app.in-game.is-ending .room-scoreboard { background:#fffefa; border:1px solid #d8ddd3; border-radius:14px; box-shadow:0 12px 42px #24342a12; }
+.app.in-game.is-ending .room-scoreboard h2 { padding-bottom:18px; border-bottom:3px solid var(--reference-accent); font-size:clamp(23px,4.5vw,35px); }
+.room-scoreboard-table { border-top:0; }
+.room-scoreboard-table tbody tr.scoreboard-leading { background:#edf2e7; }
+.room-scoreboard-table tbody tr.scoreboard-leading > :first-child { border-left:3px solid var(--reference-accent); padding-left:10px; }
+.room-scoreboard-table tbody tr > * { padding-top:18px; padding-bottom:18px; }
+.scoreboard-rank { font-size:26px; font-weight:500; }
+.scoreboard-points { font-size:28px; letter-spacing:-.04em; }
+.scoreboard-name { font-size:18px; }
+.scoreboard-breakdown { margin-top:7px; }
+.room-scoreboard-actions { margin-top:28px; padding-top:4px; border-top:1px solid var(--reference-rule); }
+@media(max-width:650px) {
+ .game-directory-list { gap:10px; }
+ .game-directory-entry { padding:18px 36px 16px 17px; }
+ .game-directory-arrow { top:18px; right:14px; }
+ .game-directory-description { margin-bottom:8px; }
+ .game-rules-entry { padding-inline:10px; }
+ .game-rules-title button { min-height:68px; }
+ .scoreboard-name { font-size:16px; }
+ .scoreboard-points { font-size:24px; }
+}

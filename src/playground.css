@@ -1301,3 +1301,75 @@ body[data-game-type="ogiri"] .ranking-screen .rank-score { color:#17212b!importa
   .game-guide-animated-steps > li:not(:last-child)::after { animation: none; opacity: 1; }
   .game-guide-animated-steps > li:hover { translate: none; }
 }
+
+/* Bring every ITO screen, handoff button, result, and room scoreboard into
+   the same violet palette while keeping success/failure meanings clear. */
+.app.game-party-ito .ito-theme-banner {
+  border-color: #d7d0f0;
+  background: radial-gradient(ellipse at 50% 0%, #fff 0, transparent 58%), linear-gradient(135deg, #f7f5ff, #eeebfb);
+  box-shadow: 0 12px 30px #51448a12;
+}
+.app.game-party-ito .ito-theme-banner > small,
+.app.game-party-ito .ito-theme-range b { color: #6557a6; }
+.app.game-party-ito .ito-theme-banner h2 { color: #39315f; }
+.app.game-party-ito .ito-theme-range span { color: #5d5878; }
+.app.game-party-ito .ito-theme-range i { background: linear-gradient(90deg,#ddd8f2,#8275c2,#ddd8f2); }
+.app.game-party-ito .ito-private-number { background: radial-gradient(ellipse at 50% 22%, #f0edff, transparent 58%), #fff; }
+.app.game-party-ito .ito-number,
+.app.game-party-ito .ito-sort-position,
+.app.game-party-ito .ito-discussion-wait strong { color: #6557a6; }
+.app.game-party-ito .ito-sort-position { background: #eeebfb; }
+.app.game-party-ito .ito-discussion-wait { border-color: #ded9f2; background: linear-gradient(140deg,#f4f2ff,#fbfaff); }
+.app.game-party-ito .party-handoff .secondary {
+  min-height: 50px;
+  border: 1px solid #d8d2ed;
+  background: #f4f2fb;
+  color: #41386f;
+  font-weight: 800;
+  opacity: 1;
+  box-shadow: 0 3px 10px #51448a10;
+}
+.app.game-party-ito .party-handoff .secondary:hover { background: #ebe7f8; border-color: #bcb3e1; }
+.app.game-party-ito .ito-result-card { border-color: #ded9f1; box-shadow: 0 16px 42px #51448a12; }
+.app.game-party-ito .ito-result-verdict { box-shadow: inset 4px 0 #6557a6; }
+.app.game-party-ito .ito-result-verdict.success { background: linear-gradient(120deg,#edf8f2,#f7fcf9); color: #28684f; border-color: #c7e7d5; }
+.app.game-party-ito .ito-result-verdict.failure { background: linear-gradient(120deg,#f6f3ff,#fcfbff); color: #51468a; border-color: #d9d3ef; }
+.app.game-party-ito .ito-result-column { border-color: #e0dcef; background: linear-gradient(155deg,#f8f7ff,#fff); }
+.app.game-party-ito .ito-result-column h3 { color: #48406f; }
+.app.game-party-ito .ito-result-column li strong { color: #6557a6; }
+.app.game-party-ito .ito-result-rank { background: #eeebfb; color: #51468a; }
+.app.game-party-ito .ito-result-column.actual li { border-color: #cde8dd; background: #fafffc; }
+.app.game-party-ito .ito-result-column.actual .ito-result-rank { background: #dff3e8; color: #26704b; }
+.app.game-party-ito .ito-result-card .party-inline-actions { display: flex; gap: 10px; margin-top: 8px; }
+.app.game-party-ito .ito-result-card .party-inline-actions button { flex: 1 1 190px; min-height: 50px; border-radius: 14px; font-weight: 850; }
+.app.game-party-ito .ito-result-card .party-inline-actions .secondary { border-color: #d8d2ed; background: #f4f2fb; color: #41386f; }
+.app.game-party-ito .ito-result-card .party-inline-actions .primary { border: 1px solid #5b4d9c; background: linear-gradient(115deg,#5b4d9c,#8275c2); color: #fff; box-shadow: 0 8px 18px #6557a62b; }
+.app.game-party-ito .ranking-screen-ito {
+  border-color: #d7d0ee;
+  background: radial-gradient(ellipse at 50% 0%,#eeeaff 0,transparent 52%), linear-gradient(155deg,#fff,#f5f3ff 78%,#faf9ff);
+  box-shadow: 0 24px 70px #51448a18;
+}
+.app.game-party-ito .ranking-screen-ito > .eyebrow { color: #6557a6; }
+.app.game-party-ito .ranking-screen-ito > h2 { color: #39315f; }
+.app.game-party-ito .ranking-screen-ito > p { color: #716b8a; }
+.app.game-party-ito .ranking-screen-ito .ranking-list { max-width: 780px; gap: 13px; }
+.app.game-party-ito .ranking-screen-ito .ranking-row {
+  position: relative;
+  overflow: hidden;
+  border-color: #e0dcef;
+  background: linear-gradient(110deg,#fff,#faf9ff 72%,#f4f1ff);
+  box-shadow: 0 8px 22px #51448a0d;
+}
+.app.game-party-ito .ranking-screen-ito .ranking-row::before { position: absolute; inset: 0 auto 0 0; width: 4px; background: linear-gradient(#8a7cca,#5b4d9c); content: ""; }
+.app.game-party-ito .ranking-screen-ito .ranking-row:first-child { border-color: #cfc7ec; box-shadow: 0 10px 28px #6557a61c; }
+.app.game-party-ito .ranking-screen-ito .rank-player>b { color: #292541; }
+.app.game-party-ito .ranking-screen-ito .rank-player>small { color: #746e8d; }
+.app.game-party-ito .ranking-screen-ito .rank-breakdown span { background: #eeebfb; color: #51468a; }
+.app.game-party-ito .ranking-screen-ito .rank-score { color: #51468a; }
+.app.game-party-ito .ranking-screen-ito .rank-score small { color: #8a7cca; }
+@media (max-width: 640px) {
+  .app.game-party-ito .ito-result-card .party-inline-actions { display: grid; grid-template-columns: 1fr 1fr; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .app.game-party-ito .ranking-screen-ito .ranking-row { transition: none; }
+}

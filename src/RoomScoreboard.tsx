@@ -36,6 +36,7 @@ export function RoomScoreboard({ entries, showRoles, game, children }: {
     observer.observe(element);
     return () => observer.disconnect();
   }, []);
+  const allTied = entries.length > 1 && entries.every((entry) => Number(entry.points) === Number(entries[0].points));
   const colors = SCORE_COLORS[game] ?? SCORE_COLORS.lateral;
   const style = Object.fromEntries(Object.entries(colors).map(([name, value]) => [`--score-${name}`, value])) as CSSProperties;
   return (
@@ -56,6 +57,7 @@ export function RoomScoreboard({ entries, showRoles, game, children }: {
         <span className="scoreboard-stars">✦ ✧ ✦</span>
       </div>
       <h2 id="room-scoreboard-title">ルーム累計ランキング</h2>
+      {allTied && <p className="scoreboard-tie-note">全員同点 · {entries[0].points} ptで同率1位です</p>}
       {entries.length === 0 ? (
         <p className="room-scoreboard-empty">まだ順位データがありません。</p>
       ) : (
@@ -73,7 +75,7 @@ export function RoomScoreboard({ entries, showRoles, game, children }: {
               const breakdown = Object.entries(entry.earned ?? {});
               return (
                 <tr key={entry.uid} className={rank === 1 ? 'scoreboard-leading' : undefined} style={{ '--entry-delay': `${index * 85}ms` } as CSSProperties}>
-                  <td className="scoreboard-rank"><span className={`scoreboard-medallion medal-${Math.min(rank, 4)}`}>{rank}</span><span className="sr-only">位</span></td>
+                  <td className="scoreboard-rank"><span className={`scoreboard-medallion medal-${Math.min(rank, 4)}`}>{rank}<small>位</small></span></td>
                   <th scope="row">
                     <strong className="scoreboard-name">{entry.name}</strong>
                     {showRoles && entry.role && (
@@ -87,7 +89,7 @@ export function RoomScoreboard({ entries, showRoles, game, children }: {
                       </ul>
                     )}
                   </th>
-                  <td className="scoreboard-points">{entry.points}</td>
+                  <td className="scoreboard-points">{entry.points}<small> pt</small></td>
                 </tr>
               );
             })}

@@ -26,6 +26,13 @@ describe('party game rules', () => {
     expect(result.majorityVote).toBe(false);
     expect(result.deltas).toEqual({ parent: 3, a: -1, b: 1, c: -1 });
   });
+  it('keeps parent transfers when the parent vote is processed last', () => {
+    const scores = { parent: 2, a: 1, b: 0 };
+    const first = resolveMajorityRound({ parent: true, a: false, b: false }, 'parent', scores);
+    const last = resolveMajorityRound({ a: false, b: false, parent: true }, 'parent', scores);
+    expect(last.deltas).toEqual(first.deltas);
+    expect(resolveMajorityRound({ a: false, b: true, parent: true }, 'parent', scores).deltas.parent).toBe(2);
+  });
   it('returns no point changes when this game has points disabled', () => {
     expect(resolveMajorityRound({ parent: true, a: false }, 'parent', { parent: 0, a: 3 }, false).deltas)
       .toEqual({ parent: 0, a: 0 });

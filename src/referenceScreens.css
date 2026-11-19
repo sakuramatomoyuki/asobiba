@@ -578,3 +578,10 @@
 @keyframes lobby-art-arrival {from{opacity:0;transform:translateY(10px) rotate(-14deg) scale(.7);}to{opacity:1;transform:rotate(-6deg) scale(1);}}
 @media(max-width:680px) {.lobby-game-art{height:65px;border-radius:10px;margin-bottom:5px;}.lobby-game-art>span{font-size:42px;}.lobby-game-card .lobby-game-guide{min-height:32px;font-size:11px;padding:5px 9px;margin-top:6px;}}
 @media(prefers-reduced-motion:reduce) {.lobby-game-art>span{animation:none;}.app.room-lobby-shell[data-lobby-game]{transition:none;}}
+.app.game-ogiri .ogiri-screen .ogiri-tabs button {
+ background:#fff!important;color:#242424!important;-webkit-text-fill-color:#242424!important;
+ border:2px solid #aaa!important;font-weight:800;opacity:1;text-shadow:none;
+}
+.app.game-ogiri .ogiri-screen .ogiri-tabs button.active {
+ background:#ffe523!important;color:#171717!important;-webkit-text-fill-color:#171717!important;border-color:#171717!important;box-shadow:0 3px 0 #bda411;
+}

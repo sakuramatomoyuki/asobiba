@@ -231,9 +231,9 @@ export function resolveMajorityRound(
   for (const [uid, vote] of validVotes) {
     const balance = Math.max(0, Number(scores[uid]) || 0);
     if (vote === majorityVote) {
-      deltas[uid] = 1;
+      deltas[uid] = (deltas[uid] || 0) + 1;
     } else if (uid === parentUid) {
-      deltas[uid] = balance > 0 ? -1 : 0;
+      deltas[uid] = (deltas[uid] || 0) + (balance > 0 ? -1 : 0);
     } else {
       // A minority player gives the parent one point even when their balance
       // is zero; their own balance simply cannot fall below zero.

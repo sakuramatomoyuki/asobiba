@@ -1068,6 +1068,29 @@ body[data-game-type="ogiri"] .ranking-screen .rank-score { color:#17212b!importa
 .app.in-game[class*="game-party-"] .party-game-content{flex:1 1 auto;min-height:0;max-height:100%;overflow-x:hidden;overflow-y:auto;overscroll-behavior:contain;-webkit-overflow-scrolling:touch;scrollbar-gutter:stable;padding:0 clamp(2px,.8vw,8px) max(1rem,env(safe-area-inset-bottom))}
 .app.in-game[class*="game-party-"] .party-game-content>*{min-width:0}
 
+/* The play frame stays fixed; make its whole central area a reliable scroll
+   surface for mouse wheels, trackpads, and touch gestures. */
+.app.in-game[class*="game-party-"] .party-game-content{touch-action:pan-y;scroll-behavior:smooth}
+
+/* Explicit contrast for the two light social-game action groups. Generic
+   hover/disabled rules must not fade their labels into the background. */
+.app.game-party-untilmatch .untilmatch-judge-actions .primary,
+.app.game-party-untilmatch .untilmatch-result-card .party-inline-actions .primary{background:linear-gradient(110deg,#176d4b,#32986c)!important;color:#fff!important;-webkit-text-fill-color:#fff!important;border:1px solid #12563b!important;text-shadow:0 1px 1px #0b3e2d99}
+.app.game-party-untilmatch .untilmatch-judge-actions .secondary,
+.app.game-party-untilmatch .untilmatch-result-card .party-inline-actions .secondary{background:#fff!important;color:#1d4a35!important;-webkit-text-fill-color:#1d4a35!important;border:1px solid #4f9875!important;text-shadow:none}
+.app.game-party-untilmatch .untilmatch-judge-actions button:hover:not(:disabled),
+.app.game-party-untilmatch .untilmatch-result-card .party-inline-actions button:hover:not(:disabled){filter:brightness(1.08)!important;transform:translateY(-1px)}
+.app.game-party-untilmatch .untilmatch-judge-actions button:disabled,
+.app.game-party-untilmatch .untilmatch-result-card .party-inline-actions button:disabled{opacity:1!important;background:#d7e7dd!important;color:#567063!important;-webkit-text-fill-color:#567063!important;border-color:#a8c3b3!important;box-shadow:none!important;transform:none!important}
+.app.game-party-lateral .lateral-result-card .party-inline-actions .primary,
+.app.game-party-lateral .lateral-judge .party-inline-actions .primary{background:linear-gradient(110deg,#176a84,#3d9fba)!important;color:#fff!important;-webkit-text-fill-color:#fff!important;border:1px solid #145b70!important;text-shadow:0 1px 1px #08394a99}
+.app.game-party-lateral .lateral-result-card .party-inline-actions .secondary,
+.app.game-party-lateral .lateral-judge .party-inline-actions .secondary{background:#fff!important;color:#174e62!important;-webkit-text-fill-color:#174e62!important;border:1px solid #579eb2!important;text-shadow:none}
+.app.game-party-lateral .lateral-result-card .party-inline-actions button:hover:not(:disabled),
+.app.game-party-lateral .lateral-judge .party-inline-actions button:hover:not(:disabled){filter:brightness(1.08)!important;transform:translateY(-1px)}
+.app.game-party-lateral .lateral-result-card .party-inline-actions button:disabled,
+.app.game-party-lateral .lateral-judge .party-inline-actions button:disabled{opacity:1!important;background:#d9e8ed!important;color:#53707a!important;-webkit-text-fill-color:#53707a!important;border-color:#aac7d0!important;box-shadow:none!important;transform:none!important}
+
 /* At phone widths, keep each game card readable instead of squeezing long titles
    and descriptions into two narrow columns. This is last to beat older mobile
    rules loaded from style.css. */

@@ -29,7 +29,9 @@ describe('未来から届く物語の整合性',()=>{
         for(let seat=0;seat<8;seat++){
           const message=futureMessage(state,seat),prediction=projectFuture(state,message.action);
           expect(prediction.text).toContain(message.evidence);
+          expect(message.evidence).toBe(prediction.text);
           expect(message.text).toContain(message.evidence);
+          expect(message.text).not.toMatch(/記録欠落|記録は破損/);
           expect(message.text).not.toContain('undefined');
         }
       }
@@ -99,5 +101,28 @@ describe('未来から届く物語の整合性',()=>{
     for(const uid of ['a','b'])g=actOnFuture(g,uid,uid==='a',{type:'vote',option:'latch',confirm:true});
     expect(g.phase).toBe('result');g=actOnFuture(g,'a',true,{type:'next'});
     expect(futurePublic(g).total).toBe(3);expect(g.deferred).toEqual([]);
+  });
+  it.each([
+    ['tools','pump','key','boat','leave'],
+    ['vests','backup','distress','beacon','rescue'],
+    ['vests','backup','key','raft','raft'],
+  ])('船の脱出経路 %s → %s → %s → %s → %s が成立する',(...route)=>{
+    let state=createFutureState('ship');
+    for(const option of route){state=resolveFuture(state,option);if(state.status==='playing')state.round++}
+    expect(state.status).toBe('escaped');expect(state.history).toHaveLength(5);
+  });
+  it('未来への問いは、今の結果に加えて次の場面を示す',()=>{
+    let g=createFutureSession('ship',['a','b','c']);
+    for(const uid of g.order)g=actOnFuture(g,uid,false,{type:'read'});
+    g=actOnFuture(g,'a',true,{type:'query',option:'tools'});
+    expect(g.queries[0].text).toContain('その先の場面');
+    expect(g.queries[0].text).toContain('排水ポンプを修理する');
+  });
+  it('更新前の道具名を持った進行中のゲームでも脱出できる',()=>{
+    let g=createFutureSession('laboratory',['a','b','c']);g.state.round=5;g.state.inventory=['認証キー'];g.phase='discussion';
+    expect(futurePublic(g).inventory).toContain('脱出用カードキー');
+    g=actOnFuture(g,'a',true,{type:'openVote'});
+    for(const uid of g.order)g=actOnFuture(g,uid,uid==='a',{type:'vote',option:'front',confirm:true});
+    expect(g.state.status).toBe('escaped');
   });
 });

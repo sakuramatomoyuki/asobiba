@@ -10,7 +10,7 @@ async function client(){
   const payload=await res.json();if(payload.error)throw new Error(`${name}: ${JSON.stringify(payload.error)}`);return payload.result;
  }};
 }
-const routes={laboratory:['latch','vent','key','wait','front'],'last-train':['map','key','signal','control','station'],broadcast:['battery','rescue','code','light','ship']};
+const routes={laboratory:['latch','vent','key','wait','front'],'last-train':['map','key','signal','control','station'],broadcast:['battery','rescue','code','light','ship'],ship:['tools','pump','key','boat','leave']};
 for(const mode of ['individual','shared','hybrid'])for(const [scenario,route] of Object.entries(routes)){
  const host=await client(),b=await client(),c=await client();
  const shared=mode==='shared'?[{name:'未来A'},{name:'未来B'},{name:'未来C'}]:mode==='hybrid'?[{name:'未来A'},{name:'未来B'}]:[];

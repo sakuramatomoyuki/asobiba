@@ -1,10 +1,15 @@
 /** Server-owned branching narrative. Messages describe conditional futures, never fabricated facts. */
-export type FutureScene = 'laboratory' | 'last-train' | 'broadcast';
+export type FutureScene = 'laboratory' | 'last-train' | 'broadcast' | 'ship';
 export interface FutureScenario {
   id: FutureScene; title: string; synopsis: string; atmosphere: string;
   locations: readonly string[]; threat: string; escape: string;
 }
 export const FUTURE_SCENARIOS: readonly FutureScenario[] = [
+  { id:'ship', title:'乗組員の最後の通信',
+    synopsis:'深夜の貨物船で浸水が始まった。船内無線から聞こえたのは、10分後の自分の声。「まだ船に残っているなら、よく聞いて」。沈む前に、全員で船を脱出しなければならない。',
+    atmosphere:'船底のきしみ、迫る海水、途切れる船内無線',
+    locations:['船員室','機関室','無線室','救命甲板','最後の退船'],
+    threat:'浸水',escape:'沈む船から全員で退船' },
   { id:'laboratory', title:'零時の隔離棟',
     synopsis:'封鎖された研究施設で、あなたの端末が鳴る。差出人は自分。送信時刻は、施設崩壊の三分後だった。',
     atmosphere:'冷たい非常灯、結露したガラス、換気口から聞こえる呼吸',
@@ -24,7 +29,7 @@ export const FUTURE_SCENARIOS: readonly FutureScenario[] = [
 
 export interface FutureState {
   scenarioId: FutureScene; round: number; danger: number;
-  inventory: string[]; history: {round:number; action:string; outcome:string}[];
+  inventory: string[]; history: {round:number; action:string; outcome:string;gained?:string[]}[];
   questionsRemaining: number; status:'playing'|'escaped'|'lost';
 }
 export function createFutureState(scenarioId: string): FutureState {
@@ -41,28 +46,42 @@ export function futureVoteLeaders(votes: Record<string,string>, options: readonl
 }
 
 export type FutureAction = {id:string;label:string;detail:string;danger:number;item?:string;requires?:string;failure:string;success:string};
+/** Plain goals sit beside the atmospheric story so players always know what to do. */
+export const FUTURE_OBJECTIVES:Record<FutureScene,readonly string[]>={
+ laboratory:['まず、この部屋から出よう。','ガスを抜くか、脱出に使う電源を確保しよう。','脱出用のカードキーか、別の逃げ道を探そう。','救助を呼ぶか、地下の出口を開けよう。','準備ができている逃げ道を選んで、全員で脱出しよう。'],
+ 'last-train':['本当の行き先を調べよう。','運転室へ進むための鍵か、別の通路を探そう。','帰れる駅へ向かう準備をしよう。','電車を止めるか、別の出口から降りる準備をしよう。','準備した方法で、全員この電車から降りよう。'],
+ broadcast:['宿を出る前に、役立ちそうなものを確保しよう。','助けを呼ぶか、灯台への道を探そう。','灯台で使う手帳か、小舟を確保しよう。','海へ合図を送るか、陸へ逃げる道を開こう。','準備ができている方法で、全員この宿を離れよう。'],
+ ship:['浸水している。脱出に使うものを1つ持ち出そう。','水を減らすか、救難無線の電源を確保しよう。','救助を呼ぶか、救命艇の鍵を手に入れよう。','最後に使う脱出手段を、ここで準備しよう。','準備した脱出手段で、全員この船を離れよう。'],
+};
 export type FutureChapter = {scene:string;event:string;investigation:string;actions:FutureAction[]};
 const action=(id:string,label:string,detail:string,danger:number,success:string,failure=success,item?:string,requires?:string):FutureAction=>({id,label,detail,danger,success,failure,...(item?{item}:{}),...(requires?{requires}:{})});
 export const FUTURE_CHAPTERS: Record<FutureScene,FutureChapter[]> = {
+ ship:[
+  {scene:'ベッドの下に海水が入ってきた。無線は、自分がまだ言っていない言葉を繰り返している。',event:'船が浸水しています。部屋を出る前に、脱出に使うものを1つ選んで持ち出します。',investigation:'工具は機関室のポンプ修理に使えます。救命胴衣は全員分あり、救命いかだで逃げるときに必要です。廊下のノックには返事がありません。',actions:[action('tools','工具箱を持ち出す','機関室の故障を直せる',0,'全員で部屋を出て、工具箱を確保した。無線から「それを置いてくるな」と、自分の声が聞こえた。','', '工具'),action('vests','全員分の救命胴衣を取る','救命いかだで逃げる準備をする',0,'全員分の救命胴衣を確保した。最後の1着だけ、名前の欄に明日の日付が書かれていた。','', '救命胴衣'),action('knock','ノックのする部屋を探す','ほかの乗組員がいないか確かめる',2,'空の部屋を探す間に、水位が上がった。ドアの向こうのノックは、もう海の中から聞こえていた。')]},
+  {scene:'止まったエンジンの奥から、誰かが息をする音がする。計器には「乗員0名」と出ている。',event:'機関室に着きました。水を抜くか、救難無線に使う電源を確保するかを選びます。',investigation:'排水ポンプを直すには工具が必要です。非常用電源なら、浸水したエンジンを動かさずに無線へ電気を送れます。',actions:[action('pump','排水ポンプを修理する','工具を使って船内の水を減らす',-1,'排水ポンプが動き、水位が下がった。エンジンの奥の呼吸音も、同時に止まった。','工具がなくポンプを直せなかった。その間にも、床の水が増えていく。','排水ポンプ稼働','工具'),action('backup','無線の非常用電源を入れる','次の無線室で助けを呼べる',0,'無線へ電気を送れるようになった。誰も触れていない送信ランプが、一度だけ光った。','', '非常用電源'),action('engine','メインエンジンを再始動する','船を動かせないか試す',2,'水につかった配線から火花が散った。エンジンは動かず、船はさらに傾いた。')]},
+  {scene:'無線の向こうで、自分が「最後まで聞け」と言っている。録音ランプは消えている。',event:'無線室です。外へ救助を求めるか、船の救命艇で逃げるための鍵を取ります。',investigation:'救難信号には非常用電源が必要です。救命艇の鍵はここにあり、次の甲板で艇を海へ下ろすときに使えます。',actions:[action('distress','救難信号を送る','非常用電源があれば、救助船を呼べる',0,'沿岸の船から返事が来た。「次は甲板で救助灯をつけてください」。背後の無線だけが「来るな」と言った。','電源がなく、救難信号を送れなかった。受話器からは自分の声しか聞こえない。','救助要請','非常用電源'),action('key','救命艇の鍵を取る','次の甲板で救命艇を使える',0,'救命艇の鍵を確保した。フックには、同じ鍵の形をした濡れた跡が残っていた。','', '救命艇の鍵'),action('announce','船内放送で仲間を探す','船に残っている人へ呼びかける',1,'返事は全員の声で同時に返ってきた。あなたたちは誰も、マイクを持っていなかった。探す間に船はさらに沈んだ。')]},
+  {scene:'救命艇の中で、人影がこちらを待っている。ライトを向けると、濡れたロープしかなかった。',event:'甲板に出ました。最後の脱出に使う、救命艇・救助灯・救命いかだのどれかを準備します。',investigation:'救命艇は鍵でロックを外せます。救助灯は救難信号を送った船への目印です。救命いかだは、全員が救命胴衣を持っていれば使えます。',actions:[action('boat','救命艇を海へ下ろす','救命艇の鍵が必要',0,'救命艇を下ろし、全員が乗れることを確かめた。船内無線が「あと一人」と言ったが、あなたたちは全員ここにいる。','鍵がなく救命艇を下ろせなかった。ロックは海水で冷えきっている。','救命艇準備','救命艇の鍵'),action('beacon','救助灯をつける','救難信号を送っていれば、救助船に見つけてもらえる',0,'沖の船が光で合図を返した。甲板の影だけが、その光と逆向きに伸びた。','救難信号を送っていないため、どの船からも返事がない。','救助灯','救助要請'),action('raft','救命いかだを準備する','全員分の救命胴衣が必要',0,'救命いかだが膨らんだ。全員の救命胴衣を確認し、乗り込むロープをつないだ。','救命胴衣が足りず、全員で安全にいかだへ移れない。','救命いかだ','救命胴衣')]},
+  {scene:'船首が海へ沈み始めた。無線から「これが最後の通信だ」と、自分の声が聞こえた。',event:'最後の選択です。これまでに準備できた方法を選び、全員で船を離れてください。',investigation:'救命艇は「救命艇準備」、救助船は「救助灯」、いかだは「救命いかだ」を所持品で確認してください。準備していない方法では逃げられません。',actions:[action('leave','準備した救命艇で逃げる','救命艇を下ろしていれば成功',0,'全員を乗せた救命艇が船を離れた。沈む船から、あなたたちと同じ人数の声が「待って」と叫んだ。誰も戻らなかった。','救命艇はまだ船に固定されている。船が大きく傾き、乗り込めなかった。',undefined,'救命艇準備'),action('rescue','合図を返した救助船へ移る','救助灯をつけていれば成功',0,'全員が救助船へ移った。無線に「全員、乗れた」と伝えると、未来の自分も同じ言葉を返し、通信が切れた。','救助船は来ていない。暗い海を見つめる間に、甲板が水に消えた。',undefined,'救助灯'),action('raft','準備した救命いかだで逃げる','救命いかだを準備していれば成功',0,'全員でいかだに乗り、船から離れた。夜明けと同時に無線の声が止まった。救命胴衣の名前の欄には、今日の日付が残っていた。','いかだの準備ができていない。箱を開ける前に、波が甲板を越えてきた。',undefined,'救命いかだ')]},
+ ],
  laboratory:[
-  {scene:'ガラスの向こうで、あなたと同じ服の人影が立っている。こちらが手を上げても、人影は動かない。',event:'隔離室の扉は施錠されています。非常用の配線が露出しています。',investigation:'扉の機械式ラッチは停電しても使えます。通電すると隔離警報が作動します。',actions:[action('latch','機械式ラッチを外す','時間をかけて静かに開ける',0,'扉が開いた。人影のいた場所には、内側からついた手形だけが残った。','', '工具'),action('power','扉へ通電する','露出した配線を接続する',2,'警報が鳴る。扉は開いたが、施設の封鎖手順が動き始めた。'),action('glass','観察窓を割る','隣の区画へ抜ける',1,'ガラスの音に、遠い廊下から同じ音が返った。破片の中から工具を回収した。','', '工具')]},
-  {scene:'制御盤のモニターに「在室者：0」と表示されている。背後で一度だけ椅子が回る。',event:'排気装置は停止中。保管庫には可燃性ガスの警告があります。',investigation:'主電源の起動は火花を発生させます。排気弁は工具で手動操作できます。',actions:[action('vent','手動の排気弁を開ける','工具を使ってガスを抜く',-1,'空気が流れ始めた。換気口の呼吸は、あなたたちと同じ速さになった。','工具がなく弁を回しきれない。ガスは残った。','排気済','工具'),action('main','主電源を復旧する','照明と保管庫を再起動する',2,'火花のあとに鈍い爆発。モニターの在室者が一人増えた。'),action('backup','非常電源へ切り替える','扉だけを動かす',0,'廊下に細い明かりがともる。排気装置は止まったままだ。','', '予備電源')]},
-  {scene:'標本のラベルはすべてあなたたちの名前だ。採取日は明日になっている。',event:'脱出用の認証キーは保管庫の奥。扉の隙間から甘いにおいがします。',investigation:'ガスを抜いた保管庫なら安全です。外壁の避難図は別の脱出経路を示しています。',actions:[action('key','保管庫で認証キーを取る','排気を済ませていれば安全',0,'キーを回収した。最後の棚だけ、空なのに内側から音がする。','ガスを吸い込み警報が上がる。それでもキーは持ち帰った。','認証キー','排気済'),action('map','外壁の避難図を読む','地下への代替ルートを探す',0,'地下通路の入口と、機械式ゲートの手順が分かった。','', '地下経路'),action('call','館内放送で助けを呼ぶ','誰かが応答するか確かめる',1,'あなたの声で「そこを動くな」と返ってきた。回答を待たず受話器を置いた。')]},
-  {scene:'排気塔の階段を上る足音が、一人分多い。数えるのをやめると、止まる。',event:'外部へ救難信号を送れます。ゲートへはここから戻る必要があります。',investigation:'救難アンテナには予備電源が必要です。地下ゲートは工具で解錠できます。',actions:[action('signal','救難アンテナを起動する','予備電源があれば救助を呼べる',0,'返答は短い。「信号を確認。外で待つ」。初めて、自分以外の声だった。','電源が足りず、同じ一秒の雑音だけが繰り返される。','救助','予備電源'),action('service','地下ゲートを整備する','工具で避難経路を開く',0,'重いゲートが開いた。外から冷たい空気が入る。','工具がなく整備に失敗。ゲートは動かない。','地下開放','工具'),action('wait','塔の明かりを消して待つ','危険の拡大を抑える',-1,'足音が止んだ。暗闇の中で、全員が互いの名前を確かめた。')]},
-  {scene:'ゲートの向こうで朝が始まっている。背後のスピーカーが、全員の名前を一人ずつ呼ぶ。',event:'最後の選択です。振り返らず、脱出手段を決めてください。',investigation:'正面は認証キー、地下は開放済ゲート、屋外救助は受信済の救難信号が必要です。',actions:[action('front','正面ゲートから脱出','認証キーが必要',0,'キーをかざす。全員が出た瞬間、館内の人数表示がゼロになった。','扉は開かない。背後であなたの名前が呼ばれ続けた。',undefined,'認証キー'),action('under','地下通路から脱出','地下ゲートの開放が必要',0,'地上へ出ると、施設の窓すべてに人影が立っていた。あなたたちは数えなかった。','地下ゲートは閉まったまま。水が足元へ流れ込む。',undefined,'地下開放'),action('rescue','屋外の救助へ向かう','救難信号への応答が必要',0,'ライトが霧を裂く。救助員の「全員ですね」に、全員でうなずいた。','救助は来ない。霧の中から自分たちの声だけが近づいてきた。',undefined,'救助')]},
+  {scene:'ガラスの向こうで、あなたと同じ服の人影が立っている。こちらが手を上げても、人影は動かない。',event:'隔離室の扉は施錠されています。非常用の配線が露出しています。',investigation:'扉の手で動かせる留め金は停電しても使えます。通電すると隔離警報が作動します。',actions:[action('latch','手動で扉の留め金を外す','時間をかけて静かに開ける',0,'扉が開いた。人影のいた場所には、内側からついた手形だけが残った。','', '工具'),action('power','配線をつないで扉を開ける','露出した配線を接続する',2,'警報が鳴る。扉は開いたが、施設の封鎖手順が動き始めた。'),action('glass','観察窓を割る','隣の区画へ抜ける',1,'ガラスの音に、遠い廊下から同じ音が返った。破片の中から工具を回収した。','', '工具')]},
+  {scene:'制御盤のモニターに「在室者：0」と表示されている。背後で一度だけ椅子が回る。',event:'排気装置は停止中。保管庫には可燃性ガスの警告があります。',investigation:'主電源の起動は火花を発生させます。ガス抜きの弁は工具で手動操作できます。',actions:[action('vent','弁を回してガスを外へ逃がす','工具を使ってガスを抜く',-1,'空気が流れ始めた。換気口の呼吸は、あなたたちと同じ速さになった。','工具がなく弁を回しきれない。ガスは残った。','排気済','工具'),action('main','施設全体の電源を入れる','照明と保管庫を再起動する',2,'火花のあとに鈍い爆発。モニターの在室者が一人増えた。'),action('backup','非常電源へ切り替える','扉だけを動かす',0,'廊下に細い明かりがともる。排気装置は止まったままだ。','', '予備電源')]},
+  {scene:'標本のラベルはすべてあなたたちの名前だ。採取日は明日になっている。',event:'脱出用の脱出用カードキーは保管庫の奥。扉の隙間から甘いにおいがします。',investigation:'ガスを抜いた保管庫なら安全です。外壁の避難図は別の脱出経路を示しています。',actions:[action('key','保管庫で脱出用カードキーを取る','排気を済ませていれば安全',0,'キーを回収した。最後の棚だけ、空なのに内側から音がする。','ガスを吸い込み警報が上がる。それでもキーは持ち帰った。','脱出用カードキー','排気済'),action('map','外壁の避難図を読む','地下への代替ルートを探す',0,'地下通路の入口と、機械式ゲートの手順が分かった。','', '地下経路'),action('call','館内放送で助けを呼ぶ','誰かが応答するか確かめる',1,'あなたの声で「そこを動くな」と返ってきた。回答を待たず受話器を置いた。')]},
+  {scene:'排気塔の階段を上る足音が、一人分多い。数えるのをやめると、止まる。',event:'外部へ救難信号を送れます。ゲートへはここから戻る必要があります。',investigation:'救難アンテナには予備電源が必要です。地下ゲートは工具で解錠できます。',actions:[action('signal','アンテナで助けを呼ぶ','予備電源があれば救助を呼べる',0,'返答は短い。「信号を確認。外で待つ」。初めて、自分以外の声だった。','電源が足りず、同じ一秒の雑音だけが繰り返される。','救助','予備電源'),action('service','地下ゲートを整備する','工具で避難経路を開く',0,'重いゲートが開いた。外から冷たい空気が入る。','工具がなく整備に失敗。ゲートは動かない。','地下開放','工具'),action('wait','塔の明かりを消して待つ','危険の拡大を抑える',-1,'足音が止んだ。暗闇の中で、全員が互いの名前を確かめた。')]},
+  {scene:'ゲートの向こうで朝が始まっている。背後のスピーカーが、全員の名前を一人ずつ呼ぶ。',event:'最後の選択です。振り返らず、脱出手段を決めてください。',investigation:'正面は脱出用カードキー、地下は開放済ゲート、屋外救助は受信済の救難信号が必要です。',actions:[action('front','正面ゲートから脱出','脱出用カードキーが必要',0,'キーをかざす。全員が出た瞬間、館内の人数表示がゼロになった。','扉は開かない。背後であなたの名前が呼ばれ続けた。',undefined,'脱出用カードキー'),action('under','地下通路から脱出','地下ゲートの開放が必要',0,'地上へ出ると、施設の窓すべてに人影が立っていた。あなたたちは数えなかった。','地下ゲートは閉まったまま。水が足元へ流れ込む。',undefined,'地下開放'),action('rescue','屋外の救助へ向かう','救難信号への応答が必要',0,'ライトが霧を裂く。救助員の「全員ですね」に、全員でうなずいた。','救助は来ない。霧の中から自分たちの声だけが近づいてきた。',undefined,'救助')]},
  ],
  'last-train':[
   {scene:'乗客はあなたたちだけ。窓には、一人多く映っている。',event:'同じ駅名が三度流れました。車内の案内板と紙の路線図が食い違っています。',investigation:'液晶の行き先は毎周変わりますが、古い路線図には終点と信号所が残っています。',actions:[action('map','紙の路線図を持ち出す','実在する線路を確認する',0,'地図の端に「朝凪」の文字。液晶には存在しない駅だった。','', '路線図'),action('screen','案内板の指示に従う','前の車両へ移る',1,'次の車両も同じ。座席に置き忘れた鞄だけが、先に着いていた。'),action('brake','非常停止を試す','列車を止める',2,'ブレーキの音がしたのに、窓の景色だけが速くなった。')]},
-  {scene:'連結扉のガラスの奥で、あなたがこちらへ背を向けて立っている。',event:'車掌室の鍵と、前方へつながる機械式通路があります。',investigation:'床下の番号は路線図の信号所と一致します。車掌の制服には誰も入っていません。',actions:[action('key','床下の番号を照合する','路線図で正しい車掌室を探す',0,'正しい扉だけが開いた。制御キーを回収した。','別の扉を開くと、通路が元の場所へ戻った。','制御キー','路線図'),action('uniform','制服についていく','車掌らしい影を追う',2,'影は扉を通り抜けた。あなたの切符に、知らない名前が印字されていた。'),action('manual','機械式通路を開く','安全な連結経路を確保する',0,'ロックを外した。通路の先から海のにおいがする。','', '保守通路')]},
-  {scene:'無人駅の時計は、あなたの端末の一分先を指している。針がこちらを待っている。',event:'停車時間は短い。信号器か、駅舎の時刻表を調べられます。',investigation:'朝凪へ分岐する信号は手動です。時刻表の最後の便だけ日付が今日になっています。',actions:[action('signal','分岐信号を切り替える','路線図を使って朝凪方面へ',0,'信号が青に変わる。今度は駅名が繰り返されなかった。','正しい分岐が分からず、信号は赤のまま。','正しい分岐','路線図'),action('table','最終便の時刻表を取る','次の実在駅を確認する',0,'時刻表に帰り道が残っていた。紙は雨に濡れていた。','', '時刻表'),action('voice','ホームの呼び声を追う','名前を呼ぶ人を探す',2,'階段の下に、まだ届いていないあなたの通信が落ちていた。誰もいなかった。')]},
-  {scene:'運転席は空。操作盤に置かれた手袋だけが、温かい。',event:'運転制御か、保守通路を使った避難準備を行えます。',investigation:'制御キーで停車操作を予約できます。保守通路の出口は時刻表で特定できます。',actions:[action('control','停車を予約する','制御キーが必要',0,'操作盤に「停車予約済」。運転席の影が一度だけうなずいた。','キーがなく操作できない。窓の向こうで駅が消えた。','停車予約','制御キー'),action('exit','保守通路の出口を確認する','時刻表が必要',0,'夜明けに開く通用口を見つけた。','時刻が分からず、出口を特定できなかった。','避難出口','時刻表'),action('lights','客室の電灯を切る','異常の拡大を抑える',-1,'窓の余分な一人が見えなくなった。誰も振り返らなかった。')]},
-  {scene:'車窓の空が白む。最後の放送が「降りる方は、ご自分の声をお確かめください」と告げる。',event:'列車が最後の分岐に入りました。脱出方法を決めてください。',investigation:'停車予約、避難出口、または正しい分岐への切替が、それぞれ別の帰路を開きます。',actions:[action('station','予約した駅で降りる','停車予約が必要',0,'ホームに足を下ろす。窓の中の自分は、電車が去るまでこちらを見ていた。','列車は止まらない。扉のボタンだけが冷たく光る。',undefined,'停車予約'),action('passage','保守通路の出口へ向かう','避難出口の確認が必要',0,'階段を上ると、始発を待つ人々の声が聞こえた。','出口は見つからない。階段の先に同じ車両があった。',undefined,'避難出口'),action('branch','朝凪のホームへ降りる','正しい分岐が必要',0,'海の見える駅に着いた。スマホの日付が、やっと今日になった。','そこは朝凪ではない。駅名標にはあなたの名前があった。',undefined,'正しい分岐')]},
+  {scene:'連結扉のガラスの奥で、あなたがこちらへ背を向けて立っている。',event:'車掌室の鍵と、前方へつながる機械式通路があります。',investigation:'床下の番号は路線図の信号所と一致します。車掌の制服には誰も入っていません。',actions:[action('key','路線図を見て正しい扉を探す','路線図で正しい車掌室を探す',0,'正しい扉だけが開いた。運転室の鍵を回収した。','別の扉を開くと、通路が元の場所へ戻った。','運転室の鍵','路線図'),action('uniform','制服についていく','車掌らしい影を追う',2,'影は扉を通り抜けた。あなたの切符に、知らない名前が印字されていた。'),action('manual','機械式通路を開く','安全な連結経路を確保する',0,'ロックを外した。通路の先から海のにおいがする。','', '作業員用の通路')]},
+  {scene:'無人駅の時計は、あなたの端末の一分先を指している。針がこちらを待っている。',event:'停車時間は短い。信号器か、駅舎の時刻表を調べられます。',investigation:'朝凪へ分岐する信号は手動です。時刻表の最後の便だけ日付が今日になっています。',actions:[action('signal','朝凪駅へ向かう線路に切り替える','路線図を使って朝凪方面へ',0,'信号が青に変わる。今度は駅名が繰り返されなかった。','正しい分岐が分からず、信号は赤のまま。','正しい分岐','路線図'),action('table','最終便の時刻表を取る','次の実在駅を確認する',0,'時刻表に帰り道が残っていた。紙は雨に濡れていた。','', '時刻表'),action('voice','ホームの呼び声を追う','名前を呼ぶ人を探す',2,'階段の下に、まだ届いていないあなたの通信が落ちていた。誰もいなかった。')]},
+  {scene:'運転席は空。操作盤に置かれた手袋だけが、温かい。',event:'運転制御か、作業員用の通路を使った避難準備を行えます。',investigation:'運転室の鍵で停車操作を予約できます。作業員用の通路の出口は時刻表で特定できます。',actions:[action('control','次の駅で止まるように設定する','運転室の鍵が必要',0,'操作盤に「停車予約済」。運転席の影が一度だけうなずいた。','キーがなく操作できない。窓の向こうで駅が消えた。','停車予約','運転室の鍵'),action('exit','作業員用の通路の出口を確認する','時刻表が必要',0,'夜明けに開く通用口を見つけた。','時刻が分からず、出口を特定できなかった。','避難出口','時刻表'),action('lights','客室の電灯を切る','異常の拡大を抑える',-1,'窓の余分な一人が見えなくなった。誰も振り返らなかった。')]},
+  {scene:'車窓の空が白む。最後の放送が「降りる方は、ご自分の声をお確かめください」と告げる。',event:'列車が最後の分岐に入りました。脱出方法を決めてください。',investigation:'停車予約、避難出口、または正しい分岐への切替が、それぞれ別の帰路を開きます。',actions:[action('station','予約した駅で降りる','停車予約が必要',0,'ホームに足を下ろす。窓の中の自分は、電車が去るまでこちらを見ていた。','列車は止まらない。扉のボタンだけが冷たく光る。',undefined,'停車予約'),action('passage','作業員用の通路の出口へ向かう','避難出口の確認が必要',0,'階段を上ると、始発を待つ人々の声が聞こえた。','出口は見つからない。階段の先に同じ車両があった。',undefined,'避難出口'),action('branch','朝凪のホームへ降りる','正しい分岐が必要',0,'海の見える駅に着いた。スマホの日付が、やっと今日になった。','そこは朝凪ではない。駅名標にはあなたの名前があった。',undefined,'正しい分岐')]},
  ],
  broadcast:[
   {scene:'受話器を置いても、部屋のどこかで通話が続いている。',event:'宿の電気が消え、窓の下まで波が来ています。',investigation:'非常灯の電池は電話交換室でも使えます。海へ続く階段は既に水没しています。',actions:[action('battery','非常灯の電池を回収する','必要な電源を確保する',0,'電池は温かい。非常灯の下に、自分の筆跡で「持っていけ」とあった。','', '電池'),action('stairs','海側の階段を降りる','船着き場を探す',2,'波の中から電話が鳴った。階段を引き返すと、濡れた足跡が先を歩いていた。'),action('rope','廊下の救命ロープを取る','別の移動手段を準備する',0,'長いロープを回収した。結び目は、まだ濡れていない。','', 'ロープ')]},
-  {scene:'交換台のすべてのランプが点灯している。どの回線にも、あなたの部屋番号が表示されている。',event:'救難回線と宿の放送回線を選べます。',investigation:'救難回線は電池で動かせます。放送回線は海側の古いスピーカーにしかつながっていません。',actions:[action('rescue','救難回線を起動する','電池を接続して外部へ連絡',0,'「明け方、灯台の信号を見て迎えに行く」。返事が来た。','交換台は沈黙したまま。電源が必要だった。','救難予約','電池'),action('broadcast','館内放送を使う','全員の集合を呼びかける',1,'放送のあと、上の階から全員の声で返事が来た。誰も上にはいない。'),action('chart','配線図を回収する','灯台への通路を探す',0,'海を渡らず灯台へ出られる保守経路が見つかった。','', '保守経路')]},
-  {scene:'食卓には人数分の皿。どれも食べ終わったあとで、椅子だけがゆっくり戻っている。',event:'灯台の信号コードが書かれた手帳と、船の鍵があります。',investigation:'手帳には救難の点滅パターンが書かれています。小舟はロープで固定しなければ流されます。',actions:[action('code','信号の手帳を持ち出す','灯台で使える符号を覚える',0,'最後の頁には「同じ声には返事をしない」。その下に今日の日付。','', '信号符号'),action('boat','小舟を固定する','ロープが必要',0,'小舟を桟橋へつなぎ直した。全員が乗れる大きさだ。','波に引かれ、小舟は暗闇へ消えた。','小舟','ロープ'),action('meal','食卓で待つ','体力を回復しながら時間を待つ',1,'時計が一時間進んだ。皿には、さっきまで無かったあなたの指紋がついていた。')]},
-  {scene:'灯台の光が宿を横切るたび、窓の人影が一つずつ減っていく。',event:'灯台へ向かう道が崩れ始めています。',investigation:'保守経路なら無傷で到達できます。信号符号があれば海上へ現在地を知らせられます。',actions:[action('light','灯台で救難信号を送る','信号符号を使う',0,'海の向こうから、同じ間隔の光が返った。','符号が分からず光を送れない。','灯台信号','信号符号'),action('path','保守経路を開く','配線図で通用口を探す',0,'内陸へ続く古い橋を開放した。波音が少し遠くなる。','場所が分からない。壁の向こうで電話が鳴る。','陸路','保守経路'),action('silence','回線をすべて切る','危険の拡大を抑える',-1,'初めて、宿が静かになった。遠くの波の音だけが残った。')]},
+  {scene:'交換台のすべてのランプが点灯している。どの回線にも、あなたの部屋番号が表示されている。',event:'救難回線と宿の放送回線を選べます。',investigation:'救難回線は電池で動かせます。放送回線は海側の古いスピーカーにしかつながっていません。',actions:[action('rescue','救難回線を起動する','電池を接続して外部へ連絡',0,'「明け方、灯台の信号を見て迎えに行く」。返事が来た。','交換台は沈黙したまま。電源が必要だった。','救難予約','電池'),action('broadcast','館内放送を使う','全員の集合を呼びかける',1,'放送のあと、上の階から全員の声で返事が来た。誰も上にはいない。'),action('chart','配線図を回収する','灯台への通路を探す',0,'海を渡らず灯台へ出られる灯台への裏道が見つかった。','', '灯台への裏道')]},
+  {scene:'食卓には人数分の皿。どれも食べ終わったあとで、椅子だけがゆっくり戻っている。',event:'灯台の信号コードが書かれた手帳と、船の鍵があります。',investigation:'手帳には救難の点滅パターンが書かれています。小舟はロープで固定しなければ流されます。',actions:[action('code','信号の手帳を持ち出す','灯台で使える符号を覚える',0,'最後の頁には「同じ声には返事をしない」。その下に今日の日付。','', '救難信号の送り方'),action('boat','小舟を固定する','ロープが必要',0,'小舟を桟橋へつなぎ直した。全員が乗れる大きさだ。','波に引かれ、小舟は暗闇へ消えた。','小舟','ロープ'),action('meal','食卓で待つ','体力を回復しながら時間を待つ',1,'時計が一時間進んだ。皿には、さっきまで無かったあなたの指紋がついていた。')]},
+  {scene:'灯台の光が宿を横切るたび、窓の人影が一つずつ減っていく。',event:'灯台へ向かう道が崩れ始めています。',investigation:'灯台への裏道なら無傷で到達できます。救難信号の送り方があれば海上へ現在地を知らせられます。',actions:[action('light','灯台で救難信号を送る','救難信号の送り方を使う',0,'海の向こうから、同じ間隔の光が返った。','符号が分からず光を送れない。','灯台信号','救難信号の送り方'),action('path','灯台への裏道を開く','配線図で通用口を探す',0,'内陸へ続く古い橋を開放した。波音が少し遠くなる。','場所が分からない。壁の向こうで電話が鳴る。','陸路','灯台への裏道'),action('silence','回線をすべて切る','危険の拡大を抑える',-1,'初めて、宿が静かになった。遠くの波の音だけが残った。')]},
   {scene:'空が白み始めた。最後の電話は、あなたの端末から鳴っている。',event:'満潮になる前に、全員で宿を離れてください。',investigation:'灯台信号、小舟、陸路のどれかを確保していれば脱出できます。',actions:[action('ship','灯台下の救助船へ向かう','灯台信号が必要',0,'救助船に乗る。宿を振り返ると、どの窓にも電話の明かりが灯っていた。','船は見えない。潮が足元まで満ちてきた。',undefined,'灯台信号'),action('boat','固定した小舟で離れる','小舟の確保が必要',0,'岸を離れると、全員の電話が同時に切れた。','小舟はない。桟橋の先で、自分の声が助けを呼んでいた。',undefined,'小舟'),action('land','古い橋から内陸へ逃げる','陸路の開放が必要',0,'橋を渡った瞬間、宿の時計が止まった。朝の鳥が鳴き始めた。','通用口は閉じている。背後で電話がまた鳴った。',undefined,'陸路')]},
  ],
 };
@@ -86,18 +105,19 @@ export function resolveFuture(state:FutureState,id:string):FutureState {
   // Taking the key is possible even without ventilation, at a real cost.
   const gained=choice.item&&(result.success||state.scenarioId==='laboratory'&&id==='key');
   return {...state,danger:result.danger,inventory:gained?[...new Set([...state.inventory,choice.item!])]:[...state.inventory],
-    history:[...state.history,{round:state.round,action:id,outcome:result.text}],
+    history:[...state.history,{round:state.round,action:id,outcome:result.text,gained:gained&&!state.inventory.includes(choice.item!)?[choice.item!]:[]}],
     status:result.danger>=6?'lost':state.round===5?(result.success?'escaped':'lost'):'playing'};
 }
 /** Each person receives a different fragment of a genuine conditional outcome. */
 export function futureMessage(state:FutureState,index:number){
   const choices=futureChapter(state).actions,choice=choices[index%choices.length],prediction=projectFuture(state,choice.id);
   const kind=index%3===0?'目撃記録':index%3===1?'行動記録':'警告';
-  const sentences=prediction.text.match(/[^。！？]+[。！？]?/g)||[prediction.text];
-  const evidence=kind==='目撃記録'?sentences[0]:sentences.at(-1)!;
+  // Keep cause and result together. Cutting off the practical sentence left
+  // only an eerie image, which was atmospheric but gave players no usable clue.
+  const evidence=prediction.text;
   return {id:`${state.round}:${index}`,kind,action:choice.id,label:choice.label,
     condition:`「${choice.label}」を選んだ未来`,
-    text:kind==='行動記録'?`私たちは${choice.label}ことにした。［記録欠落］${evidence}`:kind==='警告'?`${evidence} ${choice.requires&&!prediction.success?`あのとき「${choice.requires}」を確かめておけば。`:'これは、あのときの私たちが見た一部分でしかない。'}`:`${evidence}［この先の記録は破損しています］`,
+    text:kind==='警告'&&choice.requires&&!prediction.success?`${evidence} この行動には「${choice.requires}」が必要だった。`:evidence,
     evidence};
 }
 
@@ -141,7 +161,9 @@ export function actOnFuture(input:FutureSession,uid:string,manager:boolean,comma
       g.investigation=chapter.investigation;break;
     case 'query':
       requireManager();if(g.phase!=='discussion'||g.state.questionsRemaining<=0)throw new Error('未来への問いは使えません。');
-      g.queries.push({round:g.state.round,action:command.option,text:projectFuture(g.state,command.option).text});g.state.questionsRemaining--;break;
+      {const projected=resolveFuture(g.state,command.option);let text=projectFuture(g.state,command.option).text;
+      if(projected.status==='playing'&&projected.round<5){const following=futureChapter({...projected,round:projected.round+1});text+=`\nその先の場面：${following.event}`;const prepared=following.actions.filter(a=>a.requires&&projected.inventory.includes(a.requires)).map(a=>a.label);if(prepared.length)text+=`\n次に準備ができている行動：${prepared.join('／')}`}
+      g.queries.push({round:g.state.round,action:command.option,text});g.state.questionsRemaining--;break;}
     case 'openVote':
       requireManager();if(g.phase!=='discussion')throw new Error('議論中に投票を開始できます。');g.phase='vote';break;
     case 'vote':{
@@ -186,7 +208,7 @@ export function futurePublic(g:FutureSession){
   restoreFutureSession(g);
   const chapter=futureChapter(g.state),ended=g.phase==='ended';
   return {scenario:FUTURE_SCENARIOS.find(s=>s.id===g.state.scenarioId),round:g.state.round,danger:g.state.danger,inventory:g.state.inventory,status:g.state.status,phase:g.phase,
-    scene:chapter.scene,event:chapter.event,options:chapter.actions.map(a=>({id:a.id,label:a.label,detail:a.detail,requires:a.requires||null})),
+    scene:chapter.scene,event:chapter.event,objective:FUTURE_OBJECTIVES[g.state.scenarioId][g.state.round-1],options:chapter.actions.map(a=>({id:a.id,label:a.label,detail:a.detail,requires:a.requires||null})),
     readyCount:g.order.filter(id=>g.ready[id]&&!g.deferred?.includes(id)).length,total:g.order.filter(id=>!g.deferred?.includes(id)).length,voteCount:Object.keys(g.locked).length,ballotRound:g.ballotRound,leaders:g.leaders,
     decisionUid:futureDecisionUid(g),deferred:g.deferred||[],investigation:g.investigation,questionsRemaining:g.state.questionsRemaining,
     queries:g.queries.filter(q=>q.round===g.state.round),history:g.state.history,
@@ -203,4 +225,8 @@ export function futurePrivate(g:FutureSession,uid:string){
 export function restoreFutureSession(g:FutureSession){
   g.ready??={};g.votes??={};g.locked??={};g.leaders??=[];g.queries??=[];g.transmissionLog??=[];
   g.state.inventory??=[];g.state.history??=[];
+  // These were display strings as well as stored item identifiers in v1.
+  // Preserve games already in progress when the clearer vocabulary ships.
+  const renamed:Record<string,string>={'認証キー':'脱出用カードキー','制御キー':'運転室の鍵','信号符号':'救難信号の送り方','保守経路':'灯台への裏道','保守通路':'作業員用の通路'};
+  g.state.inventory=[...new Set(g.state.inventory.map(item=>renamed[item]||item))];
 }

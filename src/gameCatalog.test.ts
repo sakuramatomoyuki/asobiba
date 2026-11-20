@@ -12,7 +12,7 @@ import { GAME_GUIDES } from './GameGuides';
 
 describe('multi-game catalog and shared setup rules', () => {
   it('lists each planned game exactly once', () => {
-    expect(GAME_CATALOG.map((game) => game.id)).toEqual(['jinrou', 'wordwolf', 'ogiri', 'survey', 'majority', 'ito', 'lateral', 'untilmatch']);
+    expect(GAME_CATALOG.map((game) => game.id)).toEqual(['jinrou', 'wordwolf', 'ogiri', 'survey', 'majority', 'ito', 'lateral', 'untilmatch', 'future']);
   });
 
   it('gives every game a beginner guide with a goal, first move, steps, and tips', () => {

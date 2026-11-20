@@ -1,9 +1,10 @@
 import React from 'react';
+import { FutureGame, FutureSetup } from './FutureGame';
 import { isYesNoQuestion, MAJORITY_PROMPTS, PARTY_GAME_DEFAULTS, PARTY_GAME_IDS, UNTIL_MATCH_PROMPTS, type PartyGameId } from './partyGameRules';
 
-const TITLES: Record<PartyGameId,string> = { majority:'マジョリティパーティー',ito:'クモノイト（ito）',lateral:'水平思考クイズ',untilmatch:'一致するまで終われまてん' };
-const TAGLINES: Record<PartyGameId,string> = { majority:'究極の二択を選ぼう',ito:'数字と言葉をつなごう',lateral:'質問で真相へ',untilmatch:'みんなの答えを合わせよう' };
-const descriptions: Record<PartyGameId,string> = { majority:'究極の二択に、自分の答えを決めて参加しよう。',ito:'自分の数字だけを確認。会話で順番を考えて、並び替えで答えよう。',lateral:'質問は「はい／いいえ」で。物語の真相を推理しよう。',untilmatch:'同じお題に答え、全員の答えがそろったかホストが判定する協力ゲームです。' };
+const TITLES: Record<PartyGameId,string> = { future:'未来の自分から届いた', majority:'マジョリティパーティー',ito:'クモノイト（ito）',lateral:'水平思考クイズ',untilmatch:'一致するまで終われまてん' };
+const TAGLINES: Record<PartyGameId,string> = { future:'まだ、間に合う。', majority:'究極の二択を選ぼう',ito:'数字と言葉をつなごう',lateral:'質問で真相へ',untilmatch:'みんなの答えを合わせよう' };
+const descriptions: Record<PartyGameId,string> = { future:'未来から届く自分の通信を持ち寄り、全員で運命を変える協力サスペンス。', majority:'究極の二択に、自分の答えを決めて参加しよう。',ito:'自分の数字だけを確認。会話で順番を考えて、並び替えで答えよう。',lateral:'質問は「はい／いいえ」で。物語の真相を推理しよう。',untilmatch:'同じお題に答え、全員の答えがそろったかホストが判定する協力ゲームです。' };
 const PHASE_LABELS: Record<string,string> = {
   'majority-question':'お題選択','majority-vote':'投票','majority-result':'結果発表',
   'ito-number':'数字確認','ito-order':'順番相談','ito-result':'結果発表',
@@ -14,6 +15,7 @@ export function PartyGameSetup({game,settings,roomPointsEnabled=true,onChange}:{
   const [draft,setDraft]=React.useState<any>({...PARTY_GAME_DEFAULTS[game],...(settings||{})});
   React.useEffect(()=>setDraft({...PARTY_GAME_DEFAULTS[game],...(settings||{})}),[game]);
   const patch=(value:any)=>{const next={...draft,...value};setDraft(next);onChange(next)};
+  if(game==='future')return <FutureSetup settings={draft} onChange={patch} roomPointsEnabled={roomPointsEnabled}/>;
   return <section className={`party-setup party-setup-${game}`}><h3>{TITLES[game]}の設定</h3><p>{descriptions[game]}</p>
     {['majority','ito','lateral'].includes(game)&&<label>{game==='majority'?'ラウンド数':'出題数'}<select value={draft.rounds??(game==='majority'?5:1)} onChange={e=>patch({rounds:e.target.value==='infinite'?'infinite':Number(e.target.value)})}>{Array.from({length:30},(_,i)=>i+1).map(n=><option key={n} value={n}>{n}{game==='majority'?'ラウンド':'問'}</option>)}<option value="infinite">ホストが終了するまで続ける</option></select>{draft.rounds==='infinite'&&<small>2問目以降、各問の結果画面でホストが「続行」または「ゲームを終了」を選びます。</small>}</label>}
     {game==='majority'&&<div className="party-setting-note majority-scoring-guide"><b>1ラウンドの流れと得点</b><p>親が二択のお題を出し、質問の後に全員が秘密投票します。自分の気持ちを選ぶのも、みんなが選びそうな方を読んで選ぶのも自由です。</p><ul><li><b>多数派</b><span>親を含め、1人につき <strong>+1点</strong></span></li><li><b>少数派の親</b><span>持ち点から <strong>−1点</strong>（0点未満にはなりません）</span></li><li><b>少数派のほかの人</b><span>持ち点があれば1点を親へ渡します。0点でも親はその人から1点を受け取ります。</span></li></ul><small>同数なら、親が選んだ側を多数派として扱います。</small></div>}
@@ -65,6 +67,7 @@ export function PartyGame({room,busy,act,activeSeat,openSeat,confirmSeat,hideSea
   const people=room.players?.filter((p:any)=>p.connected&&p.alive&&!p.hold)||[];
   const waiting=(title:string,detail:string)=> <section className="party-card party-wait" role="status" aria-live="polite" aria-atomic="true"><div className="party-pulse" aria-hidden="true"/><h2>{title}</h2><p>{detail}</p></section>;
   const untilMatchProgress=()=>{const total=Math.max(0,Number(g.answerTotal)||0),complete=Math.min(total,Math.max(0,Number(g.answerCount)||0));return <div className="untilmatch-progress" aria-label={`${complete}人 / ${total}人が回答済み`}><div><b>回答状況</b><span>{complete} / {total}人</span></div><progress value={complete} max={Math.max(1,total)} aria-label="回答済み人数"/></div>};
+  if(id==='future')return <FutureGame room={room} busy={busy} act={act} activeSeat={activeSeat} openSeat={openSeat} confirmSeat={confirmSeat} hideSeat={hideSeat}/>;
   if(room.viewerKind==='spectator'&&!room.canManage)return root(waiting('ゲームを観戦中','公開されている情報だけを表示しています。回答や秘密の情報は、公開される段階まで表示されません。'),'観戦');
   const gate=handoff();if(gate)return root(gate,'端末交代');
   if(id==='majority'&&room.phase==='majority-question'){

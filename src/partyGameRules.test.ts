@@ -2,8 +2,8 @@ import { describe, expect, it } from 'vitest';
 import { canJudgeUntilMatch, isYesNoQuestion, itoOrderIsCorrect, publicUntilMatchResults, resolveMajorityRound, ITO_THEMES, MAJORITY_PROMPTS, mergePartyGameSettings, normalizePartyAnswer, PARTY_GAME_IDS, samePartyAnswer, UNTIL_MATCH_PROMPTS } from './partyGameRules';
 
 describe('party game rules', () => {
-  it('registers the four additional party games', () => {
-    expect(PARTY_GAME_IDS).toEqual(['majority', 'ito', 'lateral', 'untilmatch']);
+  it('registers the party games and future cooperative suspense', () => {
+    expect(PARTY_GAME_IDS).toEqual(['majority', 'ito', 'lateral', 'untilmatch', 'future']);
   });
   it('settles majority-party votes, parent transfers, and zero-balance protection', () => {
     expect(resolveMajorityRound(

@@ -11,6 +11,7 @@ type RankingEntry = {
 };
 
 const SCORE_COLORS: Record<string, Record<string, string>> = {
+  future: { ink:'#e3eee5', muted:'#b0c4b8', accent:'#abd2bd', paper:'#101e28', lead:'#263e3c', buttonInk:'#14251d' },
   jinrou: { ink: '#fff0cd', muted: '#bfc8d8', accent: '#e8c67c', paper: '#131d2b', lead: '#30302a', buttonInk: '#231b0e' },
   wordwolf: { ink: '#ffe8e2', muted: '#d0bbc5', accent: '#e8a7a0', paper: '#241c29', lead: '#40303b', buttonInk: '#321c20' },
   ogiri: { ink: '#171717', muted: '#4f4f45', accent: '#ffe222', paper: '#fffef5', lead: '#fff4a8', buttonInk: '#171717' },

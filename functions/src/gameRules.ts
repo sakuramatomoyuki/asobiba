@@ -15,7 +15,7 @@ export function gameSupportsDeviceMode(gameId: string, method: string): boolean 
 /** Keep the UI and server error messages consistent about where a game can run. */
 export function supportedDeviceModes(gameId: string): Array<'individual' | 'shared' | 'hybrid'> {
   return ['individual', 'shared', 'hybrid'].filter((mode) =>
-    mode === 'individual' || ['jinrou', 'wordwolf', 'ito'].includes(gameId),
+    mode === 'individual' || ['jinrou', 'wordwolf', 'ito', 'future'].includes(gameId),
   ) as Array<'individual' | 'shared' | 'hybrid'>;
 }
 
@@ -174,7 +174,7 @@ export function calculateWerewolfPointAwards(
 
 export function canRevealSeatSecret(uid: string, device: string | undefined, phase: string, activeSeatUid: string | null): boolean {
   if (device !== 'shared') return true;
-  return ['rolecheck', 'night', 'vote', 'revote', 'wordwolf-word', 'wordwolf-vote', 'wordwolf-guess', 'ogiri-answer', 'ogiri-reveal', 'ogiri-judge', 'majority-answer', 'ito-number', 'lateral-play', 'untilmatch-answer'].includes(phase) && activeSeatUid === uid;
+  return ['rolecheck', 'night', 'vote', 'revote', 'wordwolf-word', 'wordwolf-vote', 'wordwolf-guess', 'ogiri-answer', 'ogiri-reveal', 'ogiri-judge', 'majority-answer', 'ito-number', 'lateral-play', 'untilmatch-answer', 'future-transmission', 'future-vote', 'future-tie'].includes(phase) && activeSeatUid === uid;
 }
 
 /** Public-only room snapshots are needed by the owner of a shared-device room. */

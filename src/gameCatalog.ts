@@ -1,6 +1,6 @@
 /** Shared vocabulary and safe defaults for the games hosted in one room. */
 import { gameSupportsDeviceMode, minimumPlayersForGame, supportedDeviceModes } from '../functions/src/gameRules';
-export type GameId = 'jinrou' | 'wordwolf' | 'ogiri' | 'survey' | 'majority' | 'ito' | 'lateral' | 'untilmatch';
+export type GameId = 'jinrou' | 'wordwolf' | 'ogiri' | 'survey' | 'majority' | 'ito' | 'lateral' | 'untilmatch' | 'future';
 
 export type GameCatalogEntry = {
   id: GameId;
@@ -24,6 +24,7 @@ export const GAME_CATALOG: readonly GameCatalogEntry[] = [
   { id: 'ito', name: 'クモノイト（ito）', shortDescription: '数字とテーマを確認し、みんなで相談して小さい順に並べます。', mood: '協力・感覚合わせ', mark: '①', players: `${minimumPlayersForGame('ito')}〜20人`, deviceModes: gameDeviceModes('ito'), atmosphere: 'bright', available: true },
   { id: 'lateral', name: '水平思考クイズ', shortDescription: '司会役に質問して手がかりを集め、謎の真相を推理します。', mood: '質問・謎解き', mark: '?', players: `${minimumPlayersForGame('lateral')}〜20人`, deviceModes: gameDeviceModes('lateral'), atmosphere: 'bright', available: true },
   { id: 'untilmatch', name: '一致するまで終われまてん', shortDescription: '全員の答えを一斉公開。言い方が違っても、意味が同じならホスト判定で一致にできる協力ゲームです。', mood: '連想・チームワーク', mark: '≋', players: `${minimumPlayersForGame('untilmatch')}〜20人`, deviceModes: gameDeviceModes('untilmatch'), atmosphere: 'bright', available: true },
+  { id:'future', name:'未来の自分から届いた', shortDescription:'未来から届く自分の通信を持ち寄り、変わりゆく運命から全員で脱出する協力サスペンス。', mood:'未来通信・協力脱出', mark:'◷', players:'3〜8人', deviceModes:gameDeviceModes('future'), atmosphere:'medieval', available:true },
 ] as const;
 
 export function gameDeviceModes(gameId: GameId): GameCatalogEntry['deviceModes'] {

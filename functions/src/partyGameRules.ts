@@ -1,6 +1,7 @@
-export type PartyGameId = 'majority'|'ito'|'lateral'|'untilmatch';
-export const PARTY_GAME_IDS: readonly PartyGameId[] = ['majority','ito','lateral','untilmatch'];
+export type PartyGameId = 'majority'|'ito'|'lateral'|'untilmatch'|'future';
+export const PARTY_GAME_IDS: readonly PartyGameId[] = ['majority','ito','lateral','untilmatch','future'];
 export const PARTY_GAME_DEFAULTS: Record<PartyGameId, Record<string, unknown>> = {
+  future: { scenario: 'laboratory', discussionSeconds: 90, pointsEnabled: true, addRoomPoints: true },
   majority: { rounds: 5, pointsEnabled: true, addRoomPoints: true },
   ito: { rounds: 1, pointsEnabled: true, addRoomPoints: true },
   lateral: { rounds: 1, gmMode: 'host', pointsEnabled: true, addRoomPoints: true },
@@ -33,6 +34,7 @@ export function mergePartyGameSettings(
       ? value as Record<string, unknown>
       : {};
   const allowed: Record<PartyGameId, readonly string[]> = {
+    future: ['scenario', 'discussionSeconds', 'pointsEnabled', 'addRoomPoints'],
     majority: ['rounds', 'pointsEnabled', 'addRoomPoints'],
     ito: ['rounds', 'pointsEnabled', 'addRoomPoints'],
     lateral: ['rounds', 'gmMode', 'pointsEnabled', 'addRoomPoints'],
